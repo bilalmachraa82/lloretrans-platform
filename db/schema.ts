@@ -1,24 +1,31 @@
-import { sql } from "drizzle-orm";
-import { sqliteTable, text, integer, real, blob, index, uniqueIndex } from "drizzle-orm/sqlite-core";
+import {
+  pgTable,
+  text,
+  integer,
+  doublePrecision,
+  boolean,
+  timestamp,
+  index,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
 const pk = () => text("id").primaryKey();
-const ts = (name: string) => integer(name, { mode: "timestamp" });
-const now = () => sql`(unixepoch())`;
+const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" });
 
 // ────────────────────────────────────────────────────────────────────────────
 // CORE — auth, companies, audit, flags
 // ────────────────────────────────────────────────────────────────────────────
 
-export const companies = sqliteTable("companies", {
+export const companies = pgTable("companies", {
   id: pk(),
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   taxId: text("tax_id"),
   group: text("group").default("patricia-pilar"),
-  createdAt: ts("created_at").default(now()).notNull(),
+  createdAt: ts("created_at").defaultNow().notNull(),
 });
 
-export const users = sqliteTable(
+export const users = pgTable(
   "users",
   {
     id: pk(),
@@ -26,24 +33,24 @@ export const users = sqliteTable(
     name: text("name").notNull(),
     role: text("role").notNull(),
     companyId: text("company_id").references(() => companies.id),
-    active: integer("active", { mode: "boolean" }).default(true).notNull(),
-    createdAt: ts("created_at").default(now()).notNull(),
+    active: boolean("active").default(true).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
   },
   (t) => ({
     roleIdx: index("users_role_idx").on(t.role),
   }),
 );
 
-export const sessions = sqliteTable("sessions", {
+export const sessions = pgTable("sessions", {
   id: pk(),
   userId: text("user_id")
     .notNull()
     .references(() => users.id),
   expiresAt: ts("expires_at").notNull(),
-  createdAt: ts("created_at").default(now()).notNull(),
+  createdAt: ts("created_at").defaultNow().notNull(),
 });
 
-export const auditLog = sqliteTable(
+export const auditLog = pgTable(
   "audit_log",
   {
     id: pk(),
@@ -56,7 +63,7 @@ export const auditLog = sqliteTable(
     reason: text("reason"),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
-    createdAt: ts("created_at").default(now()).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
   },
   (t) => ({
     entityIdx: index("audit_entity_idx").on(t.entityType, t.entityId),
@@ -64,18 +71,18 @@ export const auditLog = sqliteTable(
   }),
 );
 
-export const featureFlags = sqliteTable("feature_flags", {
+export const featureFlags = pgTable("feature_flags", {
   key: text("key").primaryKey(),
-  enabled: integer("enabled", { mode: "boolean" }).default(true).notNull(),
+  enabled: boolean("enabled").default(true).notNull(),
   description: text("description"),
-  updatedAt: ts("updated_at").default(now()).notNull(),
+  updatedAt: ts("updated_at").defaultNow().notNull(),
 });
 
 // ────────────────────────────────────────────────────────────────────────────
 // MASTERS
 // ────────────────────────────────────────────────────────────────────────────
 
-export const vehicles = sqliteTable(
+export const vehicles = pgTable(
   "vehicles",
   {
     id: pk(),
@@ -84,18 +91,18 @@ export const vehicles = sqliteTable(
     companyId: text("company_id")
       .notNull()
       .references(() => companies.id),
-    isInternal: integer("is_internal", { mode: "boolean" }).default(true).notNull(),
+    isInternal: boolean("is_internal").default(true).notNull(),
     frotcomId: text("frotcom_id"),
-    hasCanbus: integer("has_canbus", { mode: "boolean" }).default(true).notNull(),
-    active: integer("active", { mode: "boolean" }).default(true).notNull(),
-    createdAt: ts("created_at").default(now()).notNull(),
+    hasCanbus: boolean("has_canbus").default(true).notNull(),
+    active: boolean("active").default(true).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
   },
   (t) => ({
     companyIdx: index("vehicles_company_idx").on(t.companyId),
   }),
 );
 
-export const drivers = sqliteTable("drivers", {
+export const drivers = pgTable("drivers", {
   id: pk(),
   name: text("name").notNull(),
   employeeCode: text("employee_code").unique(),
@@ -103,24 +110,24 @@ export const drivers = sqliteTable("drivers", {
     .notNull()
     .references(() => companies.id),
   logueTransId: text("logue_trans_id"),
-  active: integer("active", { mode: "boolean" }).default(true).notNull(),
+  active: boolean("active").default(true).notNull(),
 });
 
-export const serviceCodes = sqliteTable("service_codes", {
+export const serviceCodes = pgTable("service_codes", {
   code: text("code").primaryKey(),
   label: text("label").notNull(),
   description: text("description"),
   kind: text("kind").notNull(),
 });
 
-export const workCodes = sqliteTable("work_codes", {
+export const workCodes = pgTable("work_codes", {
   code: text("code").primaryKey(),
   label: text("label").notNull(),
   scope: text("scope").notNull(),
   companyId: text("company_id").references(() => companies.id),
 });
 
-export const suppliers = sqliteTable(
+export const suppliers = pgTable(
   "suppliers",
   {
     id: pk(),
@@ -130,28 +137,28 @@ export const suppliers = sqliteTable(
     defaultServiceCode: text("default_service_code").references(() => serviceCodes.code),
     defaultWorkCode: text("default_work_code").references(() => workCodes.code),
     contactEmail: text("contact_email"),
-    createdAt: ts("created_at").default(now()).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
   },
   (t) => ({
     taxIdx: index("suppliers_tax_idx").on(t.taxId),
   }),
 );
 
-export const clients = sqliteTable("clients", {
+export const clients = pgTable("clients", {
   id: pk(),
   taxId: text("tax_id"),
   name: text("name").notNull(),
   country: text("country").default("PT"),
   paymentTermsDays: integer("payment_terms_days").default(60),
   phcId: text("phc_id"),
-  createdAt: ts("created_at").default(now()).notNull(),
+  createdAt: ts("created_at").defaultNow().notNull(),
 });
 
 // ────────────────────────────────────────────────────────────────────────────
 // MVP A — KM Validation
 // ────────────────────────────────────────────────────────────────────────────
 
-export const trips = sqliteTable(
+export const trips = pgTable(
   "trips",
   {
     id: pk(),
@@ -165,8 +172,8 @@ export const trips = sqliteTable(
     destination: text("destination"),
     startedAt: ts("started_at").notNull(),
     endedAt: ts("ended_at").notNull(),
-    kmDeclared: real("km_declared"),
-    kmGps: real("km_gps"),
+    kmDeclared: doublePrecision("km_declared"),
+    kmGps: doublePrecision("km_gps"),
     notes: text("notes"),
     source: text("source").notNull(),
   },
@@ -175,7 +182,7 @@ export const trips = sqliteTable(
   }),
 );
 
-export const kmReconciliations = sqliteTable(
+export const kmReconciliations = pgTable(
   "km_reconciliations",
   {
     id: pk(),
@@ -183,19 +190,19 @@ export const kmReconciliations = sqliteTable(
       .notNull()
       .references(() => trips.id)
       .unique(),
-    kmDeclared: real("km_declared"),
-    kmGps: real("km_gps"),
-    deltaKm: real("delta_km"),
-    deltaPct: real("delta_pct"),
-    thresholdKm: real("threshold_km").notNull(),
+    kmDeclared: doublePrecision("km_declared"),
+    kmGps: doublePrecision("km_gps"),
+    deltaKm: doublePrecision("delta_km"),
+    deltaPct: doublePrecision("delta_pct"),
+    thresholdKm: doublePrecision("threshold_km").notNull(),
     state: text("state").notNull(),
-    proposedKm: real("proposed_km"),
-    finalKm: real("final_km"),
+    proposedKm: doublePrecision("proposed_km"),
+    finalKm: doublePrecision("final_km"),
     decidedBy: text("decided_by").references(() => users.id),
     decidedAt: ts("decided_at"),
     decisionReason: text("decision_reason"),
-    createdAt: ts("created_at").default(now()).notNull(),
-    updatedAt: ts("updated_at").default(now()).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
+    updatedAt: ts("updated_at").defaultNow().notNull(),
   },
   (t) => ({
     stateIdx: index("km_state_idx").on(t.state, t.createdAt),
@@ -206,7 +213,7 @@ export const kmReconciliations = sqliteTable(
 // MVP B — OCR Invoices
 // ────────────────────────────────────────────────────────────────────────────
 
-export const invoices = sqliteTable(
+export const invoices = pgTable(
   "invoices",
   {
     id: pk(),
@@ -216,24 +223,24 @@ export const invoices = sqliteTable(
     invoiceNumber: text("invoice_number"),
     issuedAt: ts("issued_at"),
     dueAt: ts("due_at"),
-    totalNet: real("total_net"),
-    totalVat: real("total_vat"),
-    totalGross: real("total_gross"),
+    totalNet: doublePrecision("total_net"),
+    totalVat: doublePrecision("total_vat"),
+    totalGross: doublePrecision("total_gross"),
     currency: text("currency").default("EUR").notNull(),
     plate: text("plate"),
     vehicleId: text("vehicle_id").references(() => vehicles.id),
     serviceCode: text("service_code").references(() => serviceCodes.code),
     workCode: text("work_code").references(() => workCodes.code),
     state: text("state").notNull().default("pending_ocr"),
-    confidenceAvg: real("confidence_avg"),
+    confidenceAvg: doublePrecision("confidence_avg"),
     sourcePath: text("source_path").notNull(),
     sourceHash: text("source_hash").notNull(),
     uploadedBy: text("uploaded_by").references(() => users.id),
     approvedBy: text("approved_by").references(() => users.id),
     approvedAt: ts("approved_at"),
     exportedAt: ts("exported_at"),
-    createdAt: ts("created_at").default(now()).notNull(),
-    updatedAt: ts("updated_at").default(now()).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
+    updatedAt: ts("updated_at").defaultNow().notNull(),
   },
   (t) => ({
     stateIdx: index("invoices_state_idx").on(t.state, t.createdAt),
@@ -242,22 +249,22 @@ export const invoices = sqliteTable(
   }),
 );
 
-export const invoiceLines = sqliteTable("invoice_lines", {
+export const invoiceLines = pgTable("invoice_lines", {
   id: pk(),
   invoiceId: text("invoice_id")
     .notNull()
     .references(() => invoices.id, { onDelete: "cascade" }),
   lineNumber: integer("line_number").notNull(),
   description: text("description").notNull(),
-  quantity: real("quantity"),
-  unitPrice: real("unit_price"),
-  vatRate: real("vat_rate"),
-  total: real("total"),
+  quantity: doublePrecision("quantity"),
+  unitPrice: doublePrecision("unit_price"),
+  vatRate: doublePrecision("vat_rate"),
+  total: doublePrecision("total"),
   serviceCode: text("service_code").references(() => serviceCodes.code),
-  confidence: real("confidence"),
+  confidence: doublePrecision("confidence"),
 });
 
-export const ocrExtractions = sqliteTable("ocr_extractions", {
+export const ocrExtractions = pgTable("ocr_extractions", {
   id: pk(),
   invoiceId: text("invoice_id")
     .notNull()
@@ -266,10 +273,10 @@ export const ocrExtractions = sqliteTable("ocr_extractions", {
   rawText: text("raw_text"),
   rawJson: text("raw_json"),
   confidencePerField: text("confidence_per_field"),
-  createdAt: ts("created_at").default(now()).notNull(),
+  createdAt: ts("created_at").defaultNow().notNull(),
 });
 
-export const supplierRules = sqliteTable(
+export const supplierRules = pgTable(
   "supplier_rules",
   {
     id: pk(),
@@ -281,7 +288,7 @@ export const supplierRules = sqliteTable(
     matchPattern: text("match_pattern"),
     learnedFromInvoiceId: text("learned_from_invoice_id").references(() => invoices.id),
     hitCount: integer("hit_count").default(0).notNull(),
-    createdAt: ts("created_at").default(now()).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
   },
   (t) => ({
     supplierFieldIdx: index("rules_supplier_field_idx").on(t.supplierId, t.field),
@@ -292,7 +299,7 @@ export const supplierRules = sqliteTable(
 // MVP C — Document Hub
 // ────────────────────────────────────────────────────────────────────────────
 
-export const documents = sqliteTable(
+export const documents = pgTable(
   "documents",
   {
     id: pk(),
@@ -306,7 +313,7 @@ export const documents = sqliteTable(
     ocrText: text("ocr_text"),
     state: text("state").notNull().default("pending_association"),
     uploadedBy: text("uploaded_by").references(() => users.id),
-    createdAt: ts("created_at").default(now()).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
   },
   (t) => ({
     cmrIdx: index("docs_cmr_idx").on(t.cmrNumber),
@@ -314,20 +321,20 @@ export const documents = sqliteTable(
   }),
 );
 
-export const documentAssociations = sqliteTable("document_associations", {
+export const documentAssociations = pgTable("document_associations", {
   id: pk(),
   documentId: text("document_id")
     .notNull()
     .references(() => documents.id, { onDelete: "cascade" }),
   tripId: text("trip_id").references(() => trips.id),
-  confidence: real("confidence").notNull(),
+  confidence: doublePrecision("confidence").notNull(),
   method: text("method").notNull(),
   confirmedBy: text("confirmed_by").references(() => users.id),
   confirmedAt: ts("confirmed_at"),
-  createdAt: ts("created_at").default(now()).notNull(),
+  createdAt: ts("created_at").defaultNow().notNull(),
 });
 
-export const documentPermissions = sqliteTable("document_permissions", {
+export const documentPermissions = pgTable("document_permissions", {
   id: pk(),
   documentId: text("document_id")
     .notNull()
@@ -335,15 +342,15 @@ export const documentPermissions = sqliteTable("document_permissions", {
   companyId: text("company_id")
     .notNull()
     .references(() => companies.id),
-  canRead: integer("can_read", { mode: "boolean" }).default(true).notNull(),
-  canDownload: integer("can_download", { mode: "boolean" }).default(true).notNull(),
+  canRead: boolean("can_read").default(true).notNull(),
+  canDownload: boolean("can_download").default(true).notNull(),
 });
 
 // ────────────────────────────────────────────────────────────────────────────
 // MVP D — Fuel
 // ────────────────────────────────────────────────────────────────────────────
 
-export const fuelReadingsCanbus = sqliteTable(
+export const fuelReadingsCanbus = pgTable(
   "fuel_readings_canbus",
   {
     id: pk(),
@@ -351,16 +358,16 @@ export const fuelReadingsCanbus = sqliteTable(
       .notNull()
       .references(() => vehicles.id),
     readAt: ts("read_at").notNull(),
-    odometerKm: real("odometer_km"),
-    tankLevelPct: real("tank_level_pct"),
-    litersConsumed: real("liters_consumed"),
+    odometerKm: doublePrecision("odometer_km"),
+    tankLevelPct: doublePrecision("tank_level_pct"),
+    litersConsumed: doublePrecision("liters_consumed"),
   },
   (t) => ({
     vehicleTimeIdx: index("canbus_vehicle_time_idx").on(t.vehicleId, t.readAt),
   }),
 );
 
-export const fuelFills = sqliteTable(
+export const fuelFills = pgTable(
   "fuel_fills",
   {
     id: pk(),
@@ -370,10 +377,10 @@ export const fuelFills = sqliteTable(
     driverId: text("driver_id").references(() => drivers.id),
     source: text("source").notNull(),
     filledAt: ts("filled_at").notNull(),
-    liters: real("liters").notNull(),
-    pricePerLiter: real("price_per_liter"),
-    totalEur: real("total_eur"),
-    odometerKm: real("odometer_km"),
+    liters: doublePrecision("liters").notNull(),
+    pricePerLiter: doublePrecision("price_per_liter"),
+    totalEur: doublePrecision("total_eur"),
+    odometerKm: doublePrecision("odometer_km"),
     cardNumber: text("card_number"),
     location: text("location"),
     externalRef: text("external_ref"),
@@ -384,19 +391,19 @@ export const fuelFills = sqliteTable(
   }),
 );
 
-export const fuelAnomalies = sqliteTable("fuel_anomalies", {
+export const fuelAnomalies = pgTable("fuel_anomalies", {
   id: pk(),
   vehicleId: text("vehicle_id")
     .notNull()
     .references(() => vehicles.id),
   kind: text("kind").notNull(),
   severity: text("severity").notNull(),
-  detectedAt: ts("detected_at").default(now()).notNull(),
+  detectedAt: ts("detected_at").defaultNow().notNull(),
   windowFrom: ts("window_from").notNull(),
   windowTo: ts("window_to").notNull(),
-  expected: real("expected"),
-  actual: real("actual"),
-  deviationPct: real("deviation_pct"),
+  expected: doublePrecision("expected"),
+  actual: doublePrecision("actual"),
+  deviationPct: doublePrecision("deviation_pct"),
   notes: text("notes"),
   state: text("state").notNull().default("open"),
   resolvedBy: text("resolved_by").references(() => users.id),
@@ -407,7 +414,7 @@ export const fuelAnomalies = sqliteTable("fuel_anomalies", {
 // MVP E — Freight Exchange
 // ────────────────────────────────────────────────────────────────────────────
 
-export const freightLoads = sqliteTable(
+export const freightLoads = pgTable(
   "freight_loads",
   {
     id: pk(),
@@ -426,15 +433,15 @@ export const freightLoads = sqliteTable(
     loadedAt: ts("loaded_at"),
     deliveredAt: ts("delivered_at"),
     plate: text("plate"),
-    priceBuy: real("price_buy").notNull(),
-    priceSell: real("price_sell").notNull(),
-    margin: real("margin").notNull(),
-    marginPct: real("margin_pct").notNull(),
+    priceBuy: doublePrecision("price_buy").notNull(),
+    priceSell: doublePrecision("price_sell").notNull(),
+    margin: doublePrecision("margin").notNull(),
+    marginPct: doublePrecision("margin_pct").notNull(),
     currency: text("currency").default("EUR").notNull(),
     state: text("state").notNull().default("scheduled"),
     notes: text("notes"),
-    createdAt: ts("created_at").default(now()).notNull(),
-    updatedAt: ts("updated_at").default(now()).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
+    updatedAt: ts("updated_at").defaultNow().notNull(),
   },
   (t) => ({
     stateIdx: index("freight_state_idx").on(t.state),
@@ -442,7 +449,7 @@ export const freightLoads = sqliteTable(
   }),
 );
 
-export const freightStateTransitions = sqliteTable("freight_state_transitions", {
+export const freightStateTransitions = pgTable("freight_state_transitions", {
   id: pk(),
   loadId: text("load_id")
     .notNull()
@@ -451,25 +458,25 @@ export const freightStateTransitions = sqliteTable("freight_state_transitions", 
   toState: text("to_state").notNull(),
   userId: text("user_id").references(() => users.id),
   reason: text("reason"),
-  createdAt: ts("created_at").default(now()).notNull(),
+  createdAt: ts("created_at").defaultNow().notNull(),
 });
 
-export const supplierInvoicesFreight = sqliteTable("supplier_invoices_freight", {
+export const supplierInvoicesFreight = pgTable("supplier_invoices_freight", {
   id: pk(),
   loadId: text("load_id")
     .notNull()
     .references(() => freightLoads.id, { onDelete: "cascade" }),
   invoiceNumber: text("invoice_number").notNull(),
   issuedAt: ts("issued_at").notNull(),
-  totalGross: real("total_gross").notNull(),
-  deviation: real("deviation"),
-  deviationPct: real("deviation_pct"),
+  totalGross: doublePrecision("total_gross").notNull(),
+  deviation: doublePrecision("deviation"),
+  deviationPct: doublePrecision("deviation_pct"),
   state: text("state").notNull().default("pending_review"),
   reviewedBy: text("reviewed_by").references(() => users.id),
   reviewedAt: ts("reviewed_at"),
 });
 
-export const clientInvoicesFreight = sqliteTable("client_invoices_freight", {
+export const clientInvoicesFreight = pgTable("client_invoices_freight", {
   id: pk(),
   loadId: text("load_id")
     .notNull()
@@ -477,20 +484,20 @@ export const clientInvoicesFreight = sqliteTable("client_invoices_freight", {
   invoiceNumber: text("invoice_number").notNull(),
   issuedAt: ts("issued_at").notNull(),
   dueAt: ts("due_at").notNull(),
-  totalGross: real("total_gross").notNull(),
+  totalGross: doublePrecision("total_gross").notNull(),
   paidAt: ts("paid_at"),
 });
 
-export const commissionRules = sqliteTable("commission_rules", {
+export const commissionRules = pgTable("commission_rules", {
   id: pk(),
   salespersonId: text("salesperson_id").references(() => users.id),
-  percentOfMargin: real("percent_of_margin").notNull(),
-  minMarginPct: real("min_margin_pct"),
+  percentOfMargin: doublePrecision("percent_of_margin").notNull(),
+  minMarginPct: doublePrecision("min_margin_pct"),
   activeFrom: ts("active_from").notNull(),
   activeTo: ts("active_to"),
 });
 
-export const commissions = sqliteTable("commissions", {
+export const commissions = pgTable("commissions", {
   id: pk(),
   loadId: text("load_id")
     .notNull()
@@ -499,7 +506,7 @@ export const commissions = sqliteTable("commissions", {
     .notNull()
     .references(() => users.id),
   period: text("period").notNull(),
-  amountEur: real("amount_eur").notNull(),
+  amountEur: doublePrecision("amount_eur").notNull(),
   ruleId: text("rule_id").references(() => commissionRules.id),
   state: text("state").notNull().default("accrued"),
   paidAt: ts("paid_at"),
@@ -509,7 +516,7 @@ export const commissions = sqliteTable("commissions", {
 // MVP F — Workshop (Folha de Obra)
 // ────────────────────────────────────────────────────────────────────────────
 
-export const workOrders = sqliteTable(
+export const workOrders = pgTable(
   "work_orders",
   {
     id: pk(),
@@ -531,8 +538,8 @@ export const workOrders = sqliteTable(
     approvedAt: ts("approved_at"),
     exportedAt: ts("exported_at"),
     syncVersion: integer("sync_version").default(0).notNull(),
-    createdAt: ts("created_at").default(now()).notNull(),
-    updatedAt: ts("updated_at").default(now()).notNull(),
+    createdAt: ts("created_at").defaultNow().notNull(),
+    updatedAt: ts("updated_at").defaultNow().notNull(),
   },
   (t) => ({
     vehicleIdx: index("wo_vehicle_idx").on(t.vehicleId),
@@ -540,7 +547,7 @@ export const workOrders = sqliteTable(
   }),
 );
 
-export const workOrderItems = sqliteTable("work_order_items", {
+export const workOrderItems = pgTable("work_order_items", {
   id: pk(),
   workOrderId: text("work_order_id")
     .notNull()
@@ -548,23 +555,23 @@ export const workOrderItems = sqliteTable("work_order_items", {
   kind: text("kind").notNull(),
   description: text("description").notNull(),
   partCode: text("part_code"),
-  quantity: real("quantity").default(1).notNull(),
-  unitPrice: real("unit_price"),
-  total: real("total"),
+  quantity: doublePrecision("quantity").default(1).notNull(),
+  unitPrice: doublePrecision("unit_price"),
+  total: doublePrecision("total"),
   sourceInvoiceId: text("source_invoice_id").references(() => invoices.id),
 });
 
-export const workOrderPhotos = sqliteTable("work_order_photos", {
+export const workOrderPhotos = pgTable("work_order_photos", {
   id: pk(),
   workOrderId: text("work_order_id")
     .notNull()
     .references(() => workOrders.id, { onDelete: "cascade" }),
   stage: text("stage").notNull(),
   path: text("path").notNull(),
-  capturedAt: ts("captured_at").default(now()).notNull(),
+  capturedAt: ts("captured_at").defaultNow().notNull(),
 });
 
-export const workOrderSignatures = sqliteTable("work_order_signatures", {
+export const workOrderSignatures = pgTable("work_order_signatures", {
   id: pk(),
   workOrderId: text("work_order_id")
     .notNull()
@@ -572,5 +579,5 @@ export const workOrderSignatures = sqliteTable("work_order_signatures", {
   signerRole: text("signer_role").notNull(),
   signerName: text("signer_name").notNull(),
   svgPath: text("svg_path").notNull(),
-  signedAt: ts("signed_at").default(now()).notNull(),
+  signedAt: ts("signed_at").defaultNow().notNull(),
 });

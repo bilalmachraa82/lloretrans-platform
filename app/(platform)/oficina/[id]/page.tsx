@@ -30,7 +30,7 @@ const STATE_MAP: Record<string, { label: string; pill: "green" | "yellow" | "red
 };
 
 export default async function WorkOrderDetail({ params }: { params: Promise<{ id: string }> }) {
-  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const session = await requireRole(["admin", "clarice", "mecanico", "admin_oficina"]);
   const { id } = await params;
 
   const [wo] = await db

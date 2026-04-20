@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { db } from "@/db/client";
 import { fuelReadingsCanbus, fuelFills, fuelAnomalies, vehicles } from "@/db/schema";
-import { and, desc, eq, gte, sum, count, sql } from "drizzle-orm";
+import { and, desc, eq, gte, sum, count } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
+import { getVehicleFuelRanking } from "@/lib/fuel/ranking";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -64,38 +65,13 @@ export default async function FuelPage() {
       value: count > 0 ? liters / count : 0,
     }));
 
-  // Ranking per vehicle (30 days)
-  const ranking = await db.all<{
-    vehicleId: string;
-    plate: string;
-    kind: string;
-    totalLiters: number;
-    totalKm: number;
-    fillCount: number;
-    bombaPct: number;
-  }>(sql`
-    SELECT
-      v.id as vehicleId,
-      v.plate,
-      v.kind,
-      COALESCE(SUM(f.liters), 0) as totalLiters,
-      COALESCE(MAX(c.odometer_km) - MIN(c.odometer_km), 0) as totalKm,
-      COUNT(DISTINCT f.id) as fillCount,
-      COALESCE(100.0 * SUM(CASE WHEN f.source = 'bomba_interna' THEN f.liters ELSE 0 END) / NULLIF(SUM(f.liters), 0), 0) as bombaPct
-    FROM vehicles v
-    LEFT JOIN fuel_fills f ON f.vehicle_id = v.id AND f.filled_at >= ${Math.floor(windowStart.getTime() / 1000)}
-    LEFT JOIN fuel_readings_canbus c ON c.vehicle_id = v.id AND c.read_at >= ${Math.floor(windowStart.getTime() / 1000)}
-    WHERE v.is_internal = 1 AND v.has_canbus = 1
-    GROUP BY v.id
-    ORDER BY totalLiters DESC
-    LIMIT 20
-  `);
+  const ranking = await getVehicleFuelRanking(windowStart);
 
   const totalLiters = Number(fillsAgg[0]?.totalLiters ?? 0);
   const totalEur = Number(fillsAgg[0]?.totalEur ?? 0);
   const fleetAvgPer100 = (() => {
-    const sumL = ranking.reduce((a, r) => a + Number(r.totalLiters), 0);
-    const sumKm = ranking.reduce((a, r) => a + Number(r.totalKm), 0);
+    const sumL = ranking.reduce((a: number, r) => a + r.totalLiters, 0);
+    const sumKm = ranking.reduce((a: number, r) => a + r.totalKm, 0);
     return sumKm > 0 ? (sumL * 100) / sumKm : 0;
   })();
 
@@ -192,16 +168,16 @@ export default async function FuelPage() {
               </thead>
               <tbody>
                 {ranking.map((r) => {
-                  const per100 = Number(r.totalKm) > 0 ? (Number(r.totalLiters) * 100) / Number(r.totalKm) : 0;
+                  const per100 = r.totalKm > 0 ? (r.totalLiters * 100) / r.totalKm : 0;
                   return (
                     <tr key={r.vehicleId}>
                       <td className="font-mono">{r.plate}</td>
                       <td className="text-xs">{r.kind}</td>
-                      <td className="text-right font-mono">{formatNumber(Number(r.totalLiters))}</td>
-                      <td className="text-right font-mono">{formatNumber(Number(r.totalKm))}</td>
+                      <td className="text-right font-mono">{formatNumber(r.totalLiters)}</td>
+                      <td className="text-right font-mono">{formatNumber(r.totalKm)}</td>
                       <td className="text-right font-mono">{per100 > 0 ? per100.toFixed(1) : "—"}</td>
                       <td className="text-right font-mono">{r.fillCount}</td>
-                      <td className="text-right font-mono">{Number(r.bombaPct).toFixed(0)}%</td>
+                      <td className="text-right font-mono">{r.bombaPct.toFixed(0)}%</td>
                       <td><Button size="sm" variant="outline" asChild><Link href={`/fuel/${r.plate}`}>Abrir</Link></Button></td>
                     </tr>
                   );

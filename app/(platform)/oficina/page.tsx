@@ -20,7 +20,7 @@ const STATE_MAP: Record<string, { label: string; pill: "green" | "yellow" | "red
 };
 
 export default async function OficinaPage() {
-  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const session = await requireRole(["admin", "clarice", "mecanico", "admin_oficina"]);
   const isMechanic = session.role === "mecanico";
 
   const whereClause = isMechanic

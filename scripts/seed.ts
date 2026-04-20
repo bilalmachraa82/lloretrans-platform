@@ -1,5 +1,5 @@
 /**
- * Seed completo para a plataforma Lloretrans × AiTiPro.
+ * Seed Postgres (Neon) completo para a plataforma Lloretrans × AiTiPro.
  * Determinista — run `npm run db:reset` dá sempre o mesmo dataset.
  *
  * Volumes alinhados com PRD 2026-04-19:
@@ -12,11 +12,15 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { config } from "dotenv";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "../db/schema";
 
-const DB_PATH = process.env.DB_PATH ?? "lloretrans.db";
+config({ path: ".env.local" });
+
+const DATABASE_URL = process.env.DATABASE_URL_DIRECT ?? process.env.DATABASE_URL;
+if (!DATABASE_URL) throw new Error("DATABASE_URL not set");
 
 let rngSeed = 42;
 function rng(): number {
@@ -44,21 +48,51 @@ function dt(daysAgo: number, hour = 8, min = 0): Date {
   return d;
 }
 
-async function main(): Promise<void> {
-  if (fs.existsSync(DB_PATH)) fs.unlinkSync(DB_PATH);
-  const sqlite = new Database(DB_PATH);
-  sqlite.pragma("foreign_keys = ON");
-  const db = drizzle(sqlite, { schema });
+const ALL_TABLES_IN_ORDER = [
+  "work_order_signatures",
+  "work_order_photos",
+  "work_order_items",
+  "work_orders",
+  "commissions",
+  "commission_rules",
+  "client_invoices_freight",
+  "supplier_invoices_freight",
+  "freight_state_transitions",
+  "freight_loads",
+  "fuel_anomalies",
+  "fuel_fills",
+  "fuel_readings_canbus",
+  "document_permissions",
+  "document_associations",
+  "documents",
+  "supplier_rules",
+  "ocr_extractions",
+  "invoice_lines",
+  "invoices",
+  "km_reconciliations",
+  "trips",
+  "audit_log",
+  "sessions",
+  "suppliers",
+  "clients",
+  "drivers",
+  "vehicles",
+  "work_codes",
+  "service_codes",
+  "users",
+  "companies",
+  "feature_flags",
+];
 
-  const migrations = fs
-    .readdirSync(path.join(process.cwd(), "drizzle"))
-    .filter((f) => f.endsWith(".sql"))
-    .sort();
-  for (const m of migrations) {
-    const sqlContent = fs.readFileSync(path.join(process.cwd(), "drizzle", m), "utf-8");
-    sqlite.exec(sqlContent);
+async function main(): Promise<void> {
+  const sql = postgres(DATABASE_URL!, { max: 1, prepare: false });
+  const db = drizzle(sql, { schema });
+
+  // Truncate all tables first
+  for (const t of ALL_TABLES_IN_ORDER) {
+    await sql.unsafe(`TRUNCATE TABLE "${t}" RESTART IDENTITY CASCADE;`).catch(() => {});
   }
-  console.log(`✓ Applied ${migrations.length} migration(s)`);
+  console.log("✓ Truncated tables");
 
   // ────────── COMPANIES ──────────
   const companies = [
@@ -67,7 +101,7 @@ async function main(): Promise<void> {
     { id: "co_tdo", slug: "tomate-oeste", name: "Tomate do Oeste, S.A.", taxId: "500555666", group: "patricia-pilar" },
     { id: "co_cdn", slug: "cerejas-norte", name: "Cerejas do Norte, Lda.", taxId: "500777888", group: "patricia-pilar" },
   ];
-  db.insert(schema.companies).values(companies.map((c) => ({ ...c, createdAt: dt(90) }))).run();
+  await db.insert(schema.companies).values(companies.map((c) => ({ ...c, createdAt: dt(90) })));
   console.log(`✓ ${companies.length} companies`);
 
   // ────────── USERS ──────────
@@ -85,9 +119,7 @@ async function main(): Promise<void> {
     { id: "u_mec2", email: "pedro.mec@lloretrans.pt", name: "Pedro Reis", role: "mecanico", companyId: "co_llt" },
     { id: "u_frutas", email: "patricia@frutasoeste.pt", name: "Patrícia Cardoso", role: "frutas", companyId: "co_fdo" },
   ];
-  db.insert(schema.users)
-    .values(users.map((u) => ({ ...u, active: true, createdAt: dt(60) })))
-    .run();
+  await db.insert(schema.users).values(users.map((u) => ({ ...u, active: true, createdAt: dt(60) })));
   console.log(`✓ ${users.length} users`);
 
   // ────────── SERVICE CODES ──────────
@@ -100,7 +132,7 @@ async function main(): Promise<void> {
     { code: "S20", label: "Combustível", description: "Gasóleo, AdBlue, cartões", kind: "combustivel" },
     { code: "S30", label: "Transporte / Frete", description: "Viagens Lloretrans + bolsa de aluguer", kind: "transporte" },
   ];
-  db.insert(schema.serviceCodes).values(serviceCodes).run();
+  await db.insert(schema.serviceCodes).values(serviceCodes);
   console.log(`✓ ${serviceCodes.length} service codes`);
 
   // ────────── WORK CODES ──────────
@@ -113,7 +145,7 @@ async function main(): Promise<void> {
     { code: "EXT-GP-CDN", label: "Externo · Cerejas do Norte", scope: "external", companyId: "co_cdn" },
     { code: "EXT-GP-FRT", label: "Externo · Frutas do Oeste (frota)", scope: "external", companyId: "co_fdo" },
   ];
-  db.insert(schema.workCodes).values(workCodes).run();
+  await db.insert(schema.workCodes).values(workCodes);
   console.log(`✓ ${workCodes.length} work codes`);
 
   // ────────── VEHICLES ──────────
@@ -139,7 +171,7 @@ async function main(): Promise<void> {
       createdAt: dt(90),
     });
   }
-  db.insert(schema.vehicles).values(vehicles).run();
+  await db.insert(schema.vehicles).values(vehicles);
   console.log(`✓ ${vehicles.length} vehicles`);
 
   // ────────── DRIVERS ──────────
@@ -156,23 +188,21 @@ async function main(): Promise<void> {
       active: true,
     });
   }
-  db.insert(schema.drivers).values(drivers).run();
+  await db.insert(schema.drivers).values(drivers);
   console.log(`✓ ${drivers.length} drivers`);
 
   // ────────── CLIENTS ──────────
   const clientData = [
-    { id: "cli_01", name: "Sonae MC Distribuição", country: "PT", phcId: "PHC001" },
-    { id: "cli_02", name: "Grupo Jerónimo Martins", country: "PT", phcId: "PHC002" },
-    { id: "cli_03", name: "Lidl Portugal", country: "PT", phcId: "PHC003" },
+    { id: "cli_01", name: "Sonae MC Distribuição", country: "PT", phcId: "PHC001", paymentTermsDays: 60 },
+    { id: "cli_02", name: "Grupo Jerónimo Martins", country: "PT", phcId: "PHC002", paymentTermsDays: 60 },
+    { id: "cli_03", name: "Lidl Portugal", country: "PT", phcId: "PHC003", paymentTermsDays: 60 },
     { id: "cli_04", name: "Mercadona España", country: "ES", phcId: "PHC004", paymentTermsDays: 75 },
     { id: "cli_05", name: "Carrefour France", country: "FR", phcId: "PHC005", paymentTermsDays: 90 },
     { id: "cli_06", name: "Auchan Polska", country: "PL", phcId: "PHC006", paymentTermsDays: 120 },
-    { id: "cli_07", name: "Makro Cash & Carry", country: "PT", phcId: "PHC007" },
-    { id: "cli_08", name: "Pingo Doce", country: "PT", phcId: "PHC008" },
+    { id: "cli_07", name: "Makro Cash & Carry", country: "PT", phcId: "PHC007", paymentTermsDays: 60 },
+    { id: "cli_08", name: "Pingo Doce", country: "PT", phcId: "PHC008", paymentTermsDays: 60 },
   ];
-  db.insert(schema.clients)
-    .values(clientData.map((c) => ({ ...c, taxId: null, paymentTermsDays: c.paymentTermsDays ?? 60, createdAt: dt(180) })))
-    .run();
+  await db.insert(schema.clients).values(clientData.map((c) => ({ ...c, taxId: null, createdAt: dt(180) })));
   console.log(`✓ ${clientData.length} clients`);
 
   // ────────── SUPPLIERS (inclui os 9 reais + 4 comuns) ──────────
@@ -212,33 +242,29 @@ async function main(): Promise<void> {
       createdAt: dt(120),
     });
   });
-  db.insert(schema.suppliers).values(supplierRows).run();
+  await db.insert(schema.suppliers).values(supplierRows);
   console.log(`✓ ${supplierRows.length} suppliers (incluindo 9 reais)`);
 
   // ────────── FEATURE FLAGS ──────────
-  db.insert(schema.featureFlags)
-    .values([
-      { key: "mvp.a", enabled: true, description: "MVP A · Validação de km" },
-      { key: "mvp.b", enabled: true, description: "MVP B · OCR facturas" },
-      { key: "mvp.c", enabled: true, description: "MVP C · Digitalização central" },
-      { key: "mvp.d", enabled: true, description: "MVP D · Combustível" },
-      { key: "mvp.e", enabled: true, description: "MVP E · Bolsa de carga" },
-      { key: "mvp.f", enabled: true, description: "MVP F · Oficina PWA" },
-      { key: "integration.logue_trans_live", enabled: false, description: "API real Logue Trans" },
-      { key: "integration.frotcom_live", enabled: false, description: "API real Frotcom" },
-      { key: "integration.phc_live", enabled: false, description: "Integrador PHC" },
-      { key: "demo.seed_button", enabled: true, description: "Botão resetar demo" },
-    ])
-    .run();
+  await db.insert(schema.featureFlags).values([
+    { key: "mvp.a", enabled: true, description: "MVP A · Validação de km" },
+    { key: "mvp.b", enabled: true, description: "MVP B · OCR facturas" },
+    { key: "mvp.c", enabled: true, description: "MVP C · Digitalização central" },
+    { key: "mvp.d", enabled: true, description: "MVP D · Combustível" },
+    { key: "mvp.e", enabled: true, description: "MVP E · Bolsa de carga" },
+    { key: "mvp.f", enabled: true, description: "MVP F · Oficina PWA" },
+    { key: "integration.logue_trans_live", enabled: false, description: "API real Logue Trans" },
+    { key: "integration.frotcom_live", enabled: false, description: "API real Frotcom" },
+    { key: "integration.phc_live", enabled: false, description: "Integrador PHC" },
+    { key: "demo.seed_button", enabled: true, description: "Botão resetar demo" },
+  ]);
   console.log(`✓ feature flags`);
 
   // ────────── COMMISSION RULES ──────────
-  db.insert(schema.commissionRules)
-    .values([
-      { id: "cr_default", salespersonId: null, percentOfMargin: 0.15, minMarginPct: 0.05, activeFrom: dt(365), activeTo: null },
-      { id: "cr_eder", salespersonId: "u_eder", percentOfMargin: 0.18, minMarginPct: 0.06, activeFrom: dt(365), activeTo: null },
-    ])
-    .run();
+  await db.insert(schema.commissionRules).values([
+    { id: "cr_default", salespersonId: null, percentOfMargin: 0.15, minMarginPct: 0.05, activeFrom: dt(365), activeTo: null },
+    { id: "cr_eder", salespersonId: "u_eder", percentOfMargin: 0.18, minMarginPct: 0.06, activeFrom: dt(365), activeTo: null },
+  ]);
 
   // ────────── TRIPS (30 dias) ──────────
   const internalPlates = vehicles.filter((v) => v.isInternal).map((v) => v.plate);
@@ -311,14 +337,13 @@ async function main(): Promise<void> {
       }
     });
   }
-  // Chunked insert to avoid parameter limits
   const chunk = <T,>(arr: T[], n: number): T[][] => {
     const out: T[][] = [];
     for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
     return out;
   };
-  for (const c of chunk(tripsRows, 500)) db.insert(schema.trips).values(c).run();
-  for (const c of chunk(reconRows, 500)) db.insert(schema.kmReconciliations).values(c).run();
+  for (const c of chunk(tripsRows, 500)) await db.insert(schema.trips).values(c);
+  for (const c of chunk(reconRows, 500)) await db.insert(schema.kmReconciliations).values(c);
   console.log(`✓ ${tripsRows.length} trips + reconciliations`);
 
   // ────────── INVOICES ──────────
@@ -327,7 +352,6 @@ async function main(): Promise<void> {
   const ocrRows: (typeof schema.ocrExtractions.$inferInsert)[] = [];
   const supplierRuleRows: (typeof schema.supplierRules.$inferInsert)[] = [];
 
-  // Os 9 reais (estado: pronto para validação humana)
   catalog.entries.forEach((e, i) => {
     const invId = id("inv", i);
     const plateId = e.invoice.plate ? vehicles.find((v) => v.plate === e.invoice.plate)?.id ?? null : null;
@@ -401,7 +425,6 @@ async function main(): Promise<void> {
     });
   });
 
-  // ~180 sintéticas por 3 meses em estados variados
   for (let m = 0; m < 3; m++) {
     for (let i = 0; i < 60; i++) {
       const entry = rngPick(catalog.entries);
@@ -457,10 +480,10 @@ async function main(): Promise<void> {
     }
   }
 
-  for (const c of chunk(invoiceRows, 400)) db.insert(schema.invoices).values(c).run();
-  for (const c of chunk(invoiceLineRows, 400)) db.insert(schema.invoiceLines).values(c).run();
-  for (const c of chunk(ocrRows, 400)) db.insert(schema.ocrExtractions).values(c).run();
-  for (const c of chunk(supplierRuleRows, 400)) db.insert(schema.supplierRules).values(c).run();
+  for (const c of chunk(invoiceRows, 400)) await db.insert(schema.invoices).values(c);
+  for (const c of chunk(invoiceLineRows, 400)) await db.insert(schema.invoiceLines).values(c);
+  for (const c of chunk(ocrRows, 400)) await db.insert(schema.ocrExtractions).values(c);
+  for (const c of chunk(supplierRuleRows, 400)) await db.insert(schema.supplierRules).values(c);
   console.log(`✓ ${invoiceRows.length} invoices (9 reais + ${invoiceRows.length - 9} sintéticas)`);
 
   // ────────── DOCUMENTS (MVP C) ──────────
@@ -521,9 +544,9 @@ async function main(): Promise<void> {
       }
     });
   });
-  for (const c of chunk(docRows, 400)) db.insert(schema.documents).values(c).run();
-  for (const c of chunk(docAssocRows, 400)) db.insert(schema.documentAssociations).values(c).run();
-  for (const c of chunk(docPermRows, 400)) db.insert(schema.documentPermissions).values(c).run();
+  for (const c of chunk(docRows, 400)) await db.insert(schema.documents).values(c);
+  for (const c of chunk(docAssocRows, 400)) await db.insert(schema.documentAssociations).values(c);
+  for (const c of chunk(docPermRows, 400)) await db.insert(schema.documentPermissions).values(c);
   console.log(`✓ ${docRows.length} documents (${docRows.filter((d) => d.state === "orphan").length} órfãos)`);
 
   // ────────── FUEL (MVP D) ──────────
@@ -589,9 +612,9 @@ async function main(): Promise<void> {
       }
     }
   });
-  for (const c of chunk(fuelCanbusRows, 400)) db.insert(schema.fuelReadingsCanbus).values(c).run();
-  for (const c of chunk(fuelFillsRows, 400)) db.insert(schema.fuelFills).values(c).run();
-  for (const c of chunk(fuelAnomRows, 400)) db.insert(schema.fuelAnomalies).values(c).run();
+  for (const c of chunk(fuelCanbusRows, 400)) await db.insert(schema.fuelReadingsCanbus).values(c);
+  for (const c of chunk(fuelFillsRows, 400)) await db.insert(schema.fuelFills).values(c);
+  for (const c of chunk(fuelAnomRows, 400)) await db.insert(schema.fuelAnomalies).values(c);
   console.log(`✓ fuel: ${fuelCanbusRows.length} canbus · ${fuelFillsRows.length} fills · ${fuelAnomRows.length} anomalias`);
 
   // ────────── FREIGHT (MVP E) ──────────
@@ -599,7 +622,7 @@ async function main(): Promise<void> {
   const freightTrans: (typeof schema.freightStateTransitions.$inferInsert)[] = [];
   const freightSupInv: (typeof schema.supplierInvoicesFreight.$inferInsert)[] = [];
   const freightCliInv: (typeof schema.clientInvoicesFreight.$inferInsert)[] = [];
-  const commissions: (typeof schema.commissions.$inferInsert)[] = [];
+  const commissionsRows: (typeof schema.commissions.$inferInsert)[] = [];
   const STATES = ["scheduled", "delivered", "supplier_invoiced", "client_invoiced", "paid"];
 
   for (let m = 0; m < 3; m++) {
@@ -680,8 +703,8 @@ async function main(): Promise<void> {
 
         const ruleId = salesperson === "u_eder" ? "cr_eder" : "cr_default";
         const percent = salesperson === "u_eder" ? 0.18 : 0.15;
-        commissions.push({
-          id: id("comm", commissions.length),
+        commissionsRows.push({
+          id: id("comm", commissionsRows.length),
           loadId,
           salespersonId: salesperson,
           period: `${2026 - m}-${((new Date().getMonth() + 1) % 12 + 1).toString().padStart(2, "0")}`,
@@ -693,15 +716,15 @@ async function main(): Promise<void> {
       }
     }
   }
-  for (const c of chunk(freightLoads, 400)) db.insert(schema.freightLoads).values(c).run();
-  for (const c of chunk(freightTrans, 400)) db.insert(schema.freightStateTransitions).values(c).run();
-  for (const c of chunk(freightSupInv, 400)) db.insert(schema.supplierInvoicesFreight).values(c).run();
-  for (const c of chunk(freightCliInv, 400)) db.insert(schema.clientInvoicesFreight).values(c).run();
-  for (const c of chunk(commissions, 400)) db.insert(schema.commissions).values(c).run();
-  console.log(`✓ freight: ${freightLoads.length} cargas · ${commissions.length} comissões`);
+  for (const c of chunk(freightLoads, 400)) await db.insert(schema.freightLoads).values(c);
+  for (const c of chunk(freightTrans, 400)) await db.insert(schema.freightStateTransitions).values(c);
+  for (const c of chunk(freightSupInv, 400)) await db.insert(schema.supplierInvoicesFreight).values(c);
+  for (const c of chunk(freightCliInv, 400)) await db.insert(schema.clientInvoicesFreight).values(c);
+  for (const c of chunk(commissionsRows, 400)) await db.insert(schema.commissions).values(c);
+  console.log(`✓ freight: ${freightLoads.length} cargas · ${commissionsRows.length} comissões`);
 
   // ────────── WORKSHOP (MVP F) ──────────
-  const workOrders: (typeof schema.workOrders.$inferInsert)[] = [];
+  const workOrdersRows: (typeof schema.workOrders.$inferInsert)[] = [];
   const workOrderItems: (typeof schema.workOrderItems.$inferInsert)[] = [];
   const workOrderPhotos: (typeof schema.workOrderPhotos.$inferInsert)[] = [];
   const workOrderSignatures: (typeof schema.workOrderSignatures.$inferInsert)[] = [];
@@ -716,9 +739,9 @@ async function main(): Promise<void> {
       const duration = rngInt(30, 240);
       const endedAt = new Date(startedAt.getTime() + duration * 60000);
       const state = rngPick(["approved", "submitted", "draft"]);
-      const woId = id("wo", workOrders.length);
+      const woId = id("wo", workOrdersRows.length);
 
-      workOrders.push({
+      workOrdersRows.push({
         id: woId,
         reference: `FO-${2026 - m}/${(i + 1).toString().padStart(4, "0")}`,
         vehicleId: vehicle.id!,
@@ -774,14 +797,14 @@ async function main(): Promise<void> {
       }
     }
   }
-  for (const c of chunk(workOrders, 400)) db.insert(schema.workOrders).values(c).run();
-  for (const c of chunk(workOrderItems, 400)) db.insert(schema.workOrderItems).values(c).run();
-  for (const c of chunk(workOrderPhotos, 400)) db.insert(schema.workOrderPhotos).values(c).run();
-  for (const c of chunk(workOrderSignatures, 400)) db.insert(schema.workOrderSignatures).values(c).run();
-  console.log(`✓ workshop: ${workOrders.length} folhas · ${workOrderItems.length} items · ${workOrderPhotos.length} fotos`);
+  for (const c of chunk(workOrdersRows, 400)) await db.insert(schema.workOrders).values(c);
+  for (const c of chunk(workOrderItems, 400)) await db.insert(schema.workOrderItems).values(c);
+  for (const c of chunk(workOrderPhotos, 400)) await db.insert(schema.workOrderPhotos).values(c);
+  for (const c of chunk(workOrderSignatures, 400)) await db.insert(schema.workOrderSignatures).values(c);
+  console.log(`✓ workshop: ${workOrdersRows.length} folhas · ${workOrderItems.length} items · ${workOrderPhotos.length} fotos`);
 
-  console.log(`\n✓ Seed completo. DB em ${DB_PATH}`);
-  sqlite.close();
+  console.log(`\n✓ Seed completo.`);
+  await sql.end();
 }
 
 main().catch((err) => {

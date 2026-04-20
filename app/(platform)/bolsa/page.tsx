@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db/client";
 import { freightLoads, clients, suppliers, users, supplierInvoicesFreight, clientInvoicesFreight, commissions } from "@/db/schema";
-import { and, desc, eq, gte, count, sum, sql } from "drizzle-orm";
+import { and, desc, eq, gte, lt, isNull, count, sum } from "drizzle-orm";
 import { getSession, requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,7 +63,10 @@ export default async function BolsaPage({
       .select({ n: count() })
       .from(supplierInvoicesFreight)
       .where(eq(supplierInvoicesFreight.state, "deviation_detected")),
-    db.select({ n: count() }).from(clientInvoicesFreight).where(sql`${clientInvoicesFreight.paidAt} IS NULL AND ${clientInvoicesFreight.dueAt} < ${Math.floor(Date.now() / 1000)}`),
+    db
+      .select({ n: count() })
+      .from(clientInvoicesFreight)
+      .where(and(isNull(clientInvoicesFreight.paidAt), lt(clientInvoicesFreight.dueAt, new Date()))),
   ]);
 
   const totalMonth = rows.filter((r) => r.createdAt >= monthStart).length;

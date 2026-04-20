@@ -35,7 +35,7 @@ export const ROLE_LABELS: Record<Role, string> = {
 
 export const MVP_ACCESS: Record<Role, string[]> = {
   admin: ["km", "ocr", "docs", "fuel", "bolsa", "oficina", "admin"],
-  clarice: ["km", "ocr", "docs", "fuel", "bolsa", "oficina"],
+  clarice: ["km", "ocr", "docs", "fuel", "bolsa", "oficina"], // clarice tem leitura global incluindo oficina
   admin_oficina: ["ocr", "oficina"],
   admin_faturacao: ["km", "docs", "bolsa"],
   admin_contas: ["ocr", "bolsa"],

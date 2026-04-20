@@ -4,18 +4,56 @@
 
 @layer base {
   :root {
-    --font-sans: "Inter", system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    /* Neutrals · tint levemente frio */
+    --background: 210 20% 99%;
+    --foreground: 220 24% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 24% 14%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 45%;
+    --border: 220 14% 90%;
+    --input: 220 14% 90%;
+    --ring: 220 55% 52%;
+
+    /* Primary · azul profundo editorial */
+    --primary: 222 64% 38%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 24% 14%;
+
+    /* Accent · amber editorial */
+    --accent: 32 82% 55%;
+    --accent-foreground: 220 24% 14%;
+
+    /* Semantic */
+    --success: 152 55% 38%;
+    --success-foreground: 0 0% 100%;
+    --warning: 32 82% 50%;
+    --warning-foreground: 220 24% 14%;
+    --destructive: 0 72% 48%;
+    --destructive-foreground: 0 0% 100%;
   }
 
   html,
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  html {
+    font-family: var(--font-sans), Inter, system-ui, sans-serif;
   }
 
   * {
     @apply border-border;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display), Fraunces, Georgia, serif;
+    letter-spacing: -0.02em;
+    font-feature-settings: "ss01";
   }
 
   table {
@@ -27,7 +65,13 @@
   samp,
   pre,
   .font-mono {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  /* selection */
+  ::selection {
+    background: hsl(var(--accent) / 0.25);
+    color: inherit;
   }
 }
 
@@ -35,13 +79,43 @@
   .data-table {
     @apply w-full border-separate border-spacing-0 text-sm;
   }
-  .data-table th {
-    @apply bg-secondary px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+  .data-table thead th {
+    @apply sticky top-0 z-10 bg-secondary/80 backdrop-blur px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground border-b border-border;
   }
   .data-table td {
-    @apply border-b border-border px-3 py-2 text-sm;
+    @apply border-b border-border/60 px-3 py-2.5 text-sm;
   }
-  .data-table tr:hover td {
-    @apply bg-secondary/40;
+  .data-table tbody tr {
+    @apply transition-colors;
+  }
+  .data-table tbody tr:hover td {
+    @apply bg-secondary/50;
+  }
+
+  /* numbers tabular everywhere */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* subtle elevated card */
+  .card-elev {
+    @apply bg-card shadow-elevated-sm;
+  }
+
+  /* Hero gradient top */
+  .hero-gradient {
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, hsl(var(--primary) / 0.08), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 0%, hsl(var(--accent) / 0.06), transparent 55%);
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--secondary)) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 400px 100%;
+    @apply animate-shimmer rounded-md;
   }
 }

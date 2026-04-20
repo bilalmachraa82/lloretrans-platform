@@ -18,6 +18,18 @@ async function loginAs(formData: FormData): Promise<void> {
   redirect("/");
 }
 
+const ROLE_ORDER: Role[] = [
+  "admin",
+  "clarice",
+  "comercial",
+  "admin_faturacao",
+  "admin_oficina",
+  "admin_contas",
+  "digitalizacao",
+  "mecanico",
+  "frutas",
+];
+
 export default async function LoginPage() {
   const rows = await db
     .select({
@@ -31,36 +43,71 @@ export default async function LoginPage() {
     .leftJoin(companies, eq(companies.id, users.companyId))
     .where(eq(users.active, true));
 
+  const byRole = new Map<string, typeof rows>();
+  rows.forEach((u) => {
+    const cur = byRole.get(u.role) ?? [];
+    cur.push(u);
+    byRole.set(u.role, cur);
+  });
+  const ordered = ROLE_ORDER.flatMap((r) => byRole.get(r) ?? []);
+
   return (
-    <main className="min-h-screen bg-secondary/40 flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-3xl space-y-6">
-        <div className="text-center space-y-2">
-          <Badge variant="outline" className="mx-auto">Demo · AiTiPro × Lloretrans</Badge>
-          <h1 className="text-3xl font-semibold tracking-tight">Entrar na plataforma</h1>
-          <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-            Ambiente de demonstração com dados sintéticos + 9 facturas reais. Escolhe o papel com que queres entrar.
-            Cada papel vê apenas os módulos que lhe dizem respeito (regras da coluna <span className="font-mono">MVP_ACCESS</span>).
-          </p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {rows.map((u) => (
-            <form key={u.id} action={loginAs}>
-              <input type="hidden" name="userId" value={u.id} />
-              <Card className="hover:border-primary/60 transition-colors">
-                <CardHeader>
-                  <CardTitle className="text-base">{u.name}</CardTitle>
-                  <CardDescription>
-                    {ROLE_LABELS[u.role as Role]} · {u.companyName ?? "—"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button type="submit" className="w-full" variant="outline">
-                    Entrar como {u.name.split(" ")[0]}
-                  </Button>
-                </CardContent>
-              </Card>
-            </form>
-          ))}
+    <main className="min-h-screen hero-gradient relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_0%,hsl(var(--background))_80%)]" />
+      <div className="relative z-10 flex min-h-screen items-center justify-center py-16 px-4">
+        <div className="w-full max-w-4xl space-y-10">
+          <div className="text-center space-y-4">
+            <Badge variant="outline" className="mx-auto">
+              Demo · AiTiPro × Lloretrans
+            </Badge>
+            <h1 className="font-display text-5xl font-semibold tracking-tight leading-tight">
+              Plataforma dos <span className="text-primary">6 MVPs</span>
+            </h1>
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Ambiente de demonstração com dados sintéticos + 9 facturas reais Lloretrans.
+              Escolhe o papel com que queres entrar. Cada papel vê os módulos que lhe dizem respeito.
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {ordered.map((u) => {
+              const initials = u.name
+                .split(" ")
+                .map((n) => n[0])
+                .slice(0, 2)
+                .join("");
+              return (
+                <form key={u.id} action={loginAs}>
+                  <input type="hidden" name="userId" value={u.id} />
+                  <Card className="h-full transition-all hover:border-primary/50 hover:shadow-elevated cursor-pointer group">
+                    <CardHeader className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 text-primary grid place-items-center text-sm font-semibold border border-primary/10">
+                          {initials}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-base truncate">{u.name}</CardTitle>
+                          <CardDescription className="text-xs truncate">{u.companyName ?? "—"}</CardDescription>
+                        </div>
+                      </div>
+                      <Badge variant="secondary" className="w-fit text-[10px]">
+                        {ROLE_LABELS[u.role as Role]}
+                      </Badge>
+                    </CardHeader>
+                    <CardContent>
+                      <Button type="submit" variant="outline" className="w-full group-hover:border-primary/40">
+                        Entrar
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </form>
+              );
+            })}
+          </div>
+
+          <div className="text-center text-xs text-muted-foreground">
+            Dados em Neon Postgres (UE · Frankfurt) · Deploy Vercel fra1 · RGPD by default
+          </div>
         </div>
       </div>
     </main>

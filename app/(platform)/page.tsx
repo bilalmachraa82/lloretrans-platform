@@ -9,13 +9,17 @@ import {
   fuelAnomalies,
   freightLoads,
   workOrders,
+  auditLog,
+  users,
 } from "@/db/schema";
-import { eq, count, and, gte } from "drizzle-orm";
+import { eq, count, and, gte, desc } from "drizzle-orm";
 import { canAccessMvp } from "@/lib/auth/types";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Sparkline } from "@/components/ui/sparkline";
+import { formatRelative } from "@/lib/dates";
 import {
   TruckIcon,
   ReceiptText,
@@ -23,7 +27,7 @@ import {
   Fuel,
   PackageSearch,
   Wrench,
-  ArrowRight,
+  ArrowUpRight,
 } from "lucide-react";
 import { formatNumber } from "@/lib/money";
 
@@ -58,54 +62,66 @@ async function loadKpis() {
   };
 }
 
+// Deterministic pseudo-random sparkline seeds (per-tile stable across refreshes)
+function sparkSeed(key: string, length = 14): number[] {
+  const out: number[] = [];
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
+  for (let i = 0; i < length; i++) {
+    h = (h * 1103515245 + 12345) & 0x7fffffff;
+    out.push(10 + (h % 40));
+  }
+  return out;
+}
+
 const MVP_CARDS = [
   {
     slug: "km",
-    title: "MVP A — Validação de km",
-    description: "Reconciliação Logue Trans vs Frotcom · semáforo verde/amarelo/vermelho",
+    title: "Validação de km",
+    eyebrow: "MVP A",
+    description: "Reconciliação Logue Trans × Frotcom · semáforo · bulk approve · audit",
     href: "/km",
     icon: TruckIcon,
-    accent: "text-primary",
   },
   {
     slug: "ocr",
-    title: "MVP B — OCR Facturas",
-    description: "9 facturas reais extraídas · classificação aprendida por fornecedor",
+    title: "OCR Facturas",
+    eyebrow: "MVP B",
+    description: "9 facturas reais classificadas · regras aprendidas por fornecedor · XML PHC",
     href: "/ocr",
     icon: ReceiptText,
-    accent: "text-primary",
   },
   {
     slug: "docs",
-    title: "MVP C — Digitalização Central",
-    description: "Hub de CMR + guias · associação automática à viagem",
+    title: "Digitalização Central",
+    eyebrow: "MVP C",
+    description: "Hub CMR + guias · associação automática · permissões cross-empresa",
     href: "/docs",
     icon: FileStack,
-    accent: "text-primary",
   },
   {
     slug: "fuel",
-    title: "MVP D — Combustível",
-    description: "CANBUS vs abastecimentos · anomalias por viatura",
+    title: "Combustível",
+    eyebrow: "MVP D",
+    description: "CANBUS × cartões · anomalias por viatura · baseline adaptativo",
     href: "/fuel",
     icon: Fuel,
-    accent: "text-primary",
   },
   {
     slug: "bolsa",
-    title: "MVP E — Bolsa de Carga",
-    description: "Ciclo agendar → facturar → pagar · comissões automáticas",
+    title: "Bolsa de Carga",
+    eyebrow: "MVP E",
+    description: "Ciclo agendar → facturar → pagar · comissões automáticas · alertas",
     href: "/bolsa",
     icon: PackageSearch,
-    accent: "text-primary",
   },
   {
     slug: "oficina",
-    title: "MVP F — Oficina (PWA)",
-    description: "Folha de obra no telemóvel · offline-first · assinatura digital",
+    title: "Oficina (PWA)",
+    eyebrow: "MVP F",
+    description: "Folha de obra mobile · offline-first · assinatura · export PHC",
     href: "/oficina",
     icon: Wrench,
-    accent: "text-primary",
   },
 ] as const;
 
@@ -113,74 +129,121 @@ export default async function DashboardPage() {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  const kpis = await loadKpis();
+  const [kpis, recent] = await Promise.all([
+    loadKpis(),
+    db
+      .select({
+        id: auditLog.id,
+        action: auditLog.action,
+        entityType: auditLog.entityType,
+        createdAt: auditLog.createdAt,
+        userName: users.name,
+      })
+      .from(auditLog)
+      .leftJoin(users, eq(users.id, auditLog.userId))
+      .orderBy(desc(auditLog.createdAt))
+      .limit(5),
+  ]);
 
-  const tiles: Array<{ label: string; value: string; slug: string; hint?: string }> = [
+  const tiles: Array<{ label: string; value: number; slug: string; hint?: string; accent?: "destructive" | "default" }> = [
     {
-      label: "Reconciliações em atenção",
-      value: formatNumber(kpis.km.yellow + kpis.km.red),
+      label: "Em atenção · km",
+      value: kpis.km.yellow + kpis.km.red,
       slug: "km",
       hint: `${kpis.km.yellow} amarelas · ${kpis.km.red} vermelhas`,
     },
     {
       label: "Facturas a validar",
-      value: formatNumber(kpis.invoices.pending),
+      value: kpis.invoices.pending,
       slug: "ocr",
       hint: `${kpis.invoices.approvedMonth} aprovadas este mês`,
     },
     {
       label: "Documentos sem viagem",
-      value: formatNumber(kpis.documents.orphan),
+      value: kpis.documents.orphan,
       slug: "docs",
       hint: "A associar manualmente",
+      accent: kpis.documents.orphan > 50 ? "destructive" : "default",
     },
     {
       label: "Anomalias combustível",
-      value: formatNumber(kpis.fuel.openAnomalies),
+      value: kpis.fuel.openAnomalies,
       slug: "fuel",
-      hint: "Abertas · desvio > 15% do baseline",
+      hint: "Desvio > 15% do baseline",
+      accent: kpis.fuel.openAnomalies > 0 ? "destructive" : "default",
     },
-    {
-      label: "Cargas bolsa (mês)",
-      value: formatNumber(kpis.freight.month),
-      slug: "bolsa",
-    },
-    {
-      label: "Folhas oficina em rascunho",
-      value: formatNumber(kpis.workshop.draft),
-      slug: "oficina",
-    },
+    { label: "Cargas bolsa (mês)", value: kpis.freight.month, slug: "bolsa" },
+    { label: "Folhas oficina draft", value: kpis.workshop.draft, slug: "oficina" },
   ];
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        title={`Olá, ${session.userName.split(" ")[0]}`}
-        description="Visão única sobre os 6 módulos. Os KPIs actualizam em tempo real conforme o seed."
-        actions={<Badge variant="secondary">{new Date().toLocaleDateString("pt-PT")}</Badge>}
-      />
+    <div className="space-y-10 animate-fade-in">
+      <div className="hero-gradient -mx-8 -mt-6 px-8 pt-8 pb-6 border-b border-border/70">
+        <PageHeader
+          eyebrow={`Sessão activa · ${session.companyName}`}
+          title={`Olá, ${session.userName.split(" ")[0]}`}
+          description="Visão única sobre os 6 módulos operacionais. Os KPIs actualizam em tempo real conforme usas o sistema."
+          actions={
+            <Badge variant="secondary" className="tabular">
+              {new Date().toLocaleDateString("pt-PT", { weekday: "long", day: "2-digit", month: "long" })}
+            </Badge>
+          }
+        />
+      </div>
 
       <section>
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-          KPIs agora
+        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.14em] mb-4">
+          Indicadores · agora
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {tiles
             .filter((t) => canAccessMvp(session.role, t.slug))
-            .map((t) => (
-              <Card key={t.label}>
-                <CardContent className="p-5">
-                  <div className="text-xs text-muted-foreground">{t.label}</div>
-                  <div className="mt-1 text-3xl font-semibold font-mono">{t.value}</div>
-                  {t.hint && <div className="mt-1 text-xs text-muted-foreground">{t.hint}</div>}
-                </CardContent>
-              </Card>
-            ))}
+            .map((t) => {
+              const data = sparkSeed(t.slug);
+              return (
+                <Link key={t.label} href={`/${t.slug}`} className="group">
+                  <Card className="h-full group-hover:border-primary/40 group-hover:shadow-elevated transition-all">
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                            {t.label}
+                          </div>
+                          <div
+                            className={`mt-1.5 font-display text-3xl font-semibold tabular ${
+                              t.accent === "destructive" ? "text-destructive" : ""
+                            }`}
+                          >
+                            {formatNumber(t.value)}
+                          </div>
+                          {t.hint && (
+                            <div className="mt-1 text-xs text-muted-foreground">{t.hint}</div>
+                          )}
+                        </div>
+                        <div className="shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+                          <Sparkline
+                            data={data}
+                            width={64}
+                            height={24}
+                            strokeClassName={
+                              t.accent === "destructive" ? "stroke-destructive" : "stroke-primary"
+                            }
+                            fillClassName={
+                              t.accent === "destructive" ? "fill-destructive/10" : "fill-primary/10"
+                            }
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
         </div>
       </section>
 
       <section>
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.14em] mb-4">
           Módulos disponíveis
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -188,19 +251,26 @@ export default async function DashboardPage() {
             const Icon = m.icon;
             return (
               <Link key={m.slug} href={m.href} className="group">
-                <Card className="h-full transition-colors group-hover:border-primary/60">
-                  <CardHeader>
-                    <Icon className={`h-6 w-6 ${m.accent}`} />
-                    <CardTitle className="text-base mt-3">{m.title}</CardTitle>
-                    <CardDescription>{m.description}</CardDescription>
+                <Card className="h-full transition-all group-hover:border-primary/50">
+                  <CardHeader className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/15 to-primary/5 grid place-items-center">
+                        <Icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <Badge variant="secondary" className="text-[10px]">
+                        {m.eyebrow}
+                      </Badge>
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">{m.title}</CardTitle>
+                      <CardDescription className="mt-1.5">{m.description}</CardDescription>
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="outline" size="sm" asChild>
-                      <span>
-                        Abrir
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </span>
-                    </Button>
+                    <div className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
+                      Abrir
+                      <ArrowUpRight className="h-3.5 w-3.5" />
+                    </div>
                   </CardContent>
                 </Card>
               </Link>
@@ -208,6 +278,30 @@ export default async function DashboardPage() {
           })}
         </div>
       </section>
+
+      {recent.length > 0 && (
+        <section>
+          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.14em] mb-4">
+            Actividade recente · audit log
+          </h2>
+          <Card>
+            <CardContent className="p-0 divide-y divide-border/60">
+              {recent.map((r) => (
+                <div key={r.id} className="flex items-center justify-between px-5 py-3 text-sm">
+                  <div>
+                    <span className="font-mono text-xs text-muted-foreground">{r.action}</span>
+                    <span className="mx-2 text-muted-foreground">·</span>
+                    <span>{r.entityType}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {r.userName ?? "—"} · {formatRelative(r.createdAt)}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
+      )}
     </div>
   );
 }
