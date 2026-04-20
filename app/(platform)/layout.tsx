@@ -32,7 +32,7 @@ const MVPS = [
 async function logout(): Promise<void> {
   "use server";
   await clearSession();
-  redirect("/login");
+  redirect("/");
 }
 
 export default async function PlatformLayout({ children }: { children: React.ReactNode }) {
@@ -52,7 +52,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
         </div>
       </Link>
       <nav className="mt-8 space-y-1">
-        <SidebarLink href="/" icon={LayoutDashboard}>
+        <SidebarLink href="/dashboard" icon={LayoutDashboard}>
           Dashboard
         </SidebarLink>
         <div className="mt-4 mb-2 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">

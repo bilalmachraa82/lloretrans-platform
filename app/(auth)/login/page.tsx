@@ -1,36 +1,48 @@
 export const dynamic = "force-dynamic";
 
+import Link from "next/link";
 import { db } from "@/db/client";
 import { users, companies } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { setSession } from "@/lib/auth/session";
 import { ROLE_LABELS, type Role } from "@/lib/auth/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ArrowLeft } from "lucide-react";
 
 async function loginAs(formData: FormData): Promise<void> {
   "use server";
   const userId = formData.get("userId")?.toString();
+  const target = formData.get("target")?.toString();
   if (!userId) throw new Error("userId required");
   await setSession(userId);
-  redirect("/");
+  const allowedTargets = ["km", "ocr", "docs", "fuel", "bolsa", "oficina", "admin"];
+  if (target && allowedTargets.includes(target)) {
+    redirect(`/${target}`);
+  }
+  redirect("/dashboard");
 }
 
-const ROLE_ORDER: Role[] = [
-  "admin",
-  "clarice",
-  "comercial",
-  "admin_faturacao",
-  "admin_oficina",
-  "admin_contas",
-  "digitalizacao",
-  "mecanico",
-  "frutas",
+const ROLE_GROUPS: { label: string; roles: Role[]; hint: string }[] = [
+  { label: "Direcção e administração", roles: ["admin", "clarice"], hint: "Acesso global · dashboard + admin" },
+  { label: "Comercial · bolsa de carga", roles: ["comercial"], hint: "Só MVP E · vê as suas cargas" },
+  {
+    label: "Administrativas Lloretrans",
+    roles: ["admin_faturacao", "admin_oficina", "admin_contas"],
+    hint: "Acesso por área funcional",
+  },
+  { label: "Operações", roles: ["digitalizacao", "mecanico"], hint: "Entrada de dados · PWA oficina" },
+  { label: "Empresas do grupo (consumo)", roles: ["frutas"], hint: "Docs autorizados cross-empresa (MVP C)" },
 ];
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ target?: string }>;
+}) {
+  const { target } = await searchParams;
+
   const rows = await db
     .select({
       id: users.id,
@@ -49,67 +61,109 @@ export default async function LoginPage() {
     cur.push(u);
     byRole.set(u.role, cur);
   });
-  const ordered = ROLE_ORDER.flatMap((r) => byRole.get(r) ?? []);
 
   return (
-    <main className="min-h-screen hero-gradient relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_0%,hsl(var(--background))_80%)]" />
-      <div className="relative z-10 flex min-h-screen items-center justify-center py-16 px-4">
-        <div className="w-full max-w-4xl space-y-10">
-          <div className="text-center space-y-4">
-            <Badge variant="outline" className="mx-auto">
-              Demo · AiTiPro × Lloretrans
-            </Badge>
-            <h1 className="font-display text-5xl font-semibold tracking-tight leading-tight">
-              Plataforma dos <span className="text-primary">6 MVPs</span>
-            </h1>
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Ambiente de demonstração com dados sintéticos + 9 facturas reais Lloretrans.
-              Escolhe o papel com que queres entrar. Cada papel vê os módulos que lhe dizem respeito.
-            </p>
-          </div>
+    <main className="min-h-screen bg-[hsl(40_24%_98%)] text-[hsl(220_28%_10%)] relative overflow-hidden">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: "radial-gradient(hsl(222 72% 15%) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[400px] bg-[radial-gradient(ellipse_50%_60%_at_50%_0%,hsl(32_82%_55%/0.1),transparent_70%)]" />
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {ordered.map((u) => {
-              const initials = u.name
-                .split(" ")
-                .map((n) => n[0])
-                .slice(0, 2)
-                .join("");
-              return (
-                <form key={u.id} action={loginAs}>
-                  <input type="hidden" name="userId" value={u.id} />
-                  <Card className="h-full transition-all hover:border-primary/50 hover:shadow-elevated cursor-pointer group">
-                    <CardHeader className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 text-primary grid place-items-center text-sm font-semibold border border-primary/10">
-                          {initials}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-base truncate">{u.name}</CardTitle>
-                          <CardDescription className="text-xs truncate">{u.companyName ?? "—"}</CardDescription>
-                        </div>
-                      </div>
-                      <Badge variant="secondary" className="w-fit text-[10px]">
-                        {ROLE_LABELS[u.role as Role]}
-                      </Badge>
-                    </CardHeader>
-                    <CardContent>
-                      <Button type="submit" variant="outline" className="w-full group-hover:border-primary/40">
-                        Entrar
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </form>
-              );
-            })}
+      <header className="relative z-10 mx-auto max-w-[1100px] px-6 py-8 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <ArrowLeft className="h-4 w-4 text-muted-foreground group-hover:-translate-x-0.5 transition-transform" />
+          <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+            Voltar ao site
+          </span>
+        </Link>
+        <Link href="/" className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-md bg-[hsl(222_72%_30%)] text-white grid place-items-center font-display font-bold">
+            A
           </div>
+          <span className="font-display font-semibold">AiTiPro</span>
+        </Link>
+      </header>
 
-          <div className="text-center text-xs text-muted-foreground">
-            Dados em Neon Postgres (UE · Frankfurt) · Deploy Vercel fra1 · RGPD by default
-          </div>
+      <section className="relative z-10 mx-auto max-w-[1100px] px-6 pt-8 pb-20 animate-fade-in">
+        <div className="max-w-2xl mb-12">
+          <Badge variant="outline" className="mb-4 text-[11px] tracking-wider uppercase">
+            Acesso à demonstração
+          </Badge>
+          <h1 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-[-0.02em]">
+            Escolhe a perspectiva com que <span className="italic">queres explorar</span>.
+          </h1>
+          <p className="mt-5 text-foreground/70 leading-relaxed">
+            Cada papel vê apenas os módulos que lhe dizem respeito. Todos os dados são determinísticos —
+            podes mudar de persona sem medo, a demo reinicia-se a qualquer altura.
+            {target && (
+              <span className="block mt-3 text-[hsl(222_72%_30%)] text-sm font-medium">
+                Entrarás directamente no módulo <code className="font-mono">{target.toUpperCase()}</code>.
+              </span>
+            )}
+          </p>
         </div>
-      </div>
+
+        <div className="space-y-8">
+          {ROLE_GROUPS.map((group) => {
+            const usersInGroup = group.roles.flatMap((r) => byRole.get(r) ?? []);
+            if (usersInGroup.length === 0) return null;
+            return (
+              <div key={group.label}>
+                <div className="flex items-baseline justify-between mb-3 border-b border-[hsl(220_14%_88%)] pb-2">
+                  <h2 className="font-display text-base font-semibold tracking-tight">{group.label}</h2>
+                  <span className="text-[11px] text-muted-foreground uppercase tracking-wider">{group.hint}</span>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {usersInGroup.map((u) => {
+                    const initials = u.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .slice(0, 2)
+                      .join("");
+                    return (
+                      <form key={u.id} action={loginAs}>
+                        <input type="hidden" name="userId" value={u.id} />
+                        {target && <input type="hidden" name="target" value={target} />}
+                        <button
+                          type="submit"
+                          className="w-full text-left flex items-center gap-3 rounded-lg border border-[hsl(220_14%_88%)] bg-white p-3.5 hover:border-[hsl(222_72%_30%)]/40 hover:shadow-elevated-sm transition-all group"
+                        >
+                          <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[hsl(222_72%_45%)] to-[hsl(222_72%_22%)] text-white grid place-items-center text-xs font-semibold shrink-0">
+                            {initials}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate">{u.name}</div>
+                            <div className="text-[11px] text-muted-foreground truncate">
+                              {ROLE_LABELS[u.role as Role]}
+                            </div>
+                          </div>
+                          <span className="text-[11px] text-[hsl(222_72%_30%)] opacity-0 group-hover:opacity-100 transition-opacity">
+                            →
+                          </span>
+                        </button>
+                      </form>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-16 pt-8 border-t border-[hsl(220_14%_88%)] text-center text-xs text-muted-foreground space-x-3">
+          <span>Neon Postgres · UE Frankfurt</span>
+          <span>·</span>
+          <span>Vercel fra1</span>
+          <span>·</span>
+          <span>Audit log append-only</span>
+          <span>·</span>
+          <span>RGPD by default</span>
+        </div>
+      </section>
     </main>
   );
 }
