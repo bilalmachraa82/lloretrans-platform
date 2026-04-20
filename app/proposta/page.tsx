@@ -84,7 +84,7 @@ const MVPS = [
     title: "Bolsa de Carga + Comissões",
     dor: "Excel com 1000+ linhas/ano. Factura polaca demora 1 mês — comercial já não lembra. Comissões calculadas à mão no fim do mês.",
     entrega:
-      "State machine scheduled → delivered → supplier_invoiced → client_invoiced → paid. Comissões calculadas automaticamente (Éder 18%, default 15%). Alertas de desvio de factura e atraso de pagamento. Export Excel.",
+      "Fluxo com 5 estados: agendado → entregue → fornecedor facturou → cliente facturou → pago. Comissões calculadas automaticamente (Éder 18%, default 15%). Alertas de desvio de factura e atraso de pagamento. Export Excel.",
     semanas: "6–10",
     dependencias: "Integrador PHC (master clientes/fornecedores + emissão facturas) · regra de comissão formalizada",
     tier: "Enterprise",
@@ -112,7 +112,7 @@ const TIERS = [
     monthly: "€ 450 – 900 / mês",
     includes: [
       "1–2 MVPs (tipicamente A + B)",
-      "Integrações stub + export XML PHC",
+      "Conectores em modo simulação + export XML PHC",
       "Onboarding 2 semanas",
       "Suporte email · 48h",
       "1 revisão trimestral de scope",
@@ -197,7 +197,7 @@ const DEPENDENCIES = [
 const STATS = [
   { n: "6", label: "Módulos independentes" },
   { n: "9", label: "Facturas reais já processadas" },
-  { n: "2 243", label: "Viagens no dataset demo" },
+  { n: "60+", label: "Viaturas por operador suportadas" },
   { n: "EU", label: "Dados 100% em Frankfurt" },
 ];
 
@@ -579,6 +579,49 @@ export default function PropostaPage() {
         </div>
       </Section>
 
+      {/* QUESTÕES EM ABERTO · G6/G7/G8 */}
+      <Section
+        id="questoes-abertas"
+        eyebrow="Questões em aberto"
+        title="O que precisamos de resolver — e quem decide."
+        intro="Cada item abaixo foi identificado na reunião ou em auditoria posterior. São questões binárias ou operacionais que mudam âmbito e custo — não ficam para improvisar em produção."
+      >
+        <div className="space-y-4">
+          <OpenQuestion
+            tag="G6"
+            severity="Operacional"
+            title="Cobertura fim-de-semana e janela 24h"
+            body="Na reunião a Clarice referiu: «ao domingo não temos ninguém». A plataforma recupera horas, mas permanece aberto se queremos habilitar MVP A/D a correr sem supervisão nessas janelas — com alertas Slack/e-mail para ocorrências fora-de-padrão — ou se o processo fica estritamente 09–18."
+            responsavel="Clarice + Direcção"
+            prazo="Decisão até final de Sprint 0"
+          />
+          <OpenQuestion
+            tag="G7"
+            severity="Binário · alto impacto"
+            title="PHC CS vs PHC GO — confirmar versão exacta"
+            body="A factura PREVROD tem «Software PHC GO» no rodapé. O briefing assume PHC CS. São produtos com APIs, integradores e custos distintos. Pergunta directa ao Hélio + administração do grupo: qual é a versão e quais os módulos licenciados? O scope de integração (e o preço) depende desta resposta."
+            responsavel="Hélio · integrador actual"
+            prazo="Resolver antes da assinatura Sprint 0"
+          />
+          <OpenQuestion
+            tag="G8"
+            severity="Risco de adopção"
+            title="Plano de onboarding do mecânico (MVP F)"
+            body="A Clarice levantou a objecção: «mecânicos com 50 anos, vai dar computador, não é com ninguém, papel». Plano proposto: 1 dia de treino presencial com 1 mecânico piloto, 2 semanas de acompanhamento no terreno, fallback em papel + OCR a ligar automaticamente à folha. Adopção é KPI formal da Fase 0, medida à semana 4 e 12."
+            responsavel="Responsável oficina + Bilal"
+            prazo="Arranque no piloto · Semana 13"
+          />
+          <OpenQuestion
+            tag="G5"
+            severity="Validação comercial"
+            title="Baselines actuais · shadow session"
+            body="A Clarice disse «ou perdemos muito tempo» sobre cada um dos 6 módulos, mas não há números. 2–3h de shadow session com a administrativa da facturação e o Éder mede o ponto de partida. Sem baseline, o ROI é anedótico, não argumento defensável à administração."
+            responsavel="Administrativa facturação + Éder"
+            prazo="Semana 1 de Sprint 0"
+          />
+        </div>
+      </Section>
+
       {/* COMPLIANCE */}
       <Section id="compliance" eyebrow="Compliance" title="RGPD por defeito. Sem ressalvas.">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -759,6 +802,49 @@ function SummaryLine({ label, value, hint }: { label: string; value: string; hin
       <div className="font-display text-lg font-semibold leading-tight mt-0.5">{value}</div>
       <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{hint}</div>
     </div>
+  );
+}
+
+function OpenQuestion({
+  tag,
+  severity,
+  title,
+  body,
+  responsavel,
+  prazo,
+}: {
+  tag: string;
+  severity: string;
+  title: string;
+  body: string;
+  responsavel: string;
+  prazo: string;
+}) {
+  return (
+    <article className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-6 lg:p-7">
+      <div className="grid lg:grid-cols-[auto_1fr] gap-4 lg:gap-6 items-start">
+        <div className="flex lg:flex-col items-baseline lg:items-start gap-2 lg:gap-1.5 lg:min-w-[110px]">
+          <Badge className="bg-[hsl(32_82%_55%)]/12 text-[hsl(32_82%_35%)] border-0 font-mono font-semibold">
+            {tag}
+          </Badge>
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+            {severity}
+          </span>
+        </div>
+        <div className="space-y-3">
+          <h3 className="font-display text-xl font-semibold leading-tight">{title}</h3>
+          <p className="text-sm text-foreground/75 leading-relaxed">{body}</p>
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs pt-1 text-muted-foreground">
+            <span>
+              <span className="font-semibold text-foreground/80">Responsável:</span> {responsavel}
+            </span>
+            <span>
+              <span className="font-semibold text-foreground/80">Prazo:</span> {prazo}
+            </span>
+          </div>
+        </div>
+      </div>
+    </article>
   );
 }
 

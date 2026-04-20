@@ -37,7 +37,7 @@ const MODULES = [
     slug: "ocr",
     title: "OCR facturas fornecedor",
     problem: "50 fornecedores, 50 layouts. Conhecimento tácito de quem classifica sai com a pessoa.",
-    solution: "Extração + classificação por NIF. Cada correcção treina o sistema. Export XML PHC.",
+    solution: "Primeira factura de cada fornecedor: tu ensinas o sistema. A partir daí, automática. Export XML PHC.",
     icon: ReceiptText,
     metric: "9+180",
     metricLabel: "facturas reais + sintéticas",
@@ -67,7 +67,7 @@ const MODULES = [
     slug: "bolsa",
     title: "Bolsa de carga",
     problem: "Excel 1000+ linhas. Factura cliente chega 1 mês depois. Comissões calculadas à mão.",
-    solution: "State machine ciclo completo. Comissões automáticas. Alertas de desvio e atraso.",
+    solution: "Fluxo com 5 estados: do pedido à cobrança. Comissões automáticas. Alertas de desvio e atraso.",
     icon: PackageSearch,
     metric: "240",
     metricLabel: "cargas em 3 meses",
@@ -119,6 +119,12 @@ export default function LandingPage() {
           <Link href="#pricing" className="hidden md:inline text-sm text-foreground/70 hover:text-foreground transition-colors">
             Planos
           </Link>
+          <Link href="#roadmap" className="hidden lg:inline text-sm text-foreground/70 hover:text-foreground transition-colors">
+            Como começamos
+          </Link>
+          <Link href="/proposta" className="hidden lg:inline text-sm text-foreground/70 hover:text-foreground transition-colors">
+            Proposta
+          </Link>
           <Button asChild variant="outline" size="sm">
             <Link href="/login">Aceder à demo →</Link>
           </Button>
@@ -130,7 +136,7 @@ export default function LandingPage() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
           <div className="lg:col-span-7 space-y-8 animate-fade-in">
             <Badge variant="outline" className="text-[11px] tracking-wider uppercase">
-              Co-construído com Lloretrans · Grupo Patrícia Pilar
+              Desenhado com a operação Lloretrans · Grupo Patrícia Pilar
             </Badge>
             <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[0.98] tracking-[-0.03em]">
               Operações de frota.
@@ -142,8 +148,8 @@ export default function LandingPage() {
             <p className="text-lg text-foreground/70 leading-relaxed max-w-2xl">
               Plataforma operacional para transportadoras portuguesas. Seis módulos
               integrados que cobrem o ciclo completo — do CMR na portaria ao XML
-              pronto para o PHC. <span className="font-semibold text-foreground">Dados na UE. Auditoria total.
-              Humano a decidir em cada passo.</span>
+              pronto para o PHC. <span className="font-semibold text-foreground">Dados na UE. Audit log imutável em cada acção.
+              Humano aprova antes de qualquer passo irreversível.</span>
             </p>
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Button asChild size="lg" className="shadow-elevated">
@@ -157,14 +163,34 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Big number column (editorial) */}
+          {/* Capacity column (editorial) */}
           <div className="lg:col-span-5 animate-fade-in" style={{ animationDelay: "120ms" }}>
             <div className="border-l-2 border-[hsl(222_72%_30%)]/20 pl-6 lg:pl-10 py-2 space-y-5">
-              <HeroStat big="2 243" label="viagens reconciliadas" sub="Logue Trans × Frotcom · últimos 30 dias" />
-              <HeroStat big="189" label="facturas processadas" sub="9 reais da Lloretrans + 180 sintéticas" />
-              <HeroStat big="240" label="cargas na bolsa" sub="3 meses · Éder + Miguel · comissões automáticas" />
-              <HeroStat big="360" label="folhas de obra digitais" sub="Mobile-first · assinatura · export PHC" />
+              <HeroStat
+                big="60+"
+                label="viaturas por operador"
+                sub="Reconciliação km diária em < 15 min"
+              />
+              <HeroStat
+                big="< 3 min"
+                label="folha de obra completa"
+                sub="Mecânico regista offline · admin valida"
+              />
+              <HeroStat
+                big="1×"
+                label="passagem XML para PHC"
+                sub="Classificação aprende por fornecedor"
+              />
+              <HeroStat
+                big="UE"
+                label="dados em repouso"
+                sub="Neon Postgres · Frankfurt · sem CDN US"
+              />
             </div>
+            <p className="text-[11px] text-muted-foreground mt-5 pl-6 lg:pl-10 leading-relaxed">
+              Ambiente de demonstração com dados determinísticos (9 facturas reais da oficina, restante sintético).
+              Produção replica o mesmo modelo contra os vossos sistemas.
+            </p>
           </div>
         </div>
       </section>
@@ -194,7 +220,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <div className="font-semibold text-sm">Clarice Santos</div>
-                  <div className="text-xs text-muted-foreground">Direcção · Lloretrans</div>
+                  <div className="text-xs text-muted-foreground">Lloretrans · Grupo Patrícia Pilar</div>
                   <div className="text-xs text-muted-foreground mt-0.5">Reunião 16/04/2026</div>
                 </div>
               </div>
@@ -304,7 +330,7 @@ export default function LandingPage() {
               <TrustCard icon={Globe} title="Dados na UE" body="Neon Postgres em Frankfurt (aws-eu-central-1). Deploy Vercel fra1. Zero dependências US." />
               <TrustCard icon={ShieldCheck} title="RGPD by default" body="Audit log imutável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
               <TrustCard icon={CheckCircle2} title="Humano no loop" body="IA regista, classifica, sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
-              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores stub/live para Logue Trans, Frotcom, PHC CS, SEPSA/REPSOL/ANAMOR. Trocar para produção = uma flag." />
+              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores prontos para Logue Trans, Frotcom, PHC CS, SEPSA/REPSOL/ANAMOR. Produção requer credenciais do integrador PHC do grupo e acessos às APIs." />
             </div>
           </div>
         </div>
@@ -325,7 +351,7 @@ export default function LandingPage() {
           <PricingTier
             name="Core"
             tagline="Quick win · fechar a ferida mais evidente"
-            includes={["1–2 MVPs à escolha", "Stubs de integração", "Export PHC via XML", "Onboarding 2 sem", "Suporte email"]}
+            includes={["1–2 MVPs à escolha", "Conectores em modo simulação", "Export PHC via XML", "Onboarding 2 sem", "Suporte email"]}
           />
           <PricingTier
             name="PRO"
@@ -360,8 +386,88 @@ export default function LandingPage() {
         </p>
       </section>
 
+      {/* COMO COMEÇAMOS · roadmap */}
+      <section id="roadmap" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
+        <div className="max-w-3xl mb-12">
+          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_45%)] font-semibold mb-4">
+            Como começamos
+          </div>
+          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-[-0.02em]">
+            Calendário <span className="italic">realista</span>. Ritmo curto, entregas visíveis.
+          </h2>
+          <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
+            Cada MVP entra em produção supervisionada antes de avançarmos. Sem big-bang, sem esperas
+            longas. Começamos com um quick-win para calibrar confiança e ritmo.
+          </p>
+        </div>
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <RoadmapCard
+            week="Semana 1"
+            title="Acessos & baseline"
+            body="Kick-off com a Clarice + DPO. Credenciais Logue Trans e Frotcom. Medimos o ponto de partida — horas gastas hoje."
+          />
+          <RoadmapCard
+            week="Semanas 2–3"
+            title="MVP 1 com dados reais"
+            body="Validação km vai a ar contra 60 viaturas reais. Administrativa usa em paralelo ao processo actual durante 1 semana."
+          />
+          <RoadmapCard
+            week="Semana 4"
+            title="Go-live supervisionado"
+            body="Corte do processo antigo. Bilal presente em sala durante 3 dias. Ajustes finos de threshold e alertas."
+          />
+          <RoadmapCard
+            week="Mês 2+"
+            title="Iteração"
+            body="Próximo MVP entra no mesmo ritmo. Revisão mensal do audit log. Scope ajustado a achados reais."
+          />
+        </div>
+      </section>
+
+      {/* FAQ · pressupostos */}
+      <section id="faq" className="relative z-10 border-y border-[hsl(220_14%_88%)] bg-[hsl(40_30%_96%)]">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-24">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+            <div className="lg:col-span-4">
+              <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_45%)] font-semibold mb-4">
+                Pressupostos
+              </div>
+              <h2 className="font-display text-3xl lg:text-4xl font-semibold leading-tight tracking-[-0.02em]">
+                Perguntas que fazemos antes de assinar.
+              </h2>
+              <p className="mt-5 text-foreground/70 leading-relaxed">
+                Respostas directas às objecções que um director de operações vai pôr. Se nenhuma delas
+                encaixa na tua realidade, a resposta é: <span className="italic">conversamos</span>.
+              </p>
+            </div>
+            <div className="lg:col-span-8 space-y-2">
+              <FaqItem
+                q="Que dados saem da empresa?"
+                a="Nenhum dado vai fora da UE. Neon Postgres em Frankfurt (aws-eu-central-1), Vercel fra1. Zero analytics de terceiros. Sem fornecedores sub-processadores nos EUA."
+              />
+              <FaqItem
+                q="Quem assina os lançamentos no PHC?"
+                a="A vossa administrativa, sempre. A plataforma gera o XML (ou o registo intermédio), mas a entrada no PHC continua sob responsabilidade da pessoa que hoje a faz. O papel da IA é preparar, não decidir."
+              />
+              <FaqItem
+                q="E se o Frotcom falhar?"
+                a="Existe fallback para Logue Trans via flag de configuração. A reconciliação continua, com aviso no dashboard. Nenhum MVP depende de um único fornecedor externo para correr."
+              />
+              <FaqItem
+                q="Integramos com o vosso integrador PHC?"
+                a="Sim — é pré-requisito. Confirmamos com o Hélio versão exacta (CS vs GO) e módulos licenciados antes de fechar scope. O custo da integração está descriminado na proposta."
+              />
+              <FaqItem
+                q="O que acontece se o mecânico não usar a app?"
+                a="Plano de onboarding explícito: treino presencial de 1 dia, acompanhamento durante 2 semanas, fallback em papel com OCR a ligar automaticamente à folha. Adopção é um dos KPIs da Fase 0."
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FINAL CTA */}
-      <section className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 pb-20 lg:pb-32">
+      <section className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 pb-20 lg:pb-32 pt-20 lg:pt-28">
         <div className="rounded-2xl bg-gradient-to-br from-[hsl(222_72%_30%)] via-[hsl(222_72%_20%)] to-[hsl(222_72%_14%)] text-white p-10 lg:p-16 relative overflow-hidden">
           <div
             className="absolute inset-0 opacity-[0.08] pointer-events-none"
@@ -376,9 +482,8 @@ export default function LandingPage() {
                 Pronto para deixar o papel para trás?
               </h2>
               <p className="mt-5 text-white/75 text-lg leading-relaxed max-w-2xl">
-                60 segundos chegam para veres se a plataforma encaixa na tua operação. A demo está
-                populada com 2 243 viagens e 9 facturas reais de oficina. Login directo, sem
-                formulário.
+                60 segundos chegam para veres os 6 módulos em funcionamento. Dados determinísticos, login
+                directo sem formulário. Em paralelo, podes descarregar a proposta formal.
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
@@ -386,7 +491,7 @@ export default function LandingPage() {
                 <Link href="/login">Abrir demo →</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 w-full lg:w-auto">
-                <Link href="mailto:bilal@aitipro.com">Falar connosco</Link>
+                <Link href="/proposta">Ver proposta formal</Link>
               </Button>
             </div>
           </div>
@@ -453,6 +558,32 @@ function TrustCard({
       <h3 className="font-display text-lg font-semibold mb-2">{title}</h3>
       <p className="text-sm text-white/70 leading-relaxed">{body}</p>
     </div>
+  );
+}
+
+function RoadmapCard({ week, title, body }: { week: string; title: string; body: string }) {
+  return (
+    <div className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-6 relative">
+      <div className="text-[10px] uppercase tracking-[0.15em] text-[hsl(32_82%_45%)] font-semibold mb-2">
+        {week}
+      </div>
+      <h3 className="font-display text-lg font-semibold mb-2 leading-tight">{title}</h3>
+      <p className="text-sm text-foreground/70 leading-relaxed">{body}</p>
+    </div>
+  );
+}
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  return (
+    <details className="group rounded-lg border border-[hsl(220_14%_88%)] bg-white p-5 open:shadow-elevated-sm transition-shadow">
+      <summary className="list-none cursor-pointer flex items-start justify-between gap-4">
+        <span className="font-display text-base font-semibold leading-snug">{q}</span>
+        <span className="text-[hsl(222_72%_30%)] text-lg font-semibold shrink-0 transition-transform group-open:rotate-45 leading-none mt-0.5">
+          +
+        </span>
+      </summary>
+      <p className="mt-4 text-sm text-foreground/70 leading-relaxed">{a}</p>
+    </details>
   );
 }
 
