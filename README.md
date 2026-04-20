@@ -1,18 +1,28 @@
 # Lloretrans × AiTiPro — Plataforma dos 6 MVPs
 
-**Ambiente de demonstração e protótipo.** Next.js 15 único com 6 módulos operacionais cobrindo os 6 fluxos do PRD 2026-04-19. Corre localmente sem credenciais externas — todas as integrações (Logue Trans, Frotcom, PHC, cartões combustível) são stubs que lêem de dados sintéticos + 9 facturas reais da Lloretrans.
+**Demo live:** https://lloretrans.aitipro.com (Vercel fra1 · Neon Postgres EU)
 
-**Demo-mode flag:** `USE_LIVE_APIS=false` por default. Trocar adaptadores stub → live é simples quando chegarem credenciais.
+Next.js 15 único com 6 módulos operacionais cobrindo os 6 fluxos do PRD 2026-04-19.
+Todas as integrações externas (Logue Trans, Frotcom, PHC, cartões combustível) são stubs
+que lêem de dados sintéticos + 9 facturas reais da Lloretrans.
+
+**Demo-mode flag:** `USE_LIVE_APIS=false` por default. Trocar adaptadores stub → live é simples
+quando chegarem credenciais do cliente.
 
 ---
 
-## Arranque local (1 minuto)
+## Arranque local (2 minutos)
 
 ```bash
 npm install
-npm run db:reset   # cria DB SQLite + aplica migrations + seed determinista
-npm run dev        # arranca em http://localhost:3001
+cp .env.example .env.local   # editar com DATABASE_URL do teu projecto Neon
+npm run db:push              # aplica schema em Neon (idempotente)
+npm run db:seed              # dataset determinista (2243 viagens, 189 facturas, ...)
+npm run dev                  # arranca em http://localhost:3001
 ```
+
+No login, escolhe um dos 12 perfis pré-seeded. Cada role vê apenas os módulos que lhe
+interessam (`lib/auth/types.ts` → `MVP_ACCESS`).
 
 No login, escolhe um dos perfis pré-seeded. Cada role vê apenas os módulos que lhe interessam (`lib/auth/types.ts` → `MVP_ACCESS`).
 
@@ -102,7 +112,7 @@ Lista completa na secção 8.5 do PRD.
 ## Arquitectura
 
 - **Next.js 15** App Router + Server Components + Server Actions
-- **Drizzle ORM** com better-sqlite3 (dev) → Postgres Neon UE (prod, mesmo schema)
+- **Drizzle ORM** + **Neon Postgres** (EU Frankfurt · serverless com `@neondatabase/serverless`)
 - **Tailwind + Radix primitives** + shadcn-style design tokens
 - **Zod** em todas as fronteiras
 - **PWA** só no módulo Oficina (`/oficina` · service worker scope isolado)
@@ -140,7 +150,9 @@ scripts/
 npm run dev           # http://localhost:3001
 npm run build         # Next.js build
 npm run typecheck     # tsc --noEmit (passa)
-npm run db:reset      # reset + seed
+npm run db:push       # drizzle-kit push (aplica schema em Neon)
+npm run db:seed       # popula dados deterministas
+npm run db:reset      # push + seed (full reset)
 npm run pdf:extract   # re-extrair PDFs (fixtures)
 npm run test          # smoke tests vitest
 ```
