@@ -1,0 +1,29 @@
+node_modules
+.next
+out
+dist
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+
+# DB files (local SQLite)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Drizzle generated
+drizzle/meta
+
+# Real client data (keep fixtures structure but not the PDFs themselves in git)
+fixtures/real-invoices/*.pdf
+fixtures/real-invoices/*.docx
+
+# Vercel
+.vercel
+
+# Build
+tsconfig.tsbuildinfo
+next-env.d.ts

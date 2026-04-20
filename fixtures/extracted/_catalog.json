@@ -1,0 +1,258 @@
+{
+  "description": "Catálogo hand-curated para as 9 facturas reais da Lloretrans. Os PDFs originais são scans, portanto a extracção é simulada aqui com dados plausíveis alinhados com os fornecedores mencionados na transcrição da reunião (Moeve Pro, Policalço, Selcar/Create Business, Prevrod, Popapneus) + 4 adicionais comuns em operação de frota.",
+  "note": "Em produção, esta extracção é feita por Azure Document Intelligence (EU region) ou Claude API. O resultado é cacheado em ocr_extractions. Este catálogo simula o cache.",
+  "entries": [
+    {
+      "filename": "doc14723420260417152437.pdf",
+      "supplier": {
+        "name": "Moeve Pro - Lubrificantes e Óleos, Lda.",
+        "taxId": "509876321",
+        "category": "Oficina · Lubrificantes"
+      },
+      "invoice": {
+        "number": "FT 2026/0418",
+        "issuedAt": "2026-04-02",
+        "dueAt": "2026-06-01",
+        "totalNet": 489.62,
+        "totalVat": 112.61,
+        "totalGross": 602.23,
+        "currency": "EUR",
+        "plate": "AA-12-BC"
+      },
+      "classification": {
+        "serviceCode": "S1",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.94
+      },
+      "lines": [
+        { "description": "Óleo motor 15W40 fus 5L", "quantity": 4, "unitPrice": 42.5, "vatRate": 23, "total": 170.0, "serviceCode": "S1" },
+        { "description": "Filtro de óleo referência P551101", "quantity": 2, "unitPrice": 14.8, "vatRate": 23, "total": 29.6, "serviceCode": "S1" },
+        { "description": "Filtro de gasóleo P550762", "quantity": 2, "unitPrice": 22.4, "vatRate": 23, "total": 44.8, "serviceCode": "S1" },
+        { "description": "Mão-de-obra — mudança óleo completa", "quantity": 4, "unitPrice": 61.3, "vatRate": 23, "total": 245.22, "serviceCode": "S1" }
+      ]
+    },
+    {
+      "filename": "doc14723520260417152501.pdf",
+      "supplier": {
+        "name": "Policalço - Calços e Travões, S.A.",
+        "taxId": "508123456",
+        "category": "Oficina · Travões"
+      },
+      "invoice": {
+        "number": "INV-2026-0389",
+        "issuedAt": "2026-04-05",
+        "dueAt": "2026-06-04",
+        "totalNet": 872.40,
+        "totalVat": 200.65,
+        "totalGross": 1073.05,
+        "currency": "EUR",
+        "plate": "CD-34-FG"
+      },
+      "classification": {
+        "serviceCode": "S2",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.91
+      },
+      "lines": [
+        { "description": "Pastilhas travão jogo 4 rodas", "quantity": 1, "unitPrice": 285.0, "vatRate": 23, "total": 285.0, "serviceCode": "S2" },
+        { "description": "Discos travão dianteiros par", "quantity": 1, "unitPrice": 310.4, "vatRate": 23, "total": 310.4, "serviceCode": "S2" },
+        { "description": "Mão-de-obra travões eixo dianteiro", "quantity": 3, "unitPrice": 92.33, "vatRate": 23, "total": 277.0, "serviceCode": "S2" }
+      ]
+    },
+    {
+      "filename": "doc14723620260417152535.pdf",
+      "supplier": {
+        "name": "Selcar / Create Business, Lda.",
+        "taxId": "507654321",
+        "category": "Oficina · Sistemas de Frio"
+      },
+      "invoice": {
+        "number": "SCB/2026/417",
+        "issuedAt": "2026-04-08",
+        "dueAt": "2026-06-07",
+        "totalNet": 1425.00,
+        "totalVat": 327.75,
+        "totalGross": 1752.75,
+        "currency": "EUR",
+        "plate": "HI-56-JK"
+      },
+      "classification": {
+        "serviceCode": "S9",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.88,
+        "note": "Conhecimento tácito: Selcar só trabalha sistemas de frio motor/refrigeração. Mapeamento aprendido pelo NIF."
+      },
+      "lines": [
+        { "description": "Compressor AC reboot + teste estanqueidade", "quantity": 1, "unitPrice": 780.0, "vatRate": 23, "total": 780.0, "serviceCode": "S9" },
+        { "description": "Gás R134a recarga 1.2kg", "quantity": 1, "unitPrice": 180.0, "vatRate": 23, "total": 180.0, "serviceCode": "S9" },
+        { "description": "Mão-de-obra diagnóstico + intervenção", "quantity": 5, "unitPrice": 93.0, "vatRate": 23, "total": 465.0, "serviceCode": "S9" }
+      ]
+    },
+    {
+      "filename": "doc14723720260417152559.pdf",
+      "supplier": {
+        "name": "Prevrod - Componentes Pesados, S.A.",
+        "taxId": "505432198",
+        "category": "Oficina · Peças Pesados"
+      },
+      "invoice": {
+        "number": "FT 2026/PVD/0112",
+        "issuedAt": "2026-04-09",
+        "dueAt": "2026-06-08",
+        "totalNet": 3280.00,
+        "totalVat": 754.40,
+        "totalGross": 4034.40,
+        "currency": "EUR",
+        "plate": "LM-78-NO"
+      },
+      "classification": {
+        "serviceCode": "S3",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.85
+      },
+      "lines": [
+        { "description": "Embraiagem completa VL pesado ref. 3400-700-470", "quantity": 1, "unitPrice": 1680.0, "vatRate": 23, "total": 1680.0, "serviceCode": "S3" },
+        { "description": "Rolamento pivotante", "quantity": 2, "unitPrice": 220.0, "vatRate": 23, "total": 440.0, "serviceCode": "S3" },
+        { "description": "Mão-de-obra mudança embraiagem", "quantity": 12, "unitPrice": 96.67, "vatRate": 23, "total": 1160.0, "serviceCode": "S3" }
+      ]
+    },
+    {
+      "filename": "doc14723820260417152625.pdf",
+      "supplier": {
+        "name": "Popapneus - Pneus e Jantes, Lda.",
+        "taxId": "506789012",
+        "category": "Oficina · Pneus"
+      },
+      "invoice": {
+        "number": "PP/FT/2026/881",
+        "issuedAt": "2026-04-10",
+        "dueAt": "2026-06-09",
+        "totalNet": 2145.00,
+        "totalVat": 493.35,
+        "totalGross": 2638.35,
+        "currency": "EUR",
+        "plate": "PQ-90-RS"
+      },
+      "classification": {
+        "serviceCode": "S17",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.93
+      },
+      "lines": [
+        { "description": "Pneu Michelin X Multi D 315/70 R22.5", "quantity": 4, "unitPrice": 485.0, "vatRate": 23, "total": 1940.0, "serviceCode": "S17" },
+        { "description": "Montagem + equilibragem", "quantity": 4, "unitPrice": 25.0, "vatRate": 23, "total": 100.0, "serviceCode": "S17" },
+        { "description": "Alinhamento direcção", "quantity": 1, "unitPrice": 105.0, "vatRate": 23, "total": 105.0, "serviceCode": "S17" }
+      ]
+    },
+    {
+      "filename": "doc14723920260417152650.pdf",
+      "supplier": {
+        "name": "Dieselplace - Injecção Diesel, Lda.",
+        "taxId": "504321987",
+        "category": "Oficina · Injecção"
+      },
+      "invoice": {
+        "number": "DP-2026-0247",
+        "issuedAt": "2026-04-11",
+        "dueAt": "2026-06-10",
+        "totalNet": 960.00,
+        "totalVat": 220.80,
+        "totalGross": 1180.80,
+        "currency": "EUR",
+        "plate": "TU-12-VW"
+      },
+      "classification": {
+        "serviceCode": "S3",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.82
+      },
+      "lines": [
+        { "description": "Injector diesel reconstruido ref. 0445120054", "quantity": 2, "unitPrice": 340.0, "vatRate": 23, "total": 680.0, "serviceCode": "S3" },
+        { "description": "Mão-de-obra substituição + calibragem", "quantity": 4, "unitPrice": 70.0, "vatRate": 23, "total": 280.0, "serviceCode": "S3" }
+      ]
+    },
+    {
+      "filename": "doc14724020260417152720.pdf",
+      "supplier": {
+        "name": "Lubrigaz - Combustíveis e Lubrificantes",
+        "taxId": "503987654",
+        "category": "Combustível · Cartão externo"
+      },
+      "invoice": {
+        "number": "LBZ/2026/6745",
+        "issuedAt": "2026-04-12",
+        "dueAt": "2026-05-12",
+        "totalNet": 1876.42,
+        "totalVat": 431.58,
+        "totalGross": 2308.00,
+        "currency": "EUR",
+        "plate": null
+      },
+      "classification": {
+        "serviceCode": "S1",
+        "workCode": "INT-COMB-LLT",
+        "confidence": 0.70,
+        "note": "Factura de combustível — classificação pode variar conforme política contabilística; pedida validação humana."
+      },
+      "lines": [
+        { "description": "Gasóleo AdBlue 1450L · Estação A8", "quantity": 1450, "unitPrice": 1.294, "vatRate": 23, "total": 1876.3, "serviceCode": "S1" }
+      ]
+    },
+    {
+      "filename": "doc14724120260417152817.pdf",
+      "supplier": {
+        "name": "Tecnicauto Especialistas Pesados, S.A.",
+        "taxId": "502345678",
+        "category": "Oficina · Electrónica"
+      },
+      "invoice": {
+        "number": "TEC/2026/412",
+        "issuedAt": "2026-04-14",
+        "dueAt": "2026-06-13",
+        "totalNet": 680.00,
+        "totalVat": 156.40,
+        "totalGross": 836.40,
+        "currency": "EUR",
+        "plate": "XY-34-ZA"
+      },
+      "classification": {
+        "serviceCode": "S3",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.76
+      },
+      "lines": [
+        { "description": "Diagnóstico central electrónica + limpeza DTCs", "quantity": 3, "unitPrice": 85.0, "vatRate": 23, "total": 255.0, "serviceCode": "S3" },
+        { "description": "Sensor ABS dianteiro par", "quantity": 1, "unitPrice": 425.0, "vatRate": 23, "total": 425.0, "serviceCode": "S3" }
+      ]
+    },
+    {
+      "filename": "doc14724220260417152924.pdf",
+      "supplier": {
+        "name": "Eurocamiones Peças do Oeste, Lda.",
+        "taxId": "501678901",
+        "category": "Oficina · Peças Genéricas"
+      },
+      "invoice": {
+        "number": "ECO-2026-0562",
+        "issuedAt": "2026-04-15",
+        "dueAt": "2026-06-14",
+        "totalNet": 412.80,
+        "totalVat": 94.94,
+        "totalGross": 507.74,
+        "currency": "EUR",
+        "plate": "BC-56-DE"
+      },
+      "classification": {
+        "serviceCode": "S3",
+        "workCode": "EXT-GP-FRT",
+        "confidence": 0.62,
+        "note": "Matrícula BC-56-DE pertence à Frutas do Oeste (grupo), não à Lloretrans. Classificado como externo."
+      },
+      "lines": [
+        { "description": "Faróis dianteiros LED par", "quantity": 1, "unitPrice": 280.0, "vatRate": 23, "total": 280.0, "serviceCode": "S3" },
+        { "description": "Escova limpa-parabrisas", "quantity": 2, "unitPrice": 18.5, "vatRate": 23, "total": 37.0, "serviceCode": "S3" },
+        { "description": "Fluído travões DOT4 5L", "quantity": 2, "unitPrice": 47.9, "vatRate": 23, "total": 95.8, "serviceCode": "S3" }
+      ]
+    }
+  ]
+}
