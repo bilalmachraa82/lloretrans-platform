@@ -801,7 +801,9 @@ async function main(): Promise<void> {
     for (let i = 0; i < 120; i++) {
       const vehicle = rngPick(vehicles.filter((v) => v.isInternal));
       const mechanic = rngPick(MECHANICS);
-      const serviceCode = rngPick(["S1", "S2", "S3", "S17"]);
+      // Work orders são intervenções em viaturas INTERNAS Lloretrans → códigos L*
+      // (S* seriam para veículos de clientes externos, que não estamos a simular no seed das folhas de obra).
+      const serviceCode = rngPick(["L1", "L2", "L3", "L7", "L8"]);
       const startedAt = dt(m * 30 + i, 8 + rngInt(0, 8), rngInt(0, 59));
       const duration = rngInt(30, 240);
       const endedAt = new Date(startedAt.getTime() + duration * 60000);
