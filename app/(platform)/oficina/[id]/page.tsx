@@ -6,10 +6,12 @@ import {
   workOrderItems,
   workOrderPhotos,
   workOrderSignatures,
+  workOrderChecklistAnswers,
   vehicles,
   users,
   auditLog,
 } from "@/db/schema";
+import { WORKSHOP_CHECKLIST, type ChecklistItemKey } from "@/lib/workshop-checklist";
 import { and, desc, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
@@ -76,10 +78,11 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
     throw new Error("FORBIDDEN: não podes ver folhas de outros mecânicos");
   }
 
-  const [items, photos, signatures, audits] = await Promise.all([
+  const [items, photos, signatures, checklistAnswers, audits] = await Promise.all([
     db.select().from(workOrderItems).where(eq(workOrderItems.workOrderId, id)),
     db.select().from(workOrderPhotos).where(eq(workOrderPhotos.workOrderId, id)),
     db.select().from(workOrderSignatures).where(eq(workOrderSignatures.workOrderId, id)),
+    db.select().from(workOrderChecklistAnswers).where(eq(workOrderChecklistAnswers.workOrderId, id)),
     db
       .select({
         id: auditLog.id,
@@ -194,6 +197,35 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
           </CardContent>
         </Card>
       </div>
+
+      {checklistAnswers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">
+              Checklist ({checklistAnswers.length}/{WORKSHOP_CHECKLIST.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="grid gap-2 sm:grid-cols-2 text-sm">
+              {checklistAnswers.map((a) => {
+                const def = WORKSHOP_CHECKLIST.find((c) => c.key === (a.itemKey as ChecklistItemKey));
+                return (
+                  <li key={a.id} className="border border-border rounded-md p-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-medium">{def?.label ?? a.itemKey}</span>
+                      <div className="flex gap-1">
+                        {a.substituted && <Badge variant="default" className="text-[10px]">Subst.</Badge>}
+                        {a.verified && <Badge variant="success" className="text-[10px]">Verif.</Badge>}
+                      </div>
+                    </div>
+                    {a.notes && <div className="text-xs text-muted-foreground mt-1">{a.notes}</div>}
+                  </li>
+                );
+              })}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader><CardTitle className="text-base">Items ({items.length})</CardTitle></CardHeader>

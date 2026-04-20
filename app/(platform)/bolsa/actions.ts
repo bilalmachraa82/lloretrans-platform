@@ -11,11 +11,13 @@ import {
   clientInvoicesFreight,
   commissions,
   commissionRules,
+  vehicles,
 } from "@/db/schema";
 import { requireRole, getSession } from "@/lib/auth/session";
 import { audit } from "@/lib/audit";
 import { randomId } from "@/lib/utils";
 import { canTransition, type FreightState } from "@/lib/freight-state";
+import { computeCommissionAmount } from "@/lib/commission-rule";
 
 export async function createLoad(formData: FormData): Promise<void> {
   const session = await requireRole(["admin", "clarice", "comercial"]);
@@ -281,7 +283,14 @@ export async function computeCommissions(formData: FormData): Promise<void> {
   const ruleFor = (salespersonId: string) =>
     rules.find((r) => r.salespersonId === salespersonId) ?? rules.find((r) => r.salespersonId == null);
 
+  const internalVehicles = await db
+    .select({ plate: vehicles.plate })
+    .from(vehicles)
+    .where(eq(vehicles.isInternal, true));
+  const internalPlates = new Set(internalVehicles.map((v) => v.plate));
+
   let created = 0;
+  let skippedIneligible = 0;
   for (const load of paidLoads) {
     const existing = await db
       .select()
@@ -292,14 +301,36 @@ export async function computeCommissions(formData: FormData): Promise<void> {
 
     const rule = ruleFor(load.salespersonId);
     if (!rule) continue;
-    if (rule.minMarginPct != null && load.marginPct < rule.minMarginPct) continue;
+
+    const result = computeCommissionAmount(
+      {
+        margin: load.margin,
+        marginPct: load.marginPct,
+        plate: load.plate,
+        origin: load.origin,
+        destination: load.destination,
+      },
+      {
+        percentOfMargin: rule.percentOfMargin,
+        fixedBonusNationalEur: rule.fixedBonusNationalEur,
+        fixedBonusInternationalEur: rule.fixedBonusInternationalEur,
+        requireInternalVehicle: rule.requireInternalVehicle,
+        minMarginPct: rule.minMarginPct ?? 0,
+      },
+      internalPlates,
+    );
+
+    if (!result.eligible) {
+      skippedIneligible += 1;
+      continue;
+    }
 
     await db.insert(commissions).values({
       id: randomId("comm"),
       loadId: load.id,
       salespersonId: load.salespersonId,
       period,
-      amountEur: Math.round(load.margin * rule.percentOfMargin * 100) / 100,
+      amountEur: result.amountEur,
       ruleId: rule.id,
       state: "accrued",
       paidAt: null,
@@ -312,7 +343,7 @@ export async function computeCommissions(formData: FormData): Promise<void> {
     action: "freight.compute_commissions",
     entityType: "freight_period",
     entityId: period,
-    after: { created, paidLoads: paidLoads.length },
+    after: { created, skippedIneligible, paidLoads: paidLoads.length },
   });
 
   revalidatePath("/bolsa/commissions");

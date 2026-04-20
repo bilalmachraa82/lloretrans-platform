@@ -9,6 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Camera, Check } from "lucide-react";
 import { submitWorkOrder } from "../actions";
+import {
+  WORKSHOP_CHECKLIST,
+  filterChecklistForService,
+  emptyChecklist,
+  type ChecklistAnswer,
+  type ChecklistItemKey,
+} from "@/lib/workshop-checklist";
 
 interface VehicleOpt {
   plate: string;
@@ -62,6 +69,7 @@ export function WorkOrderWizard({
   const [serviceCode, setServiceCode] = useState("");
   const [summary, setSummary] = useState("");
   const [items, setItems] = useState<Item[]>([]);
+  const [checklist, setChecklist] = useState<ChecklistAnswer[]>(() => emptyChecklist());
   const [signaturePath, setSignaturePath] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -75,6 +83,7 @@ export function WorkOrderWizard({
         setServiceCode(d.serviceCode ?? "");
         setSummary(d.summary ?? "");
         setItems(d.items ?? []);
+        if (Array.isArray(d.checklist) && d.checklist.length > 0) setChecklist(d.checklist);
       }
     } catch {}
   }, []);
@@ -82,9 +91,19 @@ export function WorkOrderWizard({
   // Persist draft on every change
   useEffect(() => {
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ plate, serviceCode, summary, items }));
+      localStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({ plate, serviceCode, summary, items, checklist }),
+      );
     } catch {}
-  }, [plate, serviceCode, summary, items]);
+  }, [plate, serviceCode, summary, items, checklist]);
+
+  function updateChecklist(key: ChecklistItemKey, patch: Partial<ChecklistAnswer>) {
+    setChecklist((cur) => cur.map((c) => (c.key === key ? { ...c, ...patch } : c)));
+  }
+
+  const visibleChecklist = filterChecklistForService(serviceCode);
+  const checklistTouched = checklist.some((c) => c.substituted || c.verified || (c.notes ?? "").trim());
 
   const total = items.reduce((a, i) => a + i.quantity * i.unitPrice, 0);
 
@@ -121,6 +140,14 @@ export function WorkOrderWizard({
         quantity: i.quantity,
         unitPrice: i.unitPrice,
       })),
+      checklist: checklist
+        .filter((c) => c.substituted || c.verified || (c.notes ?? "").trim())
+        .map((c) => ({
+          key: c.key,
+          substituted: c.substituted,
+          verified: c.verified,
+          notes: (c.notes ?? "").trim() || undefined,
+        })),
       signatureSvgPath: signaturePath,
       signerName: mechanicName,
     };
@@ -139,21 +166,22 @@ export function WorkOrderWizard({
   const canNext = {
     1: plate !== "",
     2: serviceCode !== "",
-    3: items.length > 0 && items.every((i) => i.description.trim()),
-    4: true, // fotos opcionais no demo
-    5: signaturePath !== "",
+    3: true, // checklist opcional — mecânico pode saltar se só intervém em items avulsos
+    4: items.length > 0 && items.every((i) => i.description.trim()),
+    5: true, // fotos opcionais no demo
+    6: signaturePath !== "",
   }[step];
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       <PageHeader
-        title={`Nova folha · passo ${step}/6`}
+        title={`Nova folha · passo ${step}/7`}
         description="Rascunho guarda-se sozinho · podes sair e voltar"
         actions={<Button variant="outline" asChild><Link href="/oficina">Cancelar</Link></Button>}
       />
 
       <div className="flex gap-1">
-        {[1, 2, 3, 4, 5, 6].map((n) => (
+        {[1, 2, 3, 4, 5, 6, 7].map((n) => (
           <div
             key={n}
             className={`h-1.5 flex-1 rounded-full ${n <= step ? "bg-primary" : "bg-secondary"}`}
@@ -209,7 +237,67 @@ export function WorkOrderWizard({
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">3. Items ({items.length})</CardTitle>
+              <CardTitle className="text-base">3. Checklist ({visibleChecklist.length} itens)</CardTitle>
+              {checklistTouched && <Badge variant="success">{checklist.filter((c) => c.substituted || c.verified).length} marcados</Badge>}
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="text-xs text-muted-foreground">
+              Marca o que foi <strong>substituído</strong> ou <strong>verificado</strong>.
+              Passo opcional — só preenche se houver tarefas aplicáveis.
+            </p>
+            {visibleChecklist.map((item) => {
+              const a = checklist.find((c) => c.key === item.key);
+              if (!a) return null;
+              const active = a.substituted || a.verified;
+              return (
+                <div
+                  key={item.key}
+                  className={`rounded-md border p-3 space-y-2 ${active ? "border-primary bg-primary/5" : "border-border"}`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium flex-1">{item.label}</span>
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => updateChecklist(item.key, { substituted: !a.substituted })}
+                        className={`px-2 py-1 text-[10px] rounded border min-w-[70px] ${
+                          a.substituted ? "bg-primary text-primary-foreground border-primary" : "border-border"
+                        }`}
+                      >
+                        Substituído
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateChecklist(item.key, { verified: !a.verified })}
+                        className={`px-2 py-1 text-[10px] rounded border min-w-[70px] ${
+                          a.verified ? "bg-emerald-600 text-white border-emerald-600" : "border-border"
+                        }`}
+                      >
+                        Verificado
+                      </button>
+                    </div>
+                  </div>
+                  {active && (
+                    <Input
+                      value={a.notes ?? ""}
+                      onChange={(e) => updateChecklist(item.key, { notes: e.target.value })}
+                      placeholder="Observações / peça / código"
+                      className="text-sm"
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      )}
+
+      {step === 4 && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base">4. Items ({items.length})</CardTitle>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => addItem("part")}>
                   <Plus className="h-3 w-3" />Peça
@@ -278,9 +366,9 @@ export function WorkOrderWizard({
         </Card>
       )}
 
-      {step === 4 && (
+      {step === 5 && (
         <Card>
-          <CardHeader><CardTitle className="text-base">4. Fotos (opcional no demo)</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">5. Fotos (opcional no demo)</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {(["before", "detail", "after"] as const).map((stage) => (
               <label key={stage} className="flex items-center gap-3 rounded-md border border-dashed border-border p-4 cursor-pointer">
@@ -299,11 +387,11 @@ export function WorkOrderWizard({
         </Card>
       )}
 
-      {step === 5 && (
+      {step === 6 && (
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">5. Assinatura</CardTitle>
+              <CardTitle className="text-base">6. Assinatura</CardTitle>
               <Badge variant="secondary">{mechanicName}</Badge>
             </div>
           </CardHeader>
@@ -313,12 +401,16 @@ export function WorkOrderWizard({
         </Card>
       )}
 
-      {step === 6 && (
+      {step === 7 && (
         <Card>
-          <CardHeader><CardTitle className="text-base">6. Revisão</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">7. Revisão</CardTitle></CardHeader>
           <CardContent className="space-y-3 text-sm">
             <Kv label="Matrícula" value={plate} />
             <Kv label="Serviço" value={serviceCode} />
+            <Kv
+              label="Checklist"
+              value={`${checklist.filter((c) => c.substituted || c.verified).length}/${WORKSHOP_CHECKLIST.length} marcados`}
+            />
             <Kv label="Items" value={`${items.length} linhas · total ${total.toFixed(2)} €`} />
             <Kv label="Assinatura" value={signaturePath ? "✓ assinada" : "✗ em falta"} />
             {summary && <Kv label="Sumário" value={summary} />}
@@ -339,7 +431,7 @@ export function WorkOrderWizard({
             ← Anterior
           </Button>
         )}
-        {step < 6 ? (
+        {step < 7 ? (
           <Button
             type="button"
             size="lg"

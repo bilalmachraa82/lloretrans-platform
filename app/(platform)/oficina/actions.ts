@@ -9,6 +9,7 @@ import {
   workOrderItems,
   workOrderSignatures,
   workOrderPhotos,
+  workOrderChecklistAnswers,
   vehicles,
 } from "@/db/schema";
 import { requireRole } from "@/lib/auth/session";
@@ -25,6 +26,7 @@ interface SubmitPayload {
   serviceCode: string;
   summary: string;
   items: Array<{ kind: "part" | "labour"; description: string; partCode?: string; quantity: number; unitPrice: number }>;
+  checklist?: Array<{ key: string; substituted: boolean; verified: boolean; notes?: string }>;
   signatureSvgPath: string;
   signerName: string;
 }
@@ -82,12 +84,30 @@ export async function submitWorkOrder(formData: FormData): Promise<void> {
     signedAt: now,
   });
 
+  if (payload.checklist && payload.checklist.length > 0) {
+    for (let i = 0; i < payload.checklist.length; i++) {
+      const c = payload.checklist[i];
+      await db.insert(workOrderChecklistAnswers).values({
+        id: randomId(`woc_${i}`),
+        workOrderId: woId,
+        itemKey: c.key,
+        substituted: c.substituted,
+        verified: c.verified,
+        notes: c.notes ?? null,
+      });
+    }
+  }
+
   await audit({
     userId: session.userId,
     action: "workorder.submit",
     entityType: "work_order",
     entityId: woId,
-    after: { reference, itemCount: payload.items.length },
+    after: {
+      reference,
+      itemCount: payload.items.length,
+      checklistCount: payload.checklist?.length ?? 0,
+    },
   });
 
   redirect(`/oficina/${woId}`);
