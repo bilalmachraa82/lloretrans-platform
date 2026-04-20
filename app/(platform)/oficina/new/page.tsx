@@ -5,7 +5,7 @@ import { requireRole } from "@/lib/auth/session";
 import { WorkOrderWizard } from "./wizard";
 
 export default async function NewWorkOrderPage() {
-  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const session = await requireRole(["admin", "clarice", "mecanico", "admin_oficina"]);
 
   const [veh, codes] = await Promise.all([
     db

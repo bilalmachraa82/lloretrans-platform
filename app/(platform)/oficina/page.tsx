@@ -69,17 +69,24 @@ export default async function OficinaPage() {
         }
         actions={
           <div className="flex gap-2">
-            {isMechanic && (
-              <Button asChild size="lg">
-                <Link href="/oficina/new">
-                  <Plus className="h-5 w-5" />
-                  Nova folha
-                </Link>
-              </Button>
-            )}
+            <Button asChild size="lg" variant={isMechanic ? "default" : "outline"}>
+              <Link href="/oficina/new">
+                <Plus className="h-5 w-5" />
+                {isMechanic ? "Nova folha" : "Experimentar como mecânico"}
+              </Link>
+            </Button>
           </div>
         }
       />
+
+      {!isMechanic && (
+        <div className="rounded-md border border-[hsl(222_72%_30%)]/20 bg-[hsl(222_72%_30%)]/5 px-4 py-3 text-sm">
+          <strong>Vista admin:</strong> abaixo estão as folhas submetidas para validação. Para veres
+          a experiência do mecânico (wizard mobile-first com assinatura), clica{" "}
+          <strong>&quot;Experimentar como mecânico&quot;</strong> em cima, ou faz logout e entra como{" "}
+          <strong>João Oliveira</strong> / <strong>Pedro Reis</strong>.
+        </div>
+      )}
 
       {isMechanic ? (
         <div className="grid gap-3">

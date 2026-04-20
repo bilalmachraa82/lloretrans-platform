@@ -30,7 +30,7 @@ interface SubmitPayload {
 }
 
 export async function submitWorkOrder(formData: FormData): Promise<void> {
-  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const session = await requireRole(["admin", "clarice", "mecanico", "admin_oficina"]);
   const payloadRaw = formData.get("payload")?.toString();
   if (!payloadRaw) throw new Error("payload required");
   const payload = JSON.parse(payloadRaw) as SubmitPayload;
@@ -94,7 +94,7 @@ export async function submitWorkOrder(formData: FormData): Promise<void> {
 }
 
 export async function pauseWorkOrder(formData: FormData): Promise<void> {
-  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const session = await requireRole(["admin", "clarice", "mecanico", "admin_oficina"]);
   const id = formData.get("id")?.toString();
   const reason = formData.get("reason")?.toString().trim() || "Pausa";
   const kind = formData.get("kind")?.toString() === "waiting_parts" ? "waiting_parts" : "paused";
@@ -132,7 +132,7 @@ export async function pauseWorkOrder(formData: FormData): Promise<void> {
 }
 
 export async function resumeWorkOrder(formData: FormData): Promise<void> {
-  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const session = await requireRole(["admin", "clarice", "mecanico", "admin_oficina"]);
   const id = formData.get("id")?.toString();
   if (!id) throw new Error("id required");
 
@@ -169,7 +169,7 @@ export async function resumeWorkOrder(formData: FormData): Promise<void> {
 }
 
 export async function startWorkOrder(formData: FormData): Promise<void> {
-  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const session = await requireRole(["admin", "clarice", "mecanico", "admin_oficina"]);
   const id = formData.get("id")?.toString();
   if (!id) throw new Error("id required");
 
