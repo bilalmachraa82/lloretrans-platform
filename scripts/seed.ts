@@ -123,27 +123,60 @@ async function main(): Promise<void> {
   console.log(`✓ ${users.length} users`);
 
   // ────────── SERVICE CODES ──────────
+  // Fonte real: Tabela fornecida pelo Éder (2026-04-20).
+  // Duas gamas distintas:
+  //   S1–S9  → serviços prestados a viaturas de CLIENTES (Lloretrans factura-os)
+  //   L1–L8  → serviços executados em viaturas INTERNAS Lloretrans (despesa interna)
+  //   I0–I9  → operações internas adicionais (renting, tacógrafo, consumíveis, etc.)
   const serviceCodes = [
-    { code: "S1", label: "Lubrificantes e Filtros", description: "Óleos, filtros óleo/gasóleo/ar, mão-de-obra", kind: "oficina" },
-    { code: "S2", label: "Travões", description: "Pastilhas, discos, cilindros, mão-de-obra travões", kind: "oficina" },
-    { code: "S3", label: "Mecânica geral", description: "Componentes motor, transmissão, electrónica", kind: "oficina" },
-    { code: "S9", label: "Sistemas de frio", description: "AC, refrigeração, compressores, gás", kind: "oficina" },
-    { code: "S17", label: "Pneus e Jantes", description: "Pneus, montagem, equilibragem, alinhamento", kind: "oficina" },
-    { code: "S20", label: "Combustível", description: "Gasóleo, AdBlue, cartões", kind: "combustivel" },
-    { code: "S30", label: "Transporte / Frete", description: "Viagens Lloretrans + bolsa de aluguer", kind: "transporte" },
+    // Serviços para veículos de CLIENTES externos
+    { code: "S1", label: "Pneus", description: "Pneus, equilibragem, alinhamento (veículo cliente)", kind: "oficina_externa" },
+    { code: "S2", label: "Eletricista", description: "Reparação eléctrica (veículo cliente)", kind: "oficina_externa" },
+    { code: "S3", label: "Motores de Frio", description: "Compressores, gás, frio (veículo cliente)", kind: "oficina_externa" },
+    { code: "S4", label: "Batechapa / Pintura / Fibra", description: "Chapa, pintura, fibra (veículo cliente)", kind: "oficina_externa" },
+    { code: "S5", label: "Substituição de Vidros", description: "Vidros (veículo cliente)", kind: "oficina_externa" },
+    { code: "S6", label: "Eletrónica e Programação", description: "Diagnóstico, ECU, programação (veículo cliente)", kind: "oficina_externa" },
+    { code: "S7", label: "Retificação e Torneiras", description: "Rectificação mecânica (veículo cliente)", kind: "oficina_externa" },
+    { code: "S8", label: "Mecânica Geral", description: "Motor, transmissão, travões (veículo cliente)", kind: "oficina_externa" },
+    { code: "S9", label: "Inspeção", description: "Inspecção IPO (veículo cliente)", kind: "oficina_externa" },
+    // Serviços para veículos INTERNOS Lloretrans (despesa)
+    { code: "L1", label: "Serviços de Pneus", description: "Pneus em viatura interna", kind: "oficina_interna" },
+    { code: "L2", label: "Serviços de Eletricista", description: "Eléctrica em viatura interna", kind: "oficina_interna" },
+    { code: "L3", label: "Serviços de Motores de Frio e Termógrafo", description: "Frio + termógrafo interno", kind: "oficina_interna" },
+    { code: "L4", label: "Serviços de Batechapa / Pintura / Fibra", description: "Chapa/pintura interna", kind: "oficina_interna" },
+    { code: "L5", label: "Substituição de Vidros", description: "Vidros em viatura interna", kind: "oficina_interna" },
+    { code: "L6", label: "Serviços de Retificação e Torneiras", description: "Rectificação mecânica interna", kind: "oficina_interna" },
+    { code: "L7", label: "Serviços de Mecânica Geral", description: "Mecânica geral interna", kind: "oficina_interna" },
+    { code: "L8", label: "Serviços de Eletrónica e Programação", description: "Electrónica/programação interna", kind: "oficina_interna" },
+    // Operações Internas (renting, tacógrafo, consumíveis, etc.)
+    { code: "I0", label: "Renting - Serviço de Gestão", description: "Gestão renting frota", kind: "operacao_interna" },
+    { code: "I1", label: "Renting - Valor de Aluguer", description: "Aluguer mensal frota", kind: "operacao_interna" },
+    { code: "I2", label: "Aferições Tacógrafo", description: "Calibrações e aferições tacógrafo", kind: "operacao_interna" },
+    { code: "I3", label: "Outros Fluidos Interno", description: "AdBlue, líquidos, aditivos", kind: "operacao_interna" },
+    { code: "I4", label: "Serviços de Manutenções Externas", description: "Manutenções subcontratadas", kind: "operacao_interna" },
+    { code: "I5", label: "Serviços ISQ - ATP", description: "Certificação ISQ / ATP frio", kind: "operacao_interna" },
+    { code: "I6", label: "Serviços Assistência em Viagem", description: "Socorro em rota", kind: "operacao_interna" },
+    { code: "I7", label: "Serviços de Inspeções", description: "IPO frota interna", kind: "operacao_interna" },
+    { code: "I8", label: "Consumíveis Veículos", description: "Ferramentas, consumíveis gerais", kind: "operacao_interna" },
+    { code: "I9", label: "Serviços Específicos Ocasionais", description: "Catch-all fora da tabela", kind: "operacao_interna" },
+    // Códigos fora de oficina (combustível, transporte) — não vêm da tabela Éder mas são usados pela bolsa/combustível
+    { code: "C1", label: "Combustível", description: "Gasóleo, AdBlue, cartões frota", kind: "combustivel" },
+    { code: "T1", label: "Transporte / Frete", description: "Viagens Lloretrans + bolsa de carga", kind: "transporte" },
   ];
   await db.insert(schema.serviceCodes).values(serviceCodes);
-  console.log(`✓ ${serviceCodes.length} service codes`);
+  console.log(`✓ ${serviceCodes.length} service codes (S1-S9 externos · L1-L8 + I0-I9 internos · C1/T1 operacional)`);
 
   // ────────── WORK CODES ──────────
+  // Work codes mapeiam "qual empresa/obra é imputada a despesa".
+  // Separado das serviceCodes (serviceCode = tipo serviço · workCode = obra/empresa).
   const workCodes = [
     { code: "INT-OFI-LLT", label: "Oficina interna · Lloretrans", scope: "internal", companyId: "co_llt" },
     { code: "INT-COMB-LLT", label: "Combustível · Lloretrans", scope: "internal", companyId: "co_llt" },
     { code: "INT-ADM-LLT", label: "Administração · Lloretrans", scope: "internal", companyId: "co_llt" },
-    { code: "EXT-GP-FDO", label: "Externo · Frutas do Oeste", scope: "external", companyId: "co_fdo" },
-    { code: "EXT-GP-TDO", label: "Externo · Tomate do Oeste", scope: "external", companyId: "co_tdo" },
-    { code: "EXT-GP-CDN", label: "Externo · Cerejas do Norte", scope: "external", companyId: "co_cdn" },
-    { code: "EXT-GP-FRT", label: "Externo · Frutas do Oeste (frota)", scope: "external", companyId: "co_fdo" },
+    { code: "EXT-CLIENTE", label: "Externo · Cliente oficina terceiro", scope: "external", companyId: null },
+    { code: "EXT-GP-FDO", label: "Grupo · Frutas do Oeste", scope: "external", companyId: "co_fdo" },
+    { code: "EXT-GP-TDO", label: "Grupo · Tomate do Oeste", scope: "external", companyId: "co_tdo" },
+    { code: "EXT-GP-CDN", label: "Grupo · Cerejas do Norte", scope: "external", companyId: "co_cdn" },
   ];
   await db.insert(schema.workCodes).values(workCodes);
   console.log(`✓ ${workCodes.length} work codes`);
@@ -261,16 +294,33 @@ async function main(): Promise<void> {
   console.log(`✓ feature flags`);
 
   // ────────── COMMISSION RULES ──────────
+  // Regras reais confirmadas por Éder (email 2026-04-20):
+  //   • 20% do lucro total (preçoVenda − preçoCompra)
+  //   • +€2,50 por carga NACIONAL feita com carro Lloretrans
+  //   • +€5,00 por carga INTERNACIONAL feita com carro Lloretrans
+  // Bónus fixos só aplicam se viatura usada for interna (`requireInternalVehicle = true`).
   await db.insert(schema.commissionRules).values([
-    { id: "cr_default", salespersonId: null, percentOfMargin: 0.15, minMarginPct: 0.05, activeFrom: dt(365), activeTo: null },
-    { id: "cr_eder", salespersonId: "u_eder", percentOfMargin: 0.18, minMarginPct: 0.06, activeFrom: dt(365), activeTo: null },
+    {
+      id: "cr_default",
+      salespersonId: null,
+      percentOfMargin: 0.20,
+      minMarginPct: 0,
+      fixedBonusNationalEur: 2.5,
+      fixedBonusInternationalEur: 5.0,
+      requireInternalVehicle: true,
+      activeFrom: dt(365),
+      activeTo: null,
+    },
   ]);
 
   // ────────── TRIPS (30 dias) ──────────
   const internalPlates = vehicles.filter((v) => v.isInternal).map((v) => v.plate);
   const tripsRows: (typeof schema.trips.$inferInsert)[] = [];
   const reconRows: (typeof schema.kmReconciliations.$inferInsert)[] = [];
-  const THRESHOLD_KM = 10;
+  // Éder (email 2026-04-20): "No máximo 3 km de margem de erro".
+  // Acima disto é amarelo (revisão); acima de 3× threshold é vermelho.
+  const THRESHOLD_KM = 3;
+  const THRESHOLD_KM_RED = THRESHOLD_KM * 3;
   const ORIGINS = ["Alverca", "Lisboa", "Porto", "Torres Vedras", "Leiria", "Setúbal"];
   const DESTINATIONS = ["Madrid", "Valencia", "Sevilla", "Coimbra", "Braga", "Faro", "Barcelona", "Paris"];
 
@@ -286,9 +336,9 @@ async function main(): Promise<void> {
         const kmGps = rngInt(40, 450);
         let deltaKm = 0;
         const noise = rng();
-        if (noise < 0.7) deltaKm = rngInt(-3, 3);
-        else if (noise < 0.9) deltaKm = rngInt(8, 25) * (rngBool(0.5) ? 1 : -1);
-        else deltaKm = rngInt(30, 90) * (rngBool(0.5) ? 1 : -1);
+        if (noise < 0.7) deltaKm = rngInt(-2, 2);
+        else if (noise < 0.9) deltaKm = rngInt(4, 9) * (rngBool(0.5) ? 1 : -1);
+        else deltaKm = rngInt(10, 40) * (rngBool(0.5) ? 1 : -1);
         const kmDeclared = Math.max(10, kmGps + deltaKm);
         const gpsHasGap = rngBool(0.03);
         const driverMissed = rngBool(0.02);
@@ -315,7 +365,13 @@ async function main(): Promise<void> {
 
         const absDelta = Math.abs(deltaKm);
         const state =
-          gpsHasGap || driverMissed ? "red" : absDelta <= THRESHOLD_KM ? "green" : absDelta <= 30 ? "yellow" : "red";
+          gpsHasGap || driverMissed
+            ? "red"
+            : absDelta <= THRESHOLD_KM
+              ? "green"
+              : absDelta <= THRESHOLD_KM_RED
+                ? "yellow"
+                : "red";
 
         reconRows.push({
           id: id("rec", reconRows.length),
@@ -624,6 +680,10 @@ async function main(): Promise<void> {
   const freightCliInv: (typeof schema.clientInvoicesFreight.$inferInsert)[] = [];
   const commissionsRows: (typeof schema.commissions.$inferInsert)[] = [];
   const STATES = ["scheduled", "delivered", "supplier_invoiced", "client_invoiced", "paid"];
+  // ISO-ish classification para decidir bónus nacional vs internacional.
+  const NATIONAL_CITIES = new Set(["Lisboa", "Porto", "Braga", "Coimbra", "Faro", "Setúbal", "Torres Vedras", "Alverca", "Leiria", "Aveiro"]);
+  const classifyDestination = (dest: string): "national" | "international" =>
+    NATIONAL_CITIES.has(dest) ? "national" : "international";
 
   for (let m = 0; m < 3; m++) {
     for (let i = 0; i < 80; i++) {
@@ -701,15 +761,22 @@ async function main(): Promise<void> {
           paidAt: stateIdx >= 4 ? dt(m * 30 + i + 50, 10) : null,
         });
 
-        const ruleId = salesperson === "u_eder" ? "cr_eder" : "cr_default";
-        const percent = salesperson === "u_eder" ? 0.18 : 0.15;
+        // Regra única (Éder): 20% do lucro + bónus fixos se viatura for Lloretrans
+        const usedInternalPlate = freightLoads[freightLoads.length - 1]!.plate !== null;
+        const destinationScope = classifyDestination(freightLoads[freightLoads.length - 1]!.destination);
+        const percentShare = Math.round(margin * 0.2 * 100) / 100;
+        const fixedBonus = usedInternalPlate
+          ? destinationScope === "international"
+            ? 5.0
+            : 2.5
+          : 0;
         commissionsRows.push({
           id: id("comm", commissionsRows.length),
           loadId,
           salespersonId: salesperson,
           period: `${2026 - m}-${((new Date().getMonth() + 1) % 12 + 1).toString().padStart(2, "0")}`,
-          amountEur: Math.round(margin * percent * 100) / 100,
-          ruleId,
+          amountEur: Math.round((percentShare + fixedBonus) * 100) / 100,
+          ruleId: "cr_default",
           state: stateIdx >= 4 ? "paid" : "accrued",
           paidAt: stateIdx >= 4 ? dt(m * 30 + i + 60, 9) : null,
         });

@@ -330,7 +330,7 @@ export default function LandingPage() {
               <TrustCard icon={Globe} title="Dados na UE" body="Neon Postgres em Frankfurt (aws-eu-central-1). Deploy Vercel fra1. Zero dependências US." />
               <TrustCard icon={ShieldCheck} title="RGPD by default" body="Audit log imutável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
               <TrustCard icon={CheckCircle2} title="Humano no loop" body="IA regista, classifica, sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
-              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores prontos para Logue Trans, Frotcom, PHC CS, SEPSA/REPSOL/ANAMOR. Produção requer credenciais do integrador PHC do grupo e acessos às APIs." />
+              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores prontos para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol, Radius. APIs Frotcom e Logue Trans confirmadas pelo cliente; falta integrador PHC do grupo." />
             </div>
           </div>
         </div>

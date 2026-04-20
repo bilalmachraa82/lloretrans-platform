@@ -32,12 +32,12 @@ No login, escolhe um dos perfis pré-seeded. Cada role vê apenas os módulos qu
 
 | Slug | MVP | URL | Propósito |
 |------|-----|-----|-----------|
-| km | A · Validação km | `/km` | Logue Trans × Frotcom · semáforo verde/amarelo/vermelho · bulk approve · audit |
-| ocr | B · OCR Facturas | `/ocr` | 9 facturas reais classificadas · regras aprendidas por fornecedor · export XML PHC |
-| docs | C · Digitalização Central | `/docs` | Hub CMR + guias · associação automática à viagem · permissões cross-empresa |
-| fuel | D · Combustível | `/fuel` | CANBUS × cartões externos · ranking L/100km · detecção de anomalias (sinalização, não bloqueio) |
-| bolsa | E · Bolsa de Carga | `/bolsa` | State machine 5 estados · comissões automáticas (Éder 18%, default 15%) · alertas deviation/atraso |
-| oficina | F · Folha de Obra PWA | `/oficina` | Mobile-first · offline · multi-step · assinatura canvas · export PHC |
+| km | A · Validação km | `/km` | Logue Trans × Frotcom · **tolerância 3 km** (verde ≤3 · amarelo ≤9 · vermelho) · bulk approve · audit |
+| ocr | B · OCR Facturas | `/ocr` | **9 facturas reais** mapeadas (Würth, Policalço, Selcar, Popapneus, Prevrod, Carby/Dacia, Flexbor, SGP, Blinker) · regras aprendidas por fornecedor · export XML PHC Advanced |
+| docs | C · Digitalização Central | `/docs` | Hub CMR + guias · associação automática à viagem · permissões cross-empresa (volume real: 4 000/mês) |
+| fuel | D · Combustível | `/fuel` | CANBUS × cartões (Cepsa, Repsol, Radius Velocity) + bomba interna · ranking L/100km · detecção de anomalias |
+| bolsa | E · Bolsa de Carga | `/bolsa` | State machine 5 estados · **comissões: 20% lucro + €2,50 nac / €5 intl (só carros Lloretrans)** · alertas deviation/atraso |
+| oficina | F · Folha de Obra PWA | `/oficina` | **Telemóvel · offline** · 17-item checklist + substituição/verificação · assinatura canvas · export PHC Advanced |
 
 `/admin` tem masters (viaturas, fornecedores, códigos), feature flags e audit log completo.
 
@@ -83,7 +83,7 @@ Cada MVP foi desenhado para vender **controlo**, não tempo. O tempo é consequ�
 | Dado / integração | Estado demo | Caminho prod |
 |-------------------|-------------|--------------|
 | **9 facturas reais Lloretrans** | ✓ extraídas em fixture (cache OCR) | Azure Document Intelligence EU region |
-| 60 viaturas, 50 motoristas | Seed determinista PT | PHC CS master |
+| 60 viaturas, 50 motoristas | Seed determinista PT (base real: 138 Lloretrans + frota grupo) | PHC Advanced master · integrador PHC por confirmar |
 | Viagens Logue Trans | Seed com jitter realista | API Logue Trans (aguarda Hélio) |
 | GPS Frotcom | Seed aligned com trips | Frotcom API |
 | Abastecimentos SEPSA/Repsol/Anamor | Seed | APIs ou CSV mensal |
@@ -98,12 +98,25 @@ Flag `USE_LIVE_APIS=true` + credenciais no `.env` activa as implementações `li
 
 ## Assunções críticas ainda por validar com o cliente
 
-1. API Logue Trans existe e é lida **(bloqueia MVP A e C)** — reunião técnica Hélio pendente.
-2. Plano Frotcom do grupo inclui CANBUS em todas as viaturas (degrada MVP D se não).
-3. Integrador PHC colabora (bloqueia escrita em B, E, F — demo opera em modo degradado exportando XML).
-4. Tabela completa de códigos serviço/obra (temos S1/S2/S3/S9/S17 + INT/EXT).
-5. Mecânicos aceitam app mobile — **maior risco de adopção do portfólio**.
-6. Baselines de tempo actual por fluxo (shadow session com cada administrativa pendente).
+Actualizado 2026-04-20 com feedback do Éder (resposta ao questionário):
+
+| # | Assunção | Estado | Fonte |
+|---|----------|--------|-------|
+| 1 | **API Logue Trans** existe e é lida | ✅ **Confirmada** — depende do dept. informática abrir acesso | Éder |
+| 2 | **API Frotcom** (leitura) | ✅ **Confirmada** — Éder pode pedir `API de Leitura` à Frotcom | Éder |
+| 3 | Plano Frotcom inclui CANBUS em **toda** a frota | ⏳ Por confirmar | pendente |
+| 4 | Integrador PHC colabora (escrita B/E/F) | ⏳ Contacto ainda não enviado; demo opera em modo degradado (XML) | pendente |
+| 5 | **Tabela códigos serviço** completa | ✅ **Recebida** — S1–S9 externos (cliente) · L1–L8 + I0–I9 internos | PDF Éder |
+| 6 | **Base viaturas grupo (interna/externa)** | ✅ **Recebida** — Viaturas Grupo.xlsx + Relação Lloretrans.xlsx | Éder |
+| 7 | **Margem km tolerável** | ✅ **3 km máximo** (era 10 km no seed inicial) | Éder |
+| 8 | **Volume digitalização** | ✅ **4 000 facturas/mês** | Éder |
+| 9 | **Regras comissão comerciais** | ✅ **20% do lucro + €2,50 nacional · €5 internacional (só viaturas Lloretrans)** | Éder |
+| 10 | **Versão PHC** | ✅ **PHC Advanced** (não CS) | Éder |
+| 11 | **Dispositivo mecânicos** | ✅ **Telemóvel** (confirma PWA mobile-first) | Éder |
+| 12 | Ponto único de digitalização | ⏳ "Ainda por definir" | pendente |
+| 13 | Média aceitável L/100 km e tolerância anomalias | ⏳ Éder não respondeu explicitamente | pendente |
+| 14 | Mecânicos aceitam PWA (adopção) | ⏳ Risco de adopção nº 1 — piloto 1 mecânico | pendente |
+| 15 | Baselines de tempo actual por fluxo | ⏳ Shadow session 2h pendente | pendente |
 
 Lista completa na secção 8.5 do PRD.
 
