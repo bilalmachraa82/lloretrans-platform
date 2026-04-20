@@ -11,7 +11,18 @@ import { StatusPill } from "@/components/ui/status-pill";
 import { formatEur, formatPercent } from "@/lib/money";
 import { formatDate } from "@/lib/dates";
 import { FREIGHT_STATES, STATE_LABELS, type FreightState } from "@/lib/freight-state";
-import { Plus, AlertTriangle } from "lucide-react";
+import { Plus, Download } from "lucide-react";
+import { exportLoadsCsv } from "./actions";
+
+const COUNTRY_FLAG: Record<string, string> = {
+  PT: "🇵🇹",
+  ES: "🇪🇸",
+  FR: "🇫🇷",
+  PL: "🇵🇱",
+  IT: "🇮🇹",
+  DE: "🇩🇪",
+  NL: "🇳🇱",
+};
 
 const PILL_BY_STATE: Record<FreightState, "neutral" | "yellow" | "green"> = {
   scheduled: "neutral",
@@ -50,6 +61,7 @@ export default async function BolsaPage({
         marginPct: freightLoads.marginPct,
         plate: freightLoads.plate,
         clientName: clients.name,
+        clientCountry: clients.country,
         salesName: users.name,
         createdAt: freightLoads.createdAt,
       })
@@ -112,6 +124,13 @@ export default async function BolsaPage({
             <Button variant="outline" asChild>
               <Link href="/bolsa/commissions">Comissões</Link>
             </Button>
+            <form action={exportLoadsCsv}>
+              {(mine || session.role === "comercial") && <input type="hidden" name="mineOnly" value="1" />}
+              <Button type="submit" variant="outline">
+                <Download className="h-4 w-4" />
+                Excel
+              </Button>
+            </form>
             <Button asChild>
               <Link href="/bolsa/new">
                 <Plus className="h-4 w-4" />
@@ -144,16 +163,21 @@ export default async function BolsaPage({
               <div className="space-y-2">
                 {groupedByState[s].slice(0, 15).map((r) => (
                   <Link key={r.id} href={`/bolsa/${r.id}`}>
-                    <Card className="hover:border-primary/60 transition-colors">
-                      <CardContent className="p-3 text-xs space-y-1">
-                        <div className="font-mono font-semibold">{r.reference}</div>
-                        <div>{r.clientName ?? "—"}</div>
+                    <Card className="hover:border-primary/60 hover:-translate-y-0.5 transition-all">
+                      <CardContent className="p-3 text-xs space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="font-mono font-semibold text-primary/90">{r.reference}</div>
+                          <span className="text-base leading-none">{COUNTRY_FLAG[r.clientCountry ?? "PT"] ?? ""}</span>
+                        </div>
+                        <div className="font-medium">{r.clientName ?? "—"}</div>
                         <div className="text-muted-foreground">
                           {r.origin} → {r.destination}
                         </div>
                         <div className="flex justify-between items-center pt-1">
-                          <span className="font-mono">{formatEur(r.margin)}</span>
-                          <Badge variant="outline">{formatPercent(r.marginPct)}</Badge>
+                          <span className="font-mono font-semibold">{formatEur(r.margin)}</span>
+                          <Badge variant={r.marginPct >= 0.15 ? "success" : r.marginPct >= 0.08 ? "default" : "warning"}>
+                            {formatPercent(r.marginPct)}
+                          </Badge>
                         </div>
                         <div className="text-[10px] text-muted-foreground">{r.salesName}</div>
                       </CardContent>
@@ -190,7 +214,10 @@ export default async function BolsaPage({
                 {rows.map((r) => (
                   <tr key={r.id}>
                     <td className="font-mono text-xs">{r.reference}</td>
-                    <td>{r.clientName ?? "—"}</td>
+                    <td>
+                      <span className="mr-1">{COUNTRY_FLAG[r.clientCountry ?? "PT"] ?? ""}</span>
+                      {r.clientName ?? "—"}
+                    </td>
                     <td className="text-xs">{r.origin} → {r.destination}</td>
                     <td className="text-xs">{r.salesName}</td>
                     <td className="text-right font-mono">{formatEur(r.priceBuy)}</td>

@@ -118,10 +118,12 @@ export async function bulkIngest(formData: FormData): Promise<void> {
     const tripHit = recentTrips.length > 0 && i % 10 !== 7 ? recentTrips[i % recentTrips.length] : null;
     const plate = tripHit?.plate ?? null;
     const cmrNumber = kind === "cmr" ? `CMR-2026-${(900000 + i).toString().slice(-6)}` : null;
+    const direction = kind === "guia_recepcao" ? "entrada" : "saida";
 
     await db.insert(documents).values({
       id: docId,
       kind,
+      direction,
       cmrNumber,
       plate,
       loadedAt: tripHit?.startedAt ?? new Date(),

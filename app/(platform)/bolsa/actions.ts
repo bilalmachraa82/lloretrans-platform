@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, eq, gte, lte, sql } from "drizzle-orm";
+import { and, eq, gte, lte } from "drizzle-orm";
 import { db } from "@/db/client";
 import {
   freightLoads,
@@ -316,6 +316,85 @@ export async function computeCommissions(formData: FormData): Promise<void> {
   });
 
   revalidatePath("/bolsa/commissions");
+}
+
+function csvEscape(v: string | number | null | undefined): string {
+  if (v == null) return "";
+  const s = String(v);
+  return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+export async function exportLoadsCsv(formData: FormData): Promise<void> {
+  const session = await requireRole(["admin", "clarice", "comercial", "admin_faturacao"]);
+  const fromStr = formData.get("dateFrom")?.toString();
+  const toStr = formData.get("dateTo")?.toString();
+  const mineOnly = formData.get("mineOnly")?.toString() === "1";
+
+  const conditions = [];
+  if (fromStr) conditions.push(gte(freightLoads.createdAt, new Date(`${fromStr}T00:00:00`)));
+  if (toStr) conditions.push(lte(freightLoads.createdAt, new Date(`${toStr}T23:59:59`)));
+  if (mineOnly || session.role === "comercial")
+    conditions.push(eq(freightLoads.salespersonId, session.userId));
+
+  const rows = await db
+    .select({
+      reference: freightLoads.reference,
+      state: freightLoads.state,
+      origin: freightLoads.origin,
+      destination: freightLoads.destination,
+      plate: freightLoads.plate,
+      priceBuy: freightLoads.priceBuy,
+      priceSell: freightLoads.priceSell,
+      margin: freightLoads.margin,
+      marginPct: freightLoads.marginPct,
+      createdAt: freightLoads.createdAt,
+    })
+    .from(freightLoads)
+    .where(conditions.length ? and(...conditions) : undefined);
+
+  const headers = [
+    "Referência",
+    "Estado",
+    "Origem",
+    "Destino",
+    "Matrícula",
+    "Preço compra",
+    "Preço venda",
+    "Margem",
+    "Margem %",
+    "Criada",
+  ];
+  const lines = [headers.map(csvEscape).join(";")];
+  for (const r of rows) {
+    lines.push(
+      [
+        r.reference,
+        r.state,
+        r.origin,
+        r.destination,
+        r.plate ?? "",
+        r.priceBuy.toFixed(2),
+        r.priceSell.toFixed(2),
+        r.margin.toFixed(2),
+        (r.marginPct * 100).toFixed(1) + "%",
+        r.createdAt.toISOString().slice(0, 10),
+      ]
+        .map(csvEscape)
+        .join(";"),
+    );
+  }
+  const csv = "\uFEFF" + lines.join("\r\n");
+  const dataUrl = `data:text/csv;charset=utf-8;base64,${Buffer.from(csv, "utf-8").toString("base64")}`;
+
+  await audit({
+    userId: session.userId,
+    action: "freight.export_csv",
+    entityType: "freight_loads",
+    entityId: "bulk",
+    after: { count: rows.length, dateFrom: fromStr, dateTo: toStr, mineOnly },
+  });
+
+  redirect(dataUrl);
 }
 
 export async function markCommissionsPaid(formData: FormData): Promise<void> {

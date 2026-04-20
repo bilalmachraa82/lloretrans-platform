@@ -304,6 +304,7 @@ export const documents = pgTable(
   {
     id: pk(),
     kind: text("kind").notNull(),
+    direction: text("direction").default("saida").notNull(),
     cmrNumber: text("cmr_number"),
     plate: text("plate"),
     loadedAt: ts("loaded_at"),
@@ -532,6 +533,10 @@ export const workOrders = pgTable(
     startedAt: ts("started_at").notNull(),
     endedAt: ts("ended_at"),
     durationMinutes: integer("duration_minutes"),
+    activeMinutes: integer("active_minutes").default(0).notNull(),
+    pausedMinutes: integer("paused_minutes").default(0).notNull(),
+    lastPausedAt: ts("last_paused_at"),
+    pauseReason: text("pause_reason"),
     summary: text("summary"),
     state: text("state").notNull().default("draft"),
     approvedBy: text("approved_by").references(() => users.id),

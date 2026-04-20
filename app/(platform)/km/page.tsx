@@ -12,6 +12,40 @@ import { formatKm, formatNumber } from "@/lib/money";
 import { formatDate, formatDateTime } from "@/lib/dates";
 import { bulkApproveGreen, exportCsv } from "./actions";
 
+function DeltaBar({ delta, max }: { delta: number; max: number }) {
+  const clamped = Math.max(-max, Math.min(max, delta));
+  const pct = Math.abs(clamped) / max;
+  const isPos = clamped > 0;
+  const isNeg = clamped < 0;
+  const color = Math.abs(delta) > max ? "bg-destructive" : Math.abs(delta) > 10 ? "bg-warning" : "bg-success";
+  return (
+    <div className="flex items-center gap-2">
+      <div className="relative flex-1 h-4 max-w-[70px]">
+        <div className="absolute inset-y-0 left-1/2 w-px bg-border" />
+        {isPos && (
+          <div
+            className={`absolute inset-y-0 left-1/2 rounded-r ${color} transition-all`}
+            style={{ width: `${pct * 50}%` }}
+          />
+        )}
+        {isNeg && (
+          <div
+            className={`absolute inset-y-0 right-1/2 rounded-l ${color} transition-all`}
+            style={{ width: `${pct * 50}%` }}
+          />
+        )}
+      </div>
+      <span
+        className={`text-xs tabular min-w-[40px] text-right ${
+          Math.abs(delta) > 10 ? "text-warning font-semibold" : ""
+        }`}
+      >
+        {delta > 0 ? "+" : ""}{delta.toFixed(1)}
+      </span>
+    </div>
+  );
+}
+
 export default async function KmPage({
   searchParams,
 }: {
@@ -164,13 +198,11 @@ export default async function KmPage({
                   </td>
                   <td className="text-right font-mono">{formatKm(r.kmDeclared)}</td>
                   <td className="text-right font-mono">{formatKm(r.kmGps)}</td>
-                  <td className="text-right font-mono">
+                  <td className="text-right font-mono min-w-[140px]">
                     {r.deltaKm != null ? (
-                      <span className={r.deltaKm > 0 ? "text-warning" : r.deltaKm < 0 ? "text-destructive" : ""}>
-                        {r.deltaKm > 0 ? "+" : ""}{r.deltaKm.toFixed(1)}
-                      </span>
+                      <DeltaBar delta={r.deltaKm} max={30} />
                     ) : (
-                      "—"
+                      <span className="text-muted-foreground">—</span>
                     )}
                   </td>
                   <td>

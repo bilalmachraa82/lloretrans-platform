@@ -16,10 +16,10 @@ import { resolvePermissionScope } from "./helpers";
 export default async function DocsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; q?: string; kind?: string; from?: string; to?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string; kind?: string; from?: string; to?: string; direction?: string }>;
 }) {
   const session = await requireRole(["admin", "digitalizacao", "clarice", "admin_faturacao", "frutas"]);
-  const { tab = "all", q, kind, from, to } = await searchParams;
+  const { tab = "all", q, kind, from, to, direction } = await searchParams;
 
   const scope = resolvePermissionScope(session);
 
@@ -27,6 +27,7 @@ export default async function DocsPage({
   if (tab === "associated") whereClauses.push(eq(documents.state, "associated"));
   if (tab === "orphan") whereClauses.push(eq(documents.state, "orphan"));
   if (kind) whereClauses.push(eq(documents.kind, kind));
+  if (direction === "entrada" || direction === "saida") whereClauses.push(eq(documents.direction, direction));
   if (from) whereClauses.push(gte(documents.loadedAt, new Date(from)));
   if (to) whereClauses.push(lte(documents.loadedAt, new Date(to)));
   if (q) {
@@ -43,6 +44,7 @@ export default async function DocsPage({
     .select({
       id: documents.id,
       kind: documents.kind,
+      direction: documents.direction,
       cmrNumber: documents.cmrNumber,
       plate: documents.plate,
       loadedAt: documents.loadedAt,
@@ -122,12 +124,17 @@ export default async function DocsPage({
         ))}
       </div>
 
-      <form className="flex gap-2 items-center">
+      <form className="flex flex-wrap gap-2 items-center">
         <input type="hidden" name="tab" value={tab} />
-        <div className="relative flex-1 max-w-xl">
+        <div className="relative flex-1 min-w-[220px] max-w-xl">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input name="q" placeholder="CMR, matrícula, texto OCR…" defaultValue={q} className="pl-9" />
         </div>
+        <select name="direction" defaultValue={direction ?? ""} className="h-9 rounded-md border border-border bg-background px-3 text-sm">
+          <option value="">Entrada + Saída</option>
+          <option value="entrada">↓ Entrada (compra/recepção)</option>
+          <option value="saida">↑ Saída (transporte/entrega)</option>
+        </select>
         <select name="kind" defaultValue={kind ?? ""} className="h-9 rounded-md border border-border bg-background px-3 text-sm">
           <option value="">Todos os tipos</option>
           {Object.entries(kindLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
@@ -143,6 +150,7 @@ export default async function DocsPage({
             <thead>
               <tr>
                 <th>Tipo</th>
+                <th>Direcção</th>
                 <th>CMR</th>
                 <th>Matrícula</th>
                 <th>Data carga</th>
@@ -152,10 +160,15 @@ export default async function DocsPage({
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-6 text-muted-foreground">Sem resultados.</td></tr>
+                <tr><td colSpan={7} className="text-center py-6 text-muted-foreground">Sem resultados.</td></tr>
               ) : rows.map((r) => (
                 <tr key={r.id}>
                   <td><Badge variant="secondary">{kindLabels[r.kind] ?? r.kind}</Badge></td>
+                  <td>
+                    <Badge variant={r.direction === "entrada" ? "warning" : "default"} className="text-[10px]">
+                      {r.direction === "entrada" ? "↓ Entrada" : "↑ Saída"}
+                    </Badge>
+                  </td>
                   <td className="font-mono text-xs">{r.cmrNumber ?? "—"}</td>
                   <td className="font-mono text-xs">{r.plate ?? "—"}</td>
                   <td className="text-xs">{formatDate(r.loadedAt)}</td>

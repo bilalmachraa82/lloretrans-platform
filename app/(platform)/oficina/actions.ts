@@ -16,6 +16,10 @@ import { audit } from "@/lib/audit";
 import { randomId } from "@/lib/utils";
 import { createPhcClient } from "@/lib/integrations/phc";
 
+function minutesBetween(a: Date, b: Date): number {
+  return Math.max(0, Math.round((b.getTime() - a.getTime()) / 60000));
+}
+
 interface SubmitPayload {
   plate: string;
   serviceCode: string;
@@ -87,6 +91,107 @@ export async function submitWorkOrder(formData: FormData): Promise<void> {
   });
 
   redirect(`/oficina/${woId}`);
+}
+
+export async function pauseWorkOrder(formData: FormData): Promise<void> {
+  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const id = formData.get("id")?.toString();
+  const reason = formData.get("reason")?.toString().trim() || "Pausa";
+  const kind = formData.get("kind")?.toString() === "waiting_parts" ? "waiting_parts" : "paused";
+  if (!id) throw new Error("id required");
+
+  const [before] = await db.select().from(workOrders).where(eq(workOrders.id, id)).limit(1);
+  if (!before) throw new Error("not found");
+  if (before.state !== "in_progress") throw new Error(`Estado actual (${before.state}) não permite pausa`);
+
+  const now = new Date();
+  const workedSinceLast = minutesBetween(before.updatedAt, now);
+
+  await db
+    .update(workOrders)
+    .set({
+      state: kind,
+      activeMinutes: before.activeMinutes + workedSinceLast,
+      lastPausedAt: now,
+      pauseReason: reason,
+      updatedAt: now,
+    })
+    .where(eq(workOrders.id, id));
+
+  await audit({
+    userId: session.userId,
+    action: kind === "waiting_parts" ? "workorder.wait_parts" : "workorder.pause",
+    entityType: "work_order",
+    entityId: id,
+    before: { state: before.state },
+    after: { state: kind, pauseReason: reason, activeMinutes: before.activeMinutes + workedSinceLast },
+    reason,
+  });
+  revalidatePath(`/oficina/${id}`);
+  revalidatePath("/oficina");
+}
+
+export async function resumeWorkOrder(formData: FormData): Promise<void> {
+  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const id = formData.get("id")?.toString();
+  if (!id) throw new Error("id required");
+
+  const [before] = await db.select().from(workOrders).where(eq(workOrders.id, id)).limit(1);
+  if (!before) throw new Error("not found");
+  if (before.state !== "paused" && before.state !== "waiting_parts") {
+    throw new Error(`Estado actual (${before.state}) não pode ser retomado`);
+  }
+
+  const now = new Date();
+  const pausedForMin = before.lastPausedAt ? minutesBetween(before.lastPausedAt, now) : 0;
+
+  await db
+    .update(workOrders)
+    .set({
+      state: "in_progress",
+      pausedMinutes: before.pausedMinutes + pausedForMin,
+      lastPausedAt: null,
+      pauseReason: null,
+      updatedAt: now,
+    })
+    .where(eq(workOrders.id, id));
+
+  await audit({
+    userId: session.userId,
+    action: "workorder.resume",
+    entityType: "work_order",
+    entityId: id,
+    before: { state: before.state, pausedMinutes: before.pausedMinutes },
+    after: { state: "in_progress", pausedMinutes: before.pausedMinutes + pausedForMin },
+  });
+  revalidatePath(`/oficina/${id}`);
+  revalidatePath("/oficina");
+}
+
+export async function startWorkOrder(formData: FormData): Promise<void> {
+  const session = await requireRole(["admin", "mecanico", "admin_oficina"]);
+  const id = formData.get("id")?.toString();
+  if (!id) throw new Error("id required");
+
+  const [before] = await db.select().from(workOrders).where(eq(workOrders.id, id)).limit(1);
+  if (!before) throw new Error("not found");
+  if (before.state !== "draft") throw new Error("Só rascunhos podem ser iniciados");
+
+  const now = new Date();
+  await db
+    .update(workOrders)
+    .set({ state: "in_progress", startedAt: now, updatedAt: now })
+    .where(eq(workOrders.id, id));
+
+  await audit({
+    userId: session.userId,
+    action: "workorder.start",
+    entityType: "work_order",
+    entityId: id,
+    before: { state: "draft" },
+    after: { state: "in_progress" },
+  });
+  revalidatePath(`/oficina/${id}`);
 }
 
 export async function approveWorkOrder(formData: FormData): Promise<void> {

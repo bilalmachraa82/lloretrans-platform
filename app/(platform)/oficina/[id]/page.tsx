@@ -20,10 +20,20 @@ import { StatusPill } from "@/components/ui/status-pill";
 import { Input } from "@/components/ui/input";
 import { formatEur } from "@/lib/money";
 import { formatDate, formatDateTime } from "@/lib/dates";
-import { approveWorkOrder, rejectWorkOrder, exportWorkOrder } from "../actions";
+import {
+  approveWorkOrder,
+  rejectWorkOrder,
+  exportWorkOrder,
+  startWorkOrder,
+  pauseWorkOrder,
+  resumeWorkOrder,
+} from "../actions";
 
 const STATE_MAP: Record<string, { label: string; pill: "green" | "yellow" | "red" | "neutral" }> = {
   draft: { label: "Rascunho", pill: "neutral" },
+  in_progress: { label: "A trabalhar", pill: "green" },
+  paused: { label: "Em pausa", pill: "yellow" },
+  waiting_parts: { label: "Espera peças", pill: "yellow" },
   submitted: { label: "A validar", pill: "yellow" },
   approved: { label: "Aprovada", pill: "green" },
   rejected: { label: "Rejeitada", pill: "red" },
@@ -44,6 +54,10 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
       startedAt: workOrders.startedAt,
       endedAt: workOrders.endedAt,
       durationMinutes: workOrders.durationMinutes,
+      activeMinutes: workOrders.activeMinutes,
+      pausedMinutes: workOrders.pausedMinutes,
+      lastPausedAt: workOrders.lastPausedAt,
+      pauseReason: workOrders.pauseReason,
       approvedAt: workOrders.approvedAt,
       exportedAt: workOrders.exportedAt,
       plate: vehicles.plate,
@@ -83,8 +97,12 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
 
   const total = items.reduce((a, i) => a + (i.total ?? (i.quantity * (i.unitPrice ?? 0))), 0);
   const isAdmin = session.role === "admin" || session.role === "admin_oficina";
+  const isMechanic = session.role === "mecanico" && session.userId === wo.mechanicId;
   const canAct = isAdmin && wo.state === "submitted";
   const canExport = isAdmin && wo.state === "approved";
+  const canStart = isMechanic && wo.state === "draft";
+  const canPause = isMechanic && wo.state === "in_progress";
+  const canResume = isMechanic && (wo.state === "paused" || wo.state === "waiting_parts");
 
   return (
     <div className="space-y-6">
@@ -107,7 +125,9 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
             <Kv label="Obra" value={wo.workCode ?? "—"} />
             <Kv label="Início" value={formatDateTime(wo.startedAt)} />
             <Kv label="Fim" value={wo.endedAt ? formatDateTime(wo.endedAt) : "—"} />
-            {wo.durationMinutes && <Kv label="Duração" value={`${wo.durationMinutes} min`} />}
+            {wo.durationMinutes && <Kv label="Duração total" value={`${wo.durationMinutes} min`} />}
+            <Kv label="Tempo activo" value={`${wo.activeMinutes} min`} />
+            <Kv label="Tempo pausa" value={`${wo.pausedMinutes} min`} />
             <Kv label="Total" value={formatEur(total)} strong />
             {wo.approvedAt && <Kv label="Aprovada em" value={formatDateTime(wo.approvedAt)} />}
             {wo.exportedAt && <Kv label="Exportada em" value={formatDateTime(wo.exportedAt)} />}
@@ -118,6 +138,37 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
         <Card>
           <CardHeader><CardTitle className="text-base">Acções</CardTitle></CardHeader>
           <CardContent className="space-y-3">
+            {canStart && (
+              <form action={startWorkOrder}>
+                <input type="hidden" name="id" value={wo.id} />
+                <Button type="submit" variant="success" className="w-full">▶ Iniciar trabalho</Button>
+              </form>
+            )}
+            {canPause && (
+              <>
+                <form action={pauseWorkOrder} className="space-y-2">
+                  <input type="hidden" name="id" value={wo.id} />
+                  <input type="hidden" name="kind" value="paused" />
+                  <Input name="reason" placeholder="Motivo da pausa" />
+                  <Button type="submit" variant="outline" className="w-full">⏸ Pausar</Button>
+                </form>
+                <form action={pauseWorkOrder} className="space-y-2">
+                  <input type="hidden" name="id" value={wo.id} />
+                  <input type="hidden" name="kind" value="waiting_parts" />
+                  <Input name="reason" placeholder="Descrição das peças" />
+                  <Button type="submit" variant="outline" className="w-full">📦 Aguardar peças</Button>
+                </form>
+              </>
+            )}
+            {canResume && (
+              <form action={resumeWorkOrder}>
+                <input type="hidden" name="id" value={wo.id} />
+                <Button type="submit" variant="success" className="w-full">▶ Retomar trabalho</Button>
+                {wo.pauseReason && (
+                  <div className="text-xs text-muted-foreground mt-2 italic">Motivo: {wo.pauseReason}</div>
+                )}
+              </form>
+            )}
             {canAct && (
               <>
                 <form action={approveWorkOrder}>
@@ -137,7 +188,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
                 <Button type="submit" className="w-full">Exportar para PHC</Button>
               </form>
             )}
-            {!canAct && !canExport && (
+            {!canStart && !canPause && !canResume && !canAct && !canExport && (
               <div className="text-xs text-muted-foreground">Nenhuma acção disponível para este estado / role.</div>
             )}
           </CardContent>
