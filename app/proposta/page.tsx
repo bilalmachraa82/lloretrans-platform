@@ -50,7 +50,7 @@ const MVPS = [
     entrega:
       "Upload → extracção automática → classificação por NIF → validação humana → export XML PHC. Cada correcção cria regra de fornecedor que aplica em próximas facturas. 9 facturas reais já carregadas.",
     semanas: "4–6",
-    dependencias: "Tabela completa códigos serviço · lista top 10 fornecedores (80% volume) · formato XML PHC CS",
+    dependencias: "Tabela completa códigos serviço · lista top 10 fornecedores (80% volume) · formato XML PHC Advanced",
     tier: "Core · PRO · Enterprise",
   },
   {
@@ -126,7 +126,7 @@ const TIERS = [
     monthly: "€ 1 400 – 2 800 / mês",
     includes: [
       "MVP A + B + C + F (validação km, OCR, docs, oficina)",
-      "Integração PHC CS escrita (via integrador do grupo)",
+      "Integração PHC Advanced escrita (via integrador do grupo)",
       "Master de fornecedores com aprendizagem contínua",
       "Dashboard direcção com KPIs operacionais",
       "Suporte prioritário · 4h úteis",
@@ -169,7 +169,7 @@ const DEPENDENCIES = [
     mitigacao: "Stubs activos até API chegar · reunião técnica 45 min nas primeiras 72h",
   },
   {
-    label: "Integrador PHC CS",
+    label: "Integrador PHC Advanced",
     owner: "Parceiro actual do grupo",
     bloqueia: "Escrita automática em MVP B, E, F",
     mitigacao: "Demo opera com export XML enquanto integrador não está disponível",
@@ -598,10 +598,10 @@ export default function PropostaPage() {
           <OpenQuestion
             tag="G7"
             severity="Binário · alto impacto"
-            title="PHC CS vs PHC GO — confirmar versão exacta"
-            body="A factura PREVROD tem «Software PHC GO» no rodapé. O briefing assume PHC CS. São produtos com APIs, integradores e custos distintos. Pergunta directa ao Hélio + administração do grupo: qual é a versão e quais os módulos licenciados? O scope de integração (e o preço) depende desta resposta."
-            responsavel="Hélio · integrador actual"
-            prazo="Resolver antes da assinatura Sprint 0"
+            title="PHC Advanced — confirmado 20/04/2026"
+            body="Éder confirmou: é PHC Advanced (não CS nem GO). A PREVROD, que aparece com «PHC GO», é um fornecedor externo com PHC próprio — não o PHC da Lloretrans. Falta confirmar o contacto do integrador PHC do grupo e os módulos licenciados (MFrota?), para desenhar a integração de escrita no PHC Advanced."
+            responsavel="Éder · contacto integrador PHC pendente"
+            prazo="Antes do piloto"
           />
           <OpenQuestion
             tag="G8"

@@ -72,9 +72,21 @@ export default async function CommissionsPage({
       />
 
       <Card>
-        <CardContent className="p-4 text-xs text-muted-foreground">
-          <strong>Regras activas:</strong>{" "}
-          {rules.map((r) => `${r.salespersonId ?? "default"}: ${(r.percentOfMargin * 100).toFixed(0)}% margem${r.minMarginPct ? ` (min ${(r.minMarginPct * 100).toFixed(0)}%)` : ""}`).join(" · ")}
+        <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
+          <div>
+            <strong>Regra confirmada (Éder, 2026-04-20):</strong> comissão = <code>margem × %</code> + bónus fixo por carga.
+            Só se aplica se a carga usou uma viatura interna Lloretrans.
+          </div>
+          {rules.map((r) => (
+            <div key={r.id}>
+              <code>{r.salespersonId ?? "default"}</code>:{" "}
+              {(r.percentOfMargin * 100).toFixed(0)}% margem
+              {" + "}
+              {formatEur(r.fixedBonusNationalEur)} nacional / {formatEur(r.fixedBonusInternationalEur)} internacional
+              {r.requireInternalVehicle ? " · viatura interna obrigatória" : ""}
+              {r.minMarginPct ? ` · margem mínima ${(r.minMarginPct * 100).toFixed(0)}%` : ""}
+            </div>
+          ))}
         </CardContent>
       </Card>
 

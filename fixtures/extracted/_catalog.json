@@ -1,257 +1,269 @@
 {
-  "description": "Catálogo hand-curated para as 9 facturas reais da Lloretrans. Os PDFs originais são scans, portanto a extracção é simulada aqui com dados plausíveis alinhados com os fornecedores mencionados na transcrição da reunião (Moeve Pro, Policalço, Selcar/Create Business, Prevrod, Popapneus) + 4 adicionais comuns em operação de frota.",
-  "note": "Em produção, esta extracção é feita por Azure Document Intelligence (EU region) ou Claude API. O resultado é cacheado em ocr_extractions. Este catálogo simula o cache.",
+  "description": "Catálogo das 9 facturas reais (validadas com PDFs enviados pelo Éder em 2026-04-20). Fornecedores reais Lloretrans: Würth, Policalço, Selcar, Popapneus, Prevrod, Carby/Vesauto, Flexbor, SGP-Global Parts, Blinker.",
+  "note": "Em produção, esta extracção é feita por Azure Document Intelligence EU ou Claude API. O resultado fica cacheado em ocr_extractions. Este catálogo simula o cache com layouts reais já vistos.",
+  "source": "Anexos ao email Éder 2026-04-20 (pasta ~/Downloads/AITIPRO/Fatura*.pdf)",
   "entries": [
     {
       "filename": "doc14723420260417152437.pdf",
       "supplier": {
-        "name": "Moeve Pro - Lubrificantes e Óleos, Lda.",
-        "taxId": "509876321",
-        "category": "Oficina · Lubrificantes"
+        "name": "Würth Portugal - Técnica de Montagem, Lda.",
+        "taxId": "500302030",
+        "category": "Consumíveis · Ferramentas"
       },
       "invoice": {
-        "number": "FT 2026/0418",
+        "number": "911960997",
         "issuedAt": "2026-04-02",
         "dueAt": "2026-06-01",
-        "totalNet": 489.62,
-        "totalVat": 112.61,
-        "totalGross": 602.23,
+        "totalNet": 441.42,
+        "totalVat": 101.53,
+        "totalGross": 542.95,
         "currency": "EUR",
-        "plate": "AA-12-BC"
+        "plate": null
       },
       "classification": {
-        "serviceCode": "S1",
+        "serviceCode": "I8",
         "workCode": "INT-OFI-LLT",
-        "confidence": 0.94
+        "confidence": 0.93,
+        "note": "Consumíveis internos — sem matrícula específica"
       },
       "lines": [
-        { "description": "Óleo motor 15W40 fus 5L", "quantity": 4, "unitPrice": 42.5, "vatRate": 23, "total": 170.0, "serviceCode": "S1" },
-        { "description": "Filtro de óleo referência P551101", "quantity": 2, "unitPrice": 14.8, "vatRate": 23, "total": 29.6, "serviceCode": "S1" },
-        { "description": "Filtro de gasóleo P550762", "quantity": 2, "unitPrice": 22.4, "vatRate": 23, "total": 44.8, "serviceCode": "S1" },
-        { "description": "Mão-de-obra — mudança óleo completa", "quantity": 4, "unitPrice": 61.3, "vatRate": 23, "total": 245.22, "serviceCode": "S1" }
+        { "description": "DOS FRENADOR ROLAMENTOS EXTRA FORTE 50G", "quantity": 2, "unitPrice": 40.0, "vatRate": 23, "total": 56.0, "serviceCode": "I8" },
+        { "description": "CA2050 - COLA SUPER RÁPIDA 20GR", "quantity": 2, "unitPrice": 11.74, "vatRate": 23, "total": 16.44, "serviceCode": "I8" },
+        { "description": "BROCA COMBI SMARTSTEP HSS M10", "quantity": 2, "unitPrice": 42.91, "vatRate": 23, "total": 68.66, "serviceCode": "I8" },
+        { "description": "PACK CHAPA MATRICULA", "quantity": 1, "unitPrice": 89.0, "vatRate": 23, "total": 89.0, "serviceCode": "I8" }
       ]
     },
     {
       "filename": "doc14723520260417152501.pdf",
       "supplier": {
-        "name": "Policalço - Calços e Travões, S.A.",
-        "taxId": "508123456",
-        "category": "Oficina · Travões"
+        "name": "Policalço - Peças Para Pesados, Lda.",
+        "taxId": "505587920",
+        "category": "Oficina · Peças de pesados"
       },
       "invoice": {
-        "number": "INV-2026-0389",
-        "issuedAt": "2026-04-05",
-        "dueAt": "2026-06-04",
-        "totalNet": 872.40,
-        "totalVat": 200.65,
-        "totalGross": 1073.05,
+        "number": "FT 2026A1/3881",
+        "issuedAt": "2026-04-07",
+        "dueAt": "2026-05-07",
+        "totalNet": 1000.0,
+        "totalVat": 230.0,
+        "totalGross": 1230.0,
         "currency": "EUR",
-        "plate": "CD-34-FG"
+        "plate": null
       },
       "classification": {
-        "serviceCode": "S2",
+        "serviceCode": "L7",
         "workCode": "INT-OFI-LLT",
-        "confidence": 0.91
+        "confidence": 0.94,
+        "note": "Calipers travão pesados (Meritor, BPW) → Mecânica Geral interna"
       },
       "lines": [
-        { "description": "Pastilhas travão jogo 4 rodas", "quantity": 1, "unitPrice": 285.0, "vatRate": 23, "total": 285.0, "serviceCode": "S2" },
-        { "description": "Discos travão dianteiros par", "quantity": 1, "unitPrice": 310.4, "vatRate": 23, "total": 310.4, "serviceCode": "S2" },
-        { "description": "Mão-de-obra travões eixo dianteiro", "quantity": 3, "unitPrice": 92.33, "vatRate": 23, "total": 277.0, "serviceCode": "S2" }
+        { "description": "CALIPER REPARADO MERITOR DUCO 225 ESQ AF ESQUERDO", "quantity": 1, "unitPrice": 200.0, "vatRate": 23, "total": 200.0, "serviceCode": "L7" },
+        { "description": "CALIPER REPARADO BPW 010 DIREITO", "quantity": 2, "unitPrice": 200.0, "vatRate": 23, "total": 400.0, "serviceCode": "L7" },
+        { "description": "CALIPER REPARADO BPW 020 ESQUERDO", "quantity": 2, "unitPrice": 200.0, "vatRate": 23, "total": 400.0, "serviceCode": "L7" }
       ]
     },
     {
       "filename": "doc14723620260417152535.pdf",
       "supplier": {
-        "name": "Selcar / Create Business, Lda.",
-        "taxId": "507654321",
-        "category": "Oficina · Sistemas de Frio"
+        "name": "Selcar / Rodrigues & Carvalho, Lda.",
+        "taxId": "500739153",
+        "category": "Oficina · Peças viatura"
       },
       "invoice": {
-        "number": "SCB/2026/417",
-        "issuedAt": "2026-04-08",
-        "dueAt": "2026-06-07",
-        "totalNet": 1425.00,
-        "totalVat": 327.75,
-        "totalGross": 1752.75,
+        "number": "FT 2026A1/12927",
+        "issuedAt": "2026-04-07",
+        "dueAt": "2026-05-31",
+        "totalNet": 104.59,
+        "totalVat": 24.06,
+        "totalGross": 128.65,
         "currency": "EUR",
-        "plate": "HI-56-JK"
+        "plate": null
       },
       "classification": {
-        "serviceCode": "S9",
+        "serviceCode": "L7",
         "workCode": "INT-OFI-LLT",
-        "confidence": 0.88,
-        "note": "Conhecimento tácito: Selcar só trabalha sistemas de frio motor/refrigeração. Mapeamento aprendido pelo NIF."
+        "confidence": 0.9,
+        "note": "Peças IVECO: filtros óleo/gasóleo/ar + bomba água"
       },
       "lines": [
-        { "description": "Compressor AC reboot + teste estanqueidade", "quantity": 1, "unitPrice": 780.0, "vatRate": 23, "total": 780.0, "serviceCode": "S9" },
-        { "description": "Gás R134a recarga 1.2kg", "quantity": 1, "unitPrice": 180.0, "vatRate": 23, "total": 180.0, "serviceCode": "S9" },
-        { "description": "Mão-de-obra diagnóstico + intervenção", "quantity": 5, "unitPrice": 93.0, "vatRate": 23, "total": 465.0, "serviceCode": "S9" }
+        { "description": "Filtro de combustível (ADD62306)", "quantity": 1, "unitPrice": 7.71, "vatRate": 23, "total": 7.71, "serviceCode": "L7" },
+        { "description": "Filtro de óleo Mahle (OC297)", "quantity": 1, "unitPrice": 15.16, "vatRate": 23, "total": 15.16, "serviceCode": "L7" },
+        { "description": "Filtro de ar (ADC42236)", "quantity": 1, "unitPrice": 25.32, "vatRate": 23, "total": 25.32, "serviceCode": "L7" },
+        { "description": "Bomba de água (ADC49144)", "quantity": 1, "unitPrice": 56.4, "vatRate": 23, "total": 56.4, "serviceCode": "L7" }
       ]
     },
     {
       "filename": "doc14723720260417152559.pdf",
       "supplier": {
-        "name": "Prevrod - Componentes Pesados, S.A.",
-        "taxId": "505432198",
-        "category": "Oficina · Peças Pesados"
+        "name": "Popapneus, Lda.",
+        "taxId": "506187993",
+        "category": "Oficina · Pneus e jantes"
       },
       "invoice": {
-        "number": "FT 2026/PVD/0112",
-        "issuedAt": "2026-04-09",
-        "dueAt": "2026-06-08",
-        "totalNet": 3280.00,
-        "totalVat": 754.40,
-        "totalGross": 4034.40,
+        "number": "FACT 79126/397",
+        "issuedAt": "2026-04-07",
+        "dueAt": "2026-05-07",
+        "totalNet": 1327.98,
+        "totalVat": 305.44,
+        "totalGross": 1633.42,
         "currency": "EUR",
-        "plate": "LM-78-NO"
+        "plate": "73-ZR-98"
       },
       "classification": {
-        "serviceCode": "S3",
+        "serviceCode": "L1",
         "workCode": "INT-OFI-LLT",
-        "confidence": 0.85
+        "confidence": 0.95,
+        "note": "Pneu Bridgestone 385/55 R22.5 + equilíbrios → Pneus interno"
       },
       "lines": [
-        { "description": "Embraiagem completa VL pesado ref. 3400-700-470", "quantity": 1, "unitPrice": 1680.0, "vatRate": 23, "total": 1680.0, "serviceCode": "S3" },
-        { "description": "Rolamento pivotante", "quantity": 2, "unitPrice": 220.0, "vatRate": 23, "total": 440.0, "serviceCode": "S3" },
-        { "description": "Mão-de-obra mudança embraiagem", "quantity": 12, "unitPrice": 96.67, "vatRate": 23, "total": 1160.0, "serviceCode": "S3" }
+        { "description": "U.M.A. Unidade Móvel Assistência", "quantity": 1, "unitPrice": 40.0, "vatRate": 23, "total": 40.0, "serviceCode": "L1" },
+        { "description": "Rebarbar + Aplicar Aparelho ABA Jante 22.5", "quantity": 2, "unitPrice": 15.5, "vatRate": 23, "total": 31.0, "serviceCode": "L1" },
+        { "description": "Equilíbrio roda pesada esfera cromática vidro", "quantity": 2, "unitPrice": 32.52, "vatRate": 23, "total": 65.04, "serviceCode": "L1" },
+        { "description": "Bridgestone 385/55 R22.5 RS02 Drive (Eixo Direção)", "quantity": 2, "unitPrice": 565.0, "vatRate": 23, "total": 1130.0, "serviceCode": "L1" }
       ]
     },
     {
       "filename": "doc14723820260417152625.pdf",
       "supplier": {
-        "name": "Popapneus - Pneus e Jantes, Lda.",
-        "taxId": "506789012",
-        "category": "Oficina · Pneus"
+        "name": "Prevrod - Consultadoria, Lda.",
+        "taxId": "513539352",
+        "category": "Operacional · Tacógrafos e legislação"
       },
       "invoice": {
-        "number": "PP/FT/2026/881",
-        "issuedAt": "2026-04-10",
-        "dueAt": "2026-06-09",
-        "totalNet": 2145.00,
-        "totalVat": 493.35,
-        "totalGross": 2638.35,
+        "number": "FT FT12/11649",
+        "issuedAt": "2026-04-07",
+        "dueAt": "2026-05-07",
+        "totalNet": 489.0,
+        "totalVat": 112.47,
+        "totalGross": 601.47,
         "currency": "EUR",
-        "plate": "PQ-90-RS"
+        "plate": null
       },
       "classification": {
-        "serviceCode": "S17",
-        "workCode": "INT-OFI-LLT",
-        "confidence": 0.93
+        "serviceCode": "I2",
+        "workCode": "INT-ADM-LLT",
+        "confidence": 0.96,
+        "note": "Mensalidade PSLR · legislação rodoviária (software PHC GO do fornecedor)"
       },
       "lines": [
-        { "description": "Pneu Michelin X Multi D 315/70 R22.5", "quantity": 4, "unitPrice": 485.0, "vatRate": 23, "total": 1940.0, "serviceCode": "S17" },
-        { "description": "Montagem + equilibragem", "quantity": 4, "unitPrice": 25.0, "vatRate": 23, "total": 100.0, "serviceCode": "S17" },
-        { "description": "Alinhamento direcção", "quantity": 1, "unitPrice": 105.0, "vatRate": 23, "total": 105.0, "serviceCode": "S17" }
+        { "description": "PSLR - Prestação de serviços de legislação rodoviária, mês de março", "quantity": 1, "unitPrice": 489.0, "vatRate": 23, "total": 489.0, "serviceCode": "I2" }
       ]
     },
     {
       "filename": "doc14723920260417152650.pdf",
       "supplier": {
-        "name": "Dieselplace - Injecção Diesel, Lda.",
-        "taxId": "504321987",
-        "category": "Oficina · Injecção"
+        "name": "Vesauto - Automóveis e Reparações, S.A. (Carby/Dacia)",
+        "taxId": "501316272",
+        "category": "Oficina · Revisão viatura ligeira"
       },
       "invoice": {
-        "number": "DP-2026-0247",
-        "issuedAt": "2026-04-11",
-        "dueAt": "2026-06-10",
-        "totalNet": 960.00,
-        "totalVat": 220.80,
-        "totalGross": 1180.80,
+        "number": "FT APFV/81118374",
+        "issuedAt": "2026-04-08",
+        "dueAt": "2026-04-08",
+        "totalNet": 631.57,
+        "totalVat": 145.26,
+        "totalGross": 776.83,
         "currency": "EUR",
-        "plate": "TU-12-VW"
+        "plate": "BS-95-JN"
       },
       "classification": {
-        "serviceCode": "S3",
+        "serviceCode": "L7",
         "workCode": "INT-OFI-LLT",
-        "confidence": 0.82
+        "confidence": 0.92,
+        "note": "Revisão 120/150K em Dacia Sandero III BS-95-JN · filtros, velas, correia"
       },
       "lines": [
-        { "description": "Injector diesel reconstruido ref. 0445120054", "quantity": 2, "unitPrice": 340.0, "vatRate": 23, "total": 680.0, "serviceCode": "S3" },
-        { "description": "Mão-de-obra substituição + calibragem", "quantity": 4, "unitPrice": 70.0, "vatRate": 23, "total": 280.0, "serviceCode": "S3" }
+        { "description": "Revisão 120/150K · mão-de-obra", "quantity": 4, "unitPrice": 65.0, "vatRate": 23, "total": 260.0, "serviceCode": "L7" },
+        { "description": "Filtro habitáculo + óleo + ar + gasóleo (kit)", "quantity": 1, "unitPrice": 64.82, "vatRate": 23, "total": 64.82, "serviceCode": "L7" },
+        { "description": "Óleo 0W20 ELF EVO C5 RN (4.1L)", "quantity": 1, "unitPrice": 126.54, "vatRate": 23, "total": 126.54, "serviceCode": "L7" },
+        { "description": "3× Velas ignição + correia estriada + antigel", "quantity": 1, "unitPrice": 180.21, "vatRate": 23, "total": 180.21, "serviceCode": "L7" }
       ]
     },
     {
       "filename": "doc14724020260417152720.pdf",
       "supplier": {
-        "name": "Lubrigaz - Combustíveis e Lubrificantes",
-        "taxId": "503987654",
-        "category": "Combustível · Cartão externo"
+        "name": "Flexbor - Soc. Técnica de Equipamentos, Lda.",
+        "taxId": "501984992",
+        "category": "Oficina · Transmissões e correntes"
       },
       "invoice": {
-        "number": "LBZ/2026/6745",
-        "issuedAt": "2026-04-12",
-        "dueAt": "2026-05-12",
-        "totalNet": 1876.42,
-        "totalVat": 431.58,
-        "totalGross": 2308.00,
+        "number": "FT FA.2026/1579",
+        "issuedAt": "2026-04-09",
+        "dueAt": "2026-05-09",
+        "totalNet": 406.82,
+        "totalVat": 93.57,
+        "totalGross": 500.39,
         "currency": "EUR",
         "plate": null
       },
       "classification": {
-        "serviceCode": "S1",
-        "workCode": "INT-COMB-LLT",
-        "confidence": 0.70,
-        "note": "Factura de combustível — classificação pode variar conforme política contabilística; pedida validação humana."
+        "serviceCode": "L7",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.91,
+        "note": "Carretos 3/4\" + corrente de transmissão Renold · software PRIMAVERA BSS"
       },
       "lines": [
-        { "description": "Gasóleo AdBlue 1450L · Estação A8", "quantity": 1450, "unitPrice": 1.294, "vatRate": 23, "total": 1876.3, "serviceCode": "S1" }
+        { "description": "Carreto simples 3/4\" Z=18 (25013418AP)", "quantity": 1, "unitPrice": 16.27, "vatRate": 23, "total": 16.27, "serviceCode": "L7" },
+        { "description": "Carreto simples 3/4\" Z=15 (25013415AP)", "quantity": 5, "unitPrice": 12.15, "vatRate": 23, "total": 60.75, "serviceCode": "L7" },
+        { "description": "Corrente transmissão simples Renold ASA60H-1 (3/4\")", "quantity": 10, "unitPrice": 16.07, "vatRate": 23, "total": 160.69, "serviceCode": "L7" },
+        { "description": "Elo de ligação / redução ASA060H", "quantity": 14, "unitPrice": 4.41, "vatRate": 23, "total": 61.7, "serviceCode": "L7" }
       ]
     },
     {
       "filename": "doc14724120260417152817.pdf",
       "supplier": {
-        "name": "Tecnicauto Especialistas Pesados, S.A.",
-        "taxId": "502345678",
-        "category": "Oficina · Electrónica"
+        "name": "SGP-Global Parts, Lda.",
+        "taxId": "509436722",
+        "category": "Oficina · Peças"
       },
       "invoice": {
-        "number": "TEC/2026/412",
-        "issuedAt": "2026-04-14",
-        "dueAt": "2026-06-13",
-        "totalNet": 680.00,
-        "totalVat": 156.40,
-        "totalGross": 836.40,
+        "number": "FT F69/0000004725",
+        "issuedAt": "2026-04-09",
+        "dueAt": "2026-06-30",
+        "totalNet": 250.0,
+        "totalVat": 57.5,
+        "totalGross": 307.5,
         "currency": "EUR",
-        "plate": "XY-34-ZA"
+        "plate": null
       },
       "classification": {
-        "serviceCode": "S3",
+        "serviceCode": "L7",
         "workCode": "INT-OFI-LLT",
-        "confidence": 0.76
+        "confidence": 0.88,
+        "note": "Tubo · software PHC GO do fornecedor"
       },
       "lines": [
-        { "description": "Diagnóstico central electrónica + limpeza DTCs", "quantity": 3, "unitPrice": 85.0, "vatRate": 23, "total": 255.0, "serviceCode": "S3" },
-        { "description": "Sensor ABS dianteiro par", "quantity": 1, "unitPrice": 425.0, "vatRate": 23, "total": 425.0, "serviceCode": "S3" }
+        { "description": "TUBO (0040/2357654)", "quantity": 1, "unitPrice": 250.0, "vatRate": 23, "total": 250.0, "serviceCode": "L7" }
       ]
     },
     {
       "filename": "doc14724220260417152924.pdf",
       "supplier": {
-        "name": "Eurocamiones Peças do Oeste, Lda.",
-        "taxId": "501678901",
-        "category": "Oficina · Peças Genéricas"
+        "name": "Blinker Portugal, Lda.",
+        "taxId": "504876740",
+        "category": "Oficina · Eléctrica"
       },
       "invoice": {
-        "number": "ECO-2026-0562",
-        "issuedAt": "2026-04-15",
-        "dueAt": "2026-06-14",
-        "totalNet": 412.80,
-        "totalVat": 94.94,
-        "totalGross": 507.74,
+        "number": "PT 2026N/8740",
+        "issuedAt": "2026-04-13",
+        "dueAt": "2026-06-12",
+        "totalNet": 306.09,
+        "totalVat": 70.4,
+        "totalGross": 376.49,
         "currency": "EUR",
-        "plate": "BC-56-DE"
+        "plate": null
       },
       "classification": {
-        "serviceCode": "S3",
-        "workCode": "EXT-GP-FRT",
-        "confidence": 0.62,
-        "note": "Matrícula BC-56-DE pertence à Frutas do Oeste (grupo), não à Lloretrans. Classificado como externo."
+        "serviceCode": "L2",
+        "workCode": "INT-OFI-LLT",
+        "confidence": 0.93,
+        "note": "Fusíveis + terminais eléctricos · Eletricista interno"
       },
       "lines": [
-        { "description": "Faróis dianteiros LED par", "quantity": 1, "unitPrice": 280.0, "vatRate": 23, "total": 280.0, "serviceCode": "S3" },
-        { "description": "Escova limpa-parabrisas", "quantity": 2, "unitPrice": 18.5, "vatRate": 23, "total": 37.0, "serviceCode": "S3" },
-        { "description": "Fluído travões DOT4 5L", "quantity": 2, "unitPrice": 47.9, "vatRate": 23, "total": 95.8, "serviceCode": "S3" }
+        { "description": "Fusível ligável (5/10/3/15/20/25/30 A) · sortido", "quantity": 325, "unitPrice": 0.19, "vatRate": 23, "total": 61.62, "serviceCode": "L2" },
+        { "description": "Fusível mini (5/10/15/20/25/30 A) · sortido", "quantity": 150, "unitPrice": 0.22, "vatRate": 23, "total": 32.14, "serviceCode": "L2" },
+        { "description": "Fusível maxi 50/60 A", "quantity": 40, "unitPrice": 1.13, "vatRate": 23, "total": 45.2, "serviceCode": "L2" },
+        { "description": "Terminal especial masc./fêmea 1,5mm + estanque com estanho", "quantity": 200, "unitPrice": 0.83, "vatRate": 23, "total": 166.13, "serviceCode": "L2" }
       ]
     }
   ]

@@ -492,8 +492,14 @@ export const clientInvoicesFreight = pgTable("client_invoices_freight", {
 export const commissionRules = pgTable("commission_rules", {
   id: pk(),
   salespersonId: text("salesperson_id").references(() => users.id),
+  // % aplicada ao lucro (preçoVenda − preçoCompra). Éder: 20% do lucro total.
   percentOfMargin: doublePrecision("percent_of_margin").notNull(),
   minMarginPct: doublePrecision("min_margin_pct"),
+  // Bónus fixos por carga quando é usada viatura Lloretrans (Éder: €2,50 nacional · €5 internacional).
+  fixedBonusNationalEur: doublePrecision("fixed_bonus_national_eur").default(0).notNull(),
+  fixedBonusInternationalEur: doublePrecision("fixed_bonus_international_eur").default(0).notNull(),
+  // Bónus só pagam se a carga for feita com carro da frota interna Lloretrans.
+  requireInternalVehicle: boolean("require_internal_vehicle").default(true).notNull(),
   activeFrom: ts("active_from").notNull(),
   activeTo: ts("active_to"),
 });
@@ -586,3 +592,26 @@ export const workOrderSignatures = pgTable("work_order_signatures", {
   svgPath: text("svg_path").notNull(),
   signedAt: ts("signed_at").defaultNow().notNull(),
 });
+
+// Checklist de 17 itens do template papel partilhado pelo Éder (2026-04-20).
+// Cada item tem dois flags (substituído · verificado) e observações.
+// Valores possíveis de `itemKey`: ver lib/workshop-checklist.ts
+export const workOrderChecklistAnswers = pgTable(
+  "work_order_checklist_answers",
+  {
+    id: pk(),
+    workOrderId: text("work_order_id")
+      .notNull()
+      .references(() => workOrders.id, { onDelete: "cascade" }),
+    itemKey: text("item_key").notNull(),
+    substituted: boolean("substituted").default(false).notNull(),
+    verified: boolean("verified").default(false).notNull(),
+    notes: text("notes"),
+    createdAt: ts("created_at").defaultNow().notNull(),
+    updatedAt: ts("updated_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    workOrderIdx: index("wo_checklist_wo_idx").on(t.workOrderId),
+    uniqueItem: uniqueIndex("wo_checklist_wo_item_uidx").on(t.workOrderId, t.itemKey),
+  }),
+);
