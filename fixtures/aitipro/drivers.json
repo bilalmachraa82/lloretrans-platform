@@ -1,0 +1,647 @@
+[
+  {
+    "name": "ESTEVÃO",
+    "contactRaw": "913810103",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "BRUNO MENDES",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "RUI DIAS",
+    "contactRaw": "910237037",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "BRUNO SANTOS",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "BERNARDO",
+    "contactRaw": "913281258",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "TIAGO",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "MACHADO + LYNDON",
+    "contactRaw": "912327358",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "LUIS MIGUEL",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "MARCO",
+    "contactRaw": "910934725",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "GERCIONE",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "DAVID",
+    "contactRaw": "914208459",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "ANTÓNIO",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "MARCOS",
+    "contactRaw": "910600097",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "NEIMAR",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "KAKA",
+    "contactRaw": "915278123",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "PAVEL",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "PAULO RIBEIRO",
+    "contactRaw": "915728749",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "PETRU",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "HUGO RIBEIRO",
+    "contactRaw": "911776231",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "ANDRÉ",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "ION MADAN",
+    "contactRaw": "913281384",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "ADÉRITO",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "TUDOR",
+    "contactRaw": "911020341",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "LUIS",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "ANDRY",
+    "contactRaw": "910060184",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "RAFAEL GONÇALVES",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "FLORIN + DIANA",
+    "contactRaw": "910934707",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "RICARDO",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "IVÂNIO + UILSON",
+    "contactRaw": "910381957",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "MYKOLA",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "JOÃO PEDRO SERRA",
+    "contactRaw": "913281797",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "RALPH",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "OTÁVIO",
+    "contactRaw": "910495345",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "MANUEL",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "ALIN",
+    "contactRaw": "915326775",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "NÉLIO",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "CARLOS ROGADO",
+    "contactRaw": "910934560",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "RICARDO LOURENÇO",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "CRISPIM",
+    "contactRaw": "910950722",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "RICARDO SOUSA",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "NELSON NARCISO",
+    "contactRaw": "910947197",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "IZAQUE",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "GRIGORE",
+    "contactRaw": "912432570",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "MANY + SOHAL",
+    "contactRaw": "920058122",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "ANDRE + DAYANE",
+    "contactRaw": "915399520",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "JOÃO FILIPE",
+    "contactRaw": "910934509",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "VALDOMIR + LUCIA",
+    "contactRaw": "933686997",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "FÁBIO",
+    "contactRaw": "915399055",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "DANIEL",
+    "contactRaw": "913270417",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "VÂNIA",
+    "contactRaw": "919106635",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "RAFAEL MIRANDA",
+    "contactRaw": "911776150",
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "CAMINSCHI",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "OLEKSANDR",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "CARLOS CUNHA",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "SILVESTRE",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "JOSÉ CARLOS",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "ROMASCU",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "CUCIUK",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "GHEORGE",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "VASILE",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "FLÁVIO",
+    "contactRaw": null,
+    "source": "relacao_viaturas_motoristas"
+  },
+  {
+    "name": "DUPLA 1 - Akshay Sharma",
+    "contactRaw": "910,499,767",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "DUPLA 1 - Sukhjinder Singh Sohal",
+    "contactRaw": "920,058,122",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "DUPLA 2 -Wenderson da Silva Machado",
+    "contactRaw": "912,327,358",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "DUPLA 2 - Lyndon Johnson Washington dos Santos",
+    "contactRaw": "910,358,264",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "DUPLA 3 - Uilson Pereira Leonel",
+    "contactRaw": "915,275,574",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "DUPLA 3 - Ivanio Pereira De Lima",
+    "contactRaw": "910,381,957",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "DUPLA 4 - Andre Oliveira + Dayane Oliveira",
+    "contactRaw": "915,399,520",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "DUPLA 5 - Florentin Jitaru + Diana Jitaru",
+    "contactRaw": "910,934,707",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Valdomir Alves Martins",
+    "contactRaw": "910,355,777",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Lucia Pereira Perluxo",
+    "contactRaw": "933,686,996",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Andriy Vivchar",
+    "contactRaw": "910060184",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Alin Cotioras",
+    "contactRaw": "915326775",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Bernardo Vieira Gonçalves",
+    "contactRaw": "913281258",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Carlos António Ferreira Rogado",
+    "contactRaw": "910934560",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "David Jorge Marques",
+    "contactRaw": "914208459",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Estevão Élio Elias Pereira da Silva",
+    "contactRaw": "913810103",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Ion Madan",
+    "contactRaw": "913281384",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "João Filipe da Silva Marques",
+    "contactRaw": "910934509",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Grigore Iurascu",
+    "contactRaw": "912432570",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Hugo Jorge da Cruz Ribeiro",
+    "contactRaw": "911776231",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Jocir Carlos Assis",
+    "contactRaw": "915278123",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "João Carlos dos Santos Crispim",
+    "contactRaw": "910950722",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "João Pedro dos Santos Serra",
+    "contactRaw": "913281797",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Marco Manuel Alberto Francisco",
+    "contactRaw": "910934725",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Marcos Tomaz Meireles e Souza",
+    "contactRaw": "910600097",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Nelson Armindo Soares Narciso",
+    "contactRaw": "910947197",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Octávio Manuel Henriques Coelho",
+    "contactRaw": "910495345",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Paulo Jorge Cardoso Ribeiro",
+    "contactRaw": "915728749",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Rui Pedro Martins Mateus Dias",
+    "contactRaw": "910237037",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Tudor Caminschi",
+    "contactRaw": "911020341",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Carlos Alberto dos Santos Cunha",
+    "contactRaw": "910,238,430",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Flávio Filipe Fonseca Dias",
+    "contactRaw": "910,381,839",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Gheorghe Triboi",
+    "contactRaw": "915,326,966",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Ion Caminschi",
+    "contactRaw": "915,275,179",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Ion Cuciuc",
+    "contactRaw": "911,763,297",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Ion Romascu",
+    "contactRaw": "910,206,226",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "José Carlos Ferreira da Silva",
+    "contactRaw": "915,150,856",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Oleksandr Potapov",
+    "contactRaw": "910,934,572",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Paulo Jorge Macieira Silvestre",
+    "contactRaw": "910,934,507",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Vasile Boscuta",
+    "contactRaw": "910,522,917",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Fábio Miguel Moreira Ferreira",
+    "contactRaw": "915399055",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Adérito Miguel Alves Franco",
+    "contactRaw": "915,399,081",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "André Silva da Fonseca",
+    "contactRaw": "915,728,750",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Bruno Alexandre Pires Mendes",
+    "contactRaw": "910,493,283",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Bruno Miguel de Jesus dos Santos",
+    "contactRaw": "913,812,949",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Daniel Alexandre Mouro Rodrigues",
+    "contactRaw": "913270417",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Izaque Rodrigues Mota",
+    "contactRaw": "911,776,444",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Luís Miguel Machado Freitas",
+    "contactRaw": "915,399,518",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Luís Miguel Antunes Oliveira",
+    "contactRaw": "915,728,714",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Mykola Madzari",
+    "contactRaw": "912,224,623",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Nélio Alexandre Martins Ribeiro",
+    "contactRaw": "911,775,993",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Pavel Vultur",
+    "contactRaw": "911,064,474",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Petru Vrabie",
+    "contactRaw": "910,934,430",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Rafael Alexandre Dias Gonçalves",
+    "contactRaw": "915,399,022",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Rafael dos Santos Miranda",
+    "contactRaw": "911776150",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Ricardo Filipe Oliveira de Sousa",
+    "contactRaw": "910,599,433",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Tiago Américo Melícias Santos",
+    "contactRaw": "911,768,741",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Vânia Isabel Pereira Filipe",
+    "contactRaw": "919106635",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Victor Bogdan",
+    "contactRaw": "911,037,127",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Ricardo Miguel Oliveira Lourenço",
+    "contactRaw": "915,399,107",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Gercione Lemos da Silva",
+    "contactRaw": "910,474,886",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Ralf da Silva Barbosa",
+    "contactRaw": "917,047,804",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Welisney Alves Oliveira",
+    "contactRaw": "917,047,799",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Ruben Serafin",
+    "contactRaw": "917,047,823",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Carlos Alberto Valentim de Assunção Teles",
+    "contactRaw": "911,546,773",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Jonathan dos Santos Rocha",
+    "contactRaw": "911,536,057",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "João Paulo Couy Fagundes",
+    "contactRaw": "917,047,839",
+    "source": "relacao_motoristas"
+  },
+  {
+    "name": "Marcos Lindário Chagas Junior",
+    "contactRaw": "917,047,853",
+    "source": "relacao_motoristas"
+  }
+]

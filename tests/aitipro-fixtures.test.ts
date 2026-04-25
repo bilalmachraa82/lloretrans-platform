@@ -28,4 +28,13 @@ describe("AITIPRO evidence fixtures", () => {
     expect(summary.providers.bomba_interna.rows).toBe(629);
     expect(summary.providers.repsol.rows).toBe(175);
   });
+
+  it("preserves audited fleet baselines", () => {
+    const vehicles = readFixture<Array<{ source: string; gps: string | null }>>("vehicles.json");
+    const drivers = readFixture<Array<{ name: string; contactRaw: string | null }>>("drivers.json");
+    expect(vehicles.filter((v) => v.source === "viaturas_grupo_lloretrans").length).toBeGreaterThanOrEqual(127);
+    expect(drivers.length).toBeGreaterThanOrEqual(68);
+    expect(vehicles.some((v) => v.gps === "SIM")).toBe(true);
+    expect(vehicles.some((v) => v.gps === "NÃO")).toBe(true);
+  });
 });
