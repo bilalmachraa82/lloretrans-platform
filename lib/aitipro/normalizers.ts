@@ -17,7 +17,13 @@ export function displayPlate(value: unknown): string | null {
 export function parseEuro(value: unknown): number | null {
   if (value == null || value === "") return null;
   if (typeof value === "number" && Number.isFinite(value)) return Math.round(value * 100) / 100;
-  const normalized = String(value).replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
+  const cleaned = String(value).replace(/[^\d,.-]/g, "");
+  const comma = cleaned.lastIndexOf(",");
+  const dot = cleaned.lastIndexOf(".");
+  const normalized =
+    comma > dot
+      ? cleaned.replace(/\./g, "").replace(",", ".")
+      : cleaned.replace(/,/g, "");
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? Math.round(parsed * 100) / 100 : null;
 }

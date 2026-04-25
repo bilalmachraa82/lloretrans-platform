@@ -1,0 +1,11 @@
+{
+  "loads": 306,
+  "priceRows": 299,
+  "uniqueTransporters": 26,
+  "uniqueClients": 41,
+  "uniqueRoutes": 86,
+  "internalLloretransLoads": 135,
+  "sellSum": 135222.72,
+  "buySum": 137022.72,
+  "marginSum": -1800
+}
