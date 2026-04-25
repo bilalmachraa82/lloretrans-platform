@@ -24,7 +24,7 @@ export default async function SuppliersPage() {
     <div className="space-y-6">
       <PageHeader
         title="Master · Fornecedores"
-        description={`${rows.length} fornecedores · 9 da amostra real + enriquecidos`}
+        description="OCR suppliers são fornecedores de facturas; transportadores do Excel são carriers do MVP E; LLORETRANS interno não é fornecedor externo."
         actions={
           <Button variant="outline" asChild>
             <Link href="/admin">← Admin</Link>

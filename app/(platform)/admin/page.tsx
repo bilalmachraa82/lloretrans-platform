@@ -148,7 +148,7 @@ export default async function AdminPage() {
         <div className="grid gap-3 sm:grid-cols-3">
           <AdminLink href="/admin/vehicles" title="Viaturas" description="Matrículas, tipologia, empresa, Frotcom" />
           <AdminLink href="/admin/suppliers" title="Fornecedores" description="NIF, regras aprendidas, categoria" />
-          <AdminLink href="/admin/service-codes" title="Códigos de serviço" description="S1/S2/S3/S9/S17 + obra" />
+          <AdminLink href="/admin/service-codes" title="Códigos de serviço" description="S1-S9 externos · L1-L8 internos · I0-I9 operações internas" />
         </div>
       </section>
     </div>

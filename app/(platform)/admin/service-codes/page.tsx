@@ -28,7 +28,7 @@ export default async function CodesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Master · Códigos"
-        description="Serviço + obra · usado por MVPs B (OCR), E (bolsa), F (oficina)"
+        description="S1-S9 externos · L1-L8 internos · I0-I9 operações internas"
         actions={
           <Button variant="outline" asChild>
             <Link href="/admin">← Admin</Link>

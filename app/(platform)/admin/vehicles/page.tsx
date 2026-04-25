@@ -7,9 +7,28 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import fs from "node:fs";
+import path from "node:path";
+
+interface VehicleFixture {
+  plate: string;
+  source: string;
+  companyRaw: string | null;
+  driverRaw: string | null;
+  trailerPlate: string | null;
+  gps: "SIM" | "NÃO" | null;
+}
 
 export default async function VehiclesPage() {
   await requireRole(["admin"]);
+  const fixtures = JSON.parse(
+    await fs.promises.readFile(path.join(process.cwd(), "fixtures", "aitipro", "vehicles.json"), "utf-8"),
+  ) as VehicleFixture[];
+  const fixtureByPlate = new Map<string, VehicleFixture>();
+  for (const fixture of fixtures) {
+    if (!fixtureByPlate.has(fixture.plate)) fixtureByPlate.set(fixture.plate, fixture);
+  }
+
   const rows = await db
     .select({
       id: vehicles.id,
@@ -28,7 +47,7 @@ export default async function VehiclesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Master · Viaturas"
-        description={`${rows.length} viaturas activas · origem: PHC + Frotcom`}
+        description={`${rows.length} viaturas · origem: fixtures reais AITIPRO + GPS quando disponível`}
         actions={
           <Button variant="outline" asChild>
             <Link href="/admin">← Admin</Link>
@@ -43,30 +62,31 @@ export default async function VehiclesPage() {
                 <th>Matrícula</th>
                 <th>Tipologia</th>
                 <th>Empresa</th>
-                <th>Interna/Externa</th>
-                <th>CANBUS</th>
-                <th>Frotcom ID</th>
+                <th>Motorista</th>
+                <th>Reboque</th>
+                <th>GPS</th>
+                <th>Fonte</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((v) => (
-                <tr key={v.id}>
-                  <td className="font-mono">{v.plate}</td>
-                  <td className="text-xs">{v.kind}</td>
-                  <td>{v.company ?? "—"}</td>
-                  <td>
-                    <Badge variant={v.isInternal ? "default" : "secondary"}>
-                      {v.isInternal ? "interna" : "externa"}
-                    </Badge>
-                  </td>
-                  <td>
-                    <Badge variant={v.hasCanbus ? "success" : "secondary"}>
-                      {v.hasCanbus ? "sim" : "não"}
-                    </Badge>
-                  </td>
-                  <td className="font-mono text-[10px] text-muted-foreground">{v.frotcomId}</td>
-                </tr>
-              ))}
+              {rows.map((v) => {
+                const fixture = fixtureByPlate.get(v.plate);
+                return (
+                  <tr key={v.id}>
+                    <td className="font-mono">{v.plate}</td>
+                    <td className="text-xs">{v.kind}</td>
+                    <td>{fixture?.companyRaw ?? v.company ?? "—"}</td>
+                    <td className="text-xs">{fixture?.driverRaw ?? "—"}</td>
+                    <td className="font-mono text-xs">{fixture?.trailerPlate ?? "—"}</td>
+                    <td>
+                      <Badge variant={fixture?.gps === "SIM" || v.hasCanbus ? "success" : "secondary"}>
+                        {fixture?.gps ?? (v.hasCanbus ? "SIM" : "NÃO")}
+                      </Badge>
+                    </td>
+                    <td className="font-mono text-[10px] text-muted-foreground">{fixture?.source ?? v.frotcomId ?? "—"}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
