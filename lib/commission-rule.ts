@@ -22,6 +22,8 @@ const PORTUGUESE_CITIES = [
   "guimaraes",
   "guimarães",
   "torres vedras",
+  "marl",
+  "algoz",
   "lloretrans",
 ];
 

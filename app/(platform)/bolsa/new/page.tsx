@@ -35,9 +35,9 @@ export default async function NewLoadPage() {
                   {cli.map((c) => <option key={c.id} value={c.id}>{c.name} · {c.country}</option>)}
                 </select>
               </Field>
-              <Field label="Fornecedor" required>
-                <select name="supplierId" required className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm">
-                  <option value="">— escolher —</option>
+              <Field label="Transportador">
+                <select name="supplierId" className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm">
+                  <option value="">LLORETRANS · interno</option>
                   {sup.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </Field>
@@ -50,18 +50,54 @@ export default async function NewLoadPage() {
                 <Input name="destination" required placeholder="ex: Madrid" />
               </Field>
             </div>
-            <Field label="Matrícula (opcional · se Lloretrans fornece)">
-              <select name="plate" className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm">
-                <option value="">— sem matrícula Lloretrans (fornecedor externo) —</option>
-                {veh.map((v) => <option key={v.plate} value={v.plate}>{v.plate} · {v.kind}</option>)}
-              </select>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Viatura">
+                <select name="plate" className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm">
+                  <option value="">— sem matrícula —</option>
+                  {veh.map((v) => <option key={v.plate} value={v.plate}>{v.plate} · {v.kind}</option>)}
+                </select>
+              </Field>
+              <Field label="Reboque">
+                <Input name="trailerPlate" placeholder="ex: LE-3545" />
+              </Field>
+            </div>
+            <Field label="Transportador manual (opcional)">
+              <Input name="carrierName" placeholder="ex: LLORETRANS ou transportador externo" />
             </Field>
             <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Preço compra (€)" required>
+              <Field label="Pago Transportador (€)" required>
                 <Input name="priceBuy" type="number" step="0.01" min="0.01" required placeholder="ex: 1200.00" />
               </Field>
-              <Field label="Preço venda (€)" required>
+              <Field label="Preço Cliente (€)" required>
                 <Input name="priceSell" type="number" step="0.01" min="0.01" required placeholder="ex: 1400.00" />
+              </Field>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Nº CMR">
+                <Input name="cmrNumber" placeholder="ex: CMR 267598" />
+              </Field>
+              <Field label="Valor serviço (€)">
+                <Input name="serviceValueEur" type="number" step="0.01" min="0" placeholder="opcional" />
+              </Field>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Nº fatura cliente">
+                <Input name="customerInvoiceNumber" placeholder="ex: 534/2026" />
+              </Field>
+              <Field label="Nº fatura fornecedor">
+                <Input name="supplierInvoiceNumber" placeholder="ex: FT 252854" />
+              </Field>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Regularização">
+                <select name="paymentRegularization" className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm">
+                  <option value="">— sem valor —</option>
+                  <option value="R">R - Regularizado</option>
+                  <option value="NR">NR - Não regularizado</option>
+                </select>
+              </Field>
+              <Field label="Mês pagamento">
+                <Input name="paymentMonth" placeholder="ex: Março" />
               </Field>
             </div>
             <Field label="Notas (opcional)">
@@ -83,7 +119,7 @@ export default async function NewLoadPage() {
         <CardContent className="p-4 text-xs text-muted-foreground">
           <strong>Regras:</strong> margem = preçoVenda − preçoCompra. Carga criada em estado <code>scheduled</code>.
           Só transita quando marcas entregue (manual), regista factura fornecedor, factura cliente e recebimento.
-          Comissão é calculada ao atingir estado <code>paid</code> (15% default · 18% Éder).
+          Comissão: 20% do lucro total + bónus de €2,50 nacional ou €5 internacional quando a carga usa viatura Lloretrans.
         </CardContent>
       </Card>
     </div>

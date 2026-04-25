@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { db } from "@/db/client";
-import { freightLoads, clients, suppliers, users, supplierInvoicesFreight, clientInvoicesFreight, commissions } from "@/db/schema";
-import { and, desc, eq, gte, lt, isNull, count, sum } from "drizzle-orm";
-import { getSession, requireRole } from "@/lib/auth/session";
+import { freightLoads, clients, users, supplierInvoicesFreight, clientInvoicesFreight, commissions } from "@/db/schema";
+import { and, desc, eq, gte, lt, isNull, count, sum, ilike, or, type SQL } from "drizzle-orm";
+import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StatusPill } from "@/components/ui/status-pill";
 import { formatEur, formatPercent } from "@/lib/money";
 import { formatDate } from "@/lib/dates";
 import { FREIGHT_STATES, STATE_LABELS, type FreightState } from "@/lib/freight-state";
@@ -24,30 +23,43 @@ const COUNTRY_FLAG: Record<string, string> = {
   NL: "🇳🇱",
 };
 
-const PILL_BY_STATE: Record<FreightState, "neutral" | "yellow" | "green"> = {
-  scheduled: "neutral",
-  delivered: "neutral",
-  supplier_invoiced: "yellow",
-  client_invoiced: "yellow",
-  paid: "green",
-};
-
 export default async function BolsaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string; mine?: string }>;
+  searchParams: Promise<{ view?: string; mine?: string; regularization?: string; carrier?: string; client?: string; q?: string }>;
 }) {
   const session = await requireRole(["admin", "clarice", "comercial", "admin_faturacao"]);
-  const { view = "kanban", mine } = await searchParams;
+  const { view = "table", mine, regularization, carrier, client, q } = await searchParams;
   const showMineOnly = session.role === "comercial" || mine === "1";
 
   const monthStart = new Date();
   monthStart.setDate(1);
   monthStart.setHours(0, 0, 0, 0);
 
-  const whereMine = showMineOnly ? eq(freightLoads.salespersonId, session.userId) : undefined;
+  const conditions: SQL[] = [];
+  if (showMineOnly) conditions.push(eq(freightLoads.salespersonId, session.userId));
+  if (regularization === "R" || regularization === "NR") conditions.push(eq(freightLoads.paymentRegularization, regularization));
+  if (regularization === "blank") conditions.push(isNull(freightLoads.paymentRegularization));
+  if (carrier === "internal") conditions.push(eq(freightLoads.carrierKind, "internal_lloretrans"));
+  if (carrier === "external") conditions.push(eq(freightLoads.carrierKind, "external_transporter"));
+  if (client) conditions.push(eq(clients.name, client));
+  if (q) {
+    const needle = `%${q}%`;
+    conditions.push(
+      or(
+        ilike(freightLoads.origin, needle),
+        ilike(freightLoads.destination, needle),
+        ilike(freightLoads.carrierName, needle),
+        ilike(freightLoads.cmrNumber, needle),
+        ilike(freightLoads.customerInvoiceNumber, needle),
+        ilike(freightLoads.supplierInvoiceNumber, needle),
+        ilike(clients.name, needle),
+      ),
+    );
+  }
+  const whereClause = conditions.length ? and(...conditions) : undefined;
 
-  const [rows, deviations, unpaid] = await Promise.all([
+  const [rows, deviations, unpaid, clientOptions] = await Promise.all([
     db
       .select({
         id: freightLoads.id,
@@ -55,11 +67,20 @@ export default async function BolsaPage({
         state: freightLoads.state,
         origin: freightLoads.origin,
         destination: freightLoads.destination,
+        loadedAt: freightLoads.loadedAt,
         priceBuy: freightLoads.priceBuy,
         priceSell: freightLoads.priceSell,
         margin: freightLoads.margin,
         marginPct: freightLoads.marginPct,
         plate: freightLoads.plate,
+        trailerPlate: freightLoads.trailerPlate,
+        carrierName: freightLoads.carrierName,
+        carrierKind: freightLoads.carrierKind,
+        cmrNumber: freightLoads.cmrNumber,
+        customerInvoiceNumber: freightLoads.customerInvoiceNumber,
+        supplierInvoiceNumber: freightLoads.supplierInvoiceNumber,
+        paymentRegularization: freightLoads.paymentRegularization,
+        paymentMonth: freightLoads.paymentMonth,
         clientName: clients.name,
         clientCountry: clients.country,
         salesName: users.name,
@@ -68,7 +89,7 @@ export default async function BolsaPage({
       .from(freightLoads)
       .leftJoin(clients, eq(clients.id, freightLoads.clientId))
       .leftJoin(users, eq(users.id, freightLoads.salespersonId))
-      .where(whereMine)
+      .where(whereClause)
       .orderBy(desc(freightLoads.createdAt))
       .limit(300),
     db
@@ -79,6 +100,7 @@ export default async function BolsaPage({
       .select({ n: count() })
       .from(clientInvoicesFreight)
       .where(and(isNull(clientInvoicesFreight.paidAt), lt(clientInvoicesFreight.dueAt, new Date()))),
+    db.select({ name: clients.name }).from(clients).orderBy(clients.name),
   ]);
 
   const totalMonth = rows.filter((r) => r.createdAt >= monthStart).length;
@@ -118,7 +140,7 @@ export default async function BolsaPage({
             )}
             <Button variant="outline" asChild>
               <Link href={`/bolsa?view=${view === "kanban" ? "table" : "kanban"}${mine ? "&mine=1" : ""}`}>
-                {view === "kanban" ? "Tabela" : "Kanban"}
+                {view === "kanban" ? "Tabela Excel" : "Kanban"}
               </Link>
             </Button>
             <Button variant="outline" asChild>
@@ -151,6 +173,39 @@ export default async function BolsaPage({
           accent={(deviations[0]?.n ?? 0) + (unpaid[0]?.n ?? 0) > 0 ? "destructive" : "muted"}
         />
       </div>
+
+      <Card>
+        <CardContent className="p-4">
+          <form className="grid gap-3 md:grid-cols-[1fr_160px_160px_220px_auto]">
+            <input type="hidden" name="view" value={view} />
+            {mine && <input type="hidden" name="mine" value={mine} />}
+            <input
+              name="q"
+              defaultValue={q ?? ""}
+              placeholder="Pesquisar cliente, rota, transportador, CMR ou factura"
+              className="h-9 rounded-md border border-border bg-background px-3 text-sm"
+            />
+            <select name="regularization" defaultValue={regularization ?? ""} className="h-9 rounded-md border border-border bg-background px-3 text-sm">
+              <option value="">R/NR: todas</option>
+              <option value="R">R</option>
+              <option value="NR">NR</option>
+              <option value="blank">Sem valor</option>
+            </select>
+            <select name="carrier" defaultValue={carrier ?? ""} className="h-9 rounded-md border border-border bg-background px-3 text-sm">
+              <option value="">Transportador: todos</option>
+              <option value="internal">Lloretrans</option>
+              <option value="external">Externos</option>
+            </select>
+            <select name="client" defaultValue={client ?? ""} className="h-9 rounded-md border border-border bg-background px-3 text-sm">
+              <option value="">Cliente: todos</option>
+              {clientOptions.map((option) => (
+                <option key={option.name} value={option.name}>{option.name}</option>
+              ))}
+            </select>
+            <Button type="submit" variant="outline">Filtrar</Button>
+          </form>
+        </CardContent>
+      </Card>
 
       {view === "kanban" ? (
         <div className="grid gap-3 md:grid-cols-5">
@@ -199,33 +254,44 @@ export default async function BolsaPage({
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Ref</th>
+                  <th>Data</th>
+                  <th>Viatura</th>
+                  <th>Reboque</th>
+                  <th>Transportador</th>
                   <th>Cliente</th>
-                  <th>Rota</th>
-                  <th>Comercial</th>
-                  <th className="text-right">Compra</th>
-                  <th className="text-right">Venda</th>
+                  <th>Carga</th>
+                  <th>Descarga</th>
+                  <th className="text-right">Preço Cliente</th>
+                  <th className="text-right">Pago Transportador</th>
                   <th className="text-right">Margem</th>
-                  <th>Estado</th>
+                  <th>Nº CMR</th>
+                  <th>Nº Fatura Cliente</th>
+                  <th>Nº Fatura Fornecedor</th>
+                  <th>R/NR</th>
+                  <th>Mês Pagamento</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.id}>
-                    <td className="font-mono text-xs">{r.reference}</td>
-                    <td>
-                      <span className="mr-1">{COUNTRY_FLAG[r.clientCountry ?? "PT"] ?? ""}</span>
-                      {r.clientName ?? "—"}
-                    </td>
-                    <td className="text-xs">{r.origin} → {r.destination}</td>
-                    <td className="text-xs">{r.salesName}</td>
-                    <td className="text-right font-mono">{formatEur(r.priceBuy)}</td>
+                    <td className="font-mono text-xs">{r.loadedAt ? formatDate(r.loadedAt) : "—"}</td>
+                    <td className="font-mono text-xs">{r.plate ?? "—"}</td>
+                    <td className="font-mono text-xs">{r.trailerPlate ?? "—"}</td>
+                    <td className="text-xs">{r.carrierName ?? "—"}</td>
+                    <td className="text-xs">{r.clientName ?? "—"}</td>
+                    <td className="text-xs">{r.origin}</td>
+                    <td className="text-xs">{r.destination}</td>
                     <td className="text-right font-mono">{formatEur(r.priceSell)}</td>
+                    <td className="text-right font-mono">{formatEur(r.priceBuy)}</td>
                     <td className="text-right font-mono">
                       {formatEur(r.margin)} <span className="text-muted-foreground text-xs">({formatPercent(r.marginPct)})</span>
                     </td>
-                    <td><StatusPill status={PILL_BY_STATE[r.state as FreightState]}>{STATE_LABELS[r.state as FreightState]}</StatusPill></td>
+                    <td className="font-mono text-xs">{r.cmrNumber ?? "—"}</td>
+                    <td className="font-mono text-xs">{r.customerInvoiceNumber ?? "—"}</td>
+                    <td className="font-mono text-xs">{r.supplierInvoiceNumber ?? "—"}</td>
+                    <td className="font-mono text-xs">{r.paymentRegularization ?? "—"}</td>
+                    <td className="text-xs">{r.paymentMonth ?? "—"}</td>
                     <td><Button size="sm" variant="outline" asChild><Link href={`/bolsa/${r.id}`}>Abrir</Link></Button></td>
                   </tr>
                 ))}

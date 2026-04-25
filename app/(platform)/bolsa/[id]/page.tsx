@@ -11,6 +11,7 @@ import {
   clients,
   suppliers,
   users,
+  vehicles,
 } from "@/db/schema";
 import { and, desc, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
@@ -23,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { formatEur, formatPercent } from "@/lib/money";
 import { formatDate, formatDateTime } from "@/lib/dates";
 import { STATE_LABELS, nextStates, rollbackStates, type FreightState } from "@/lib/freight-state";
+import { computeCommissionAmount } from "@/lib/commission-rule";
 import {
   transitionState,
   registerSupplierInvoice,
@@ -44,6 +46,15 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
       loadedAt: freightLoads.loadedAt,
       deliveredAt: freightLoads.deliveredAt,
       plate: freightLoads.plate,
+      trailerPlate: freightLoads.trailerPlate,
+      carrierName: freightLoads.carrierName,
+      carrierKind: freightLoads.carrierKind,
+      cmrNumber: freightLoads.cmrNumber,
+      customerInvoiceNumber: freightLoads.customerInvoiceNumber,
+      supplierInvoiceNumber: freightLoads.supplierInvoiceNumber,
+      paymentRegularization: freightLoads.paymentRegularization,
+      paymentMonth: freightLoads.paymentMonth,
+      serviceValueEur: freightLoads.serviceValueEur,
       priceBuy: freightLoads.priceBuy,
       priceSell: freightLoads.priceSell,
       margin: freightLoads.margin,
@@ -66,7 +77,7 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
     .limit(1);
   if (!row) notFound();
 
-  const [transitions, supInv, cliInv, comm, rules] = await Promise.all([
+  const [transitions, supInv, cliInv, comm, rules, internalVehicles] = await Promise.all([
     db
       .select()
       .from(freightStateTransitions)
@@ -76,12 +87,25 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
     db.select().from(clientInvoicesFreight).where(eq(clientInvoicesFreight.loadId, id)),
     db.select().from(commissions).where(eq(commissions.loadId, id)),
     db.select().from(commissionRules),
+    db.select({ plate: vehicles.plate }).from(vehicles).where(eq(vehicles.isInternal, true)),
   ]);
 
   const currentState = row.state as FreightState;
   const rule =
     rules.find((r) => r.salespersonId === row.salespersonId) ?? rules.find((r) => r.salespersonId == null);
-  const commPreview = rule ? row.margin * rule.percentOfMargin : null;
+  const commPreview = rule
+    ? computeCommissionAmount(
+        { margin: row.margin, marginPct: row.marginPct, plate: row.plate, origin: row.origin, destination: row.destination },
+        {
+          percentOfMargin: rule.percentOfMargin,
+          fixedBonusNationalEur: rule.fixedBonusNationalEur,
+          fixedBonusInternationalEur: rule.fixedBonusInternationalEur,
+          requireInternalVehicle: rule.requireInternalVehicle,
+          minMarginPct: rule.minMarginPct ?? 0,
+        },
+        new Set(internalVehicles.map((v) => v.plate)),
+      )
+    : null;
 
   const hasDeviation = supInv.some((s) => s.state === "deviation_detected");
   const hasOverdue = cliInv.some((s) => !s.paidAt && s.dueAt < new Date());
@@ -110,14 +134,24 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
             <Kv label="Estado" value={STATE_LABELS[currentState]} />
             <Kv label="Comercial" value={row.salesName ?? "—"} />
             <Kv label="Criada" value={formatDate(row.createdAt)} />
-            <Kv label="Fornecedor" value={row.supplierName ?? "—"} />
+            <Kv label="Transportador" value={row.carrierName ?? row.supplierName ?? "—"} />
             <Kv label="Matrícula" value={row.plate ?? "externa"} />
+            <Kv label="Reboque" value={row.trailerPlate ?? "—"} />
             <Kv label="Prazo pag. cliente" value={`${row.clientTerms ?? 60}d`} />
-            <Kv label="Preço compra" value={formatEur(row.priceBuy)} />
-            <Kv label="Preço venda" value={formatEur(row.priceSell)} />
+            <Kv label="Preço Cliente" value={formatEur(row.priceSell)} />
+            <Kv label="Pago Transportador" value={formatEur(row.priceBuy)} />
             <Kv label="Margem" value={`${formatEur(row.margin)} · ${formatPercent(row.marginPct)}`} strong />
+            <Kv label="Nº CMR" value={row.cmrNumber ?? "—"} />
+            <Kv label="Fatura cliente" value={row.customerInvoiceNumber ?? "—"} />
+            <Kv label="Fatura fornecedor" value={row.supplierInvoiceNumber ?? "—"} />
+            <Kv label="R/NR" value={row.paymentRegularization ?? "—"} />
+            <Kv label="Mês pagamento" value={row.paymentMonth ?? "—"} />
+            {row.serviceValueEur != null && <Kv label="Valor serviço" value={formatEur(row.serviceValueEur)} />}
             {commPreview != null && (
-              <Kv label={`Comissão (${Math.round((rule?.percentOfMargin ?? 0) * 100)}%)`} value={formatEur(commPreview)} />
+              <Kv
+                label={`Comissão (${Math.round((rule?.percentOfMargin ?? 0) * 100)}% + bónus)`}
+                value={commPreview.eligible ? formatEur(commPreview.amountEur) : commPreview.reason}
+              />
             )}
             {row.notes && <div className="sm:col-span-3 text-xs text-muted-foreground italic border-t border-border pt-2">{row.notes}</div>}
           </CardContent>

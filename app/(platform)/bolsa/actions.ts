@@ -12,6 +12,7 @@ import {
   commissions,
   commissionRules,
   vehicles,
+  suppliers,
 } from "@/db/schema";
 import { requireRole, getSession } from "@/lib/auth/session";
 import { audit } from "@/lib/audit";
@@ -24,19 +25,34 @@ export async function createLoad(formData: FormData): Promise<void> {
 
   const clientId = formData.get("clientId")?.toString();
   const supplierId = formData.get("supplierId")?.toString();
+  const carrierNameInput = formData.get("carrierName")?.toString().trim() || null;
   const origin = formData.get("origin")?.toString();
   const destination = formData.get("destination")?.toString();
   const plate = formData.get("plate")?.toString() || null;
+  const trailerPlate = formData.get("trailerPlate")?.toString().trim() || null;
   const priceBuy = Number(formData.get("priceBuy"));
   const priceSell = Number(formData.get("priceSell"));
+  const cmrNumber = formData.get("cmrNumber")?.toString().trim() || null;
+  const customerInvoiceNumber = formData.get("customerInvoiceNumber")?.toString().trim() || null;
+  const supplierInvoiceNumber = formData.get("supplierInvoiceNumber")?.toString().trim() || null;
+  const paymentRegularization = formData.get("paymentRegularization")?.toString().trim() || null;
+  const paymentMonth = formData.get("paymentMonth")?.toString().trim() || null;
+  const serviceValueRaw = formData.get("serviceValueEur")?.toString();
+  const serviceValueEur = serviceValueRaw ? Number(serviceValueRaw) : null;
   const notes = formData.get("notes")?.toString() || null;
 
-  if (!clientId || !supplierId || !origin || !destination) throw new Error("Campos obrigatórios em falta");
+  if (!clientId || !origin || !destination) throw new Error("Campos obrigatórios em falta");
   if (!Number.isFinite(priceBuy) || !Number.isFinite(priceSell)) throw new Error("Preços inválidos");
   if (priceBuy <= 0 || priceSell <= 0) throw new Error("Preços têm de ser > 0");
+  if (serviceValueEur != null && !Number.isFinite(serviceValueEur)) throw new Error("Valor serviço inválido");
 
   const margin = Math.round((priceSell - priceBuy) * 100) / 100;
   const marginPct = priceBuy > 0 ? margin / priceBuy : 0;
+  const selectedSupplier = supplierId
+    ? (await db.select({ name: suppliers.name }).from(suppliers).where(eq(suppliers.id, supplierId)).limit(1))[0]
+    : null;
+  const carrierName = carrierNameInput ?? selectedSupplier?.name ?? "LLORETRANS";
+  const carrierKind = supplierId ? "external_transporter" : "internal_lloretrans";
 
   const reference = `CGA-${new Date().getFullYear()}/${Date.now().toString().slice(-5)}`;
   const id = randomId("load");
@@ -47,7 +63,16 @@ export async function createLoad(formData: FormData): Promise<void> {
     reference,
     salespersonId: session.userId,
     clientId,
-    supplierId,
+    supplierId: supplierId || null,
+    carrierName,
+    carrierKind,
+    trailerPlate,
+    customerInvoiceNumber,
+    supplierInvoiceNumber,
+    cmrNumber,
+    paymentRegularization,
+    paymentMonth,
+    serviceValueEur,
     origin,
     destination,
     priceBuy,

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { AitiproFreightLoad } from "@/lib/freight/excel-model";
+import { computeCommissionAmount } from "@/lib/commission-rule";
 
 const loads = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "fixtures", "aitipro", "freight-loads.json"), "utf-8"),
@@ -29,5 +30,15 @@ describe("real freight workflow", () => {
     const priced = loads.filter((load) => load.marginEur != null);
     const margin = Math.round(priced.reduce((sum, load) => sum + (load.marginEur ?? 0), 0) * 100) / 100;
     expect(margin).toBe(-1800);
+  });
+
+  it("pays Lloretrans fixed bonus even when margin is zero", () => {
+    const result = computeCommissionAmount(
+      { margin: 0, marginPct: 0, plate: "BQ-66-GV", origin: "MARL", destination: "ALGOZ" },
+      { percentOfMargin: 0.2, fixedBonusNationalEur: 2.5, fixedBonusInternationalEur: 5, requireInternalVehicle: true, minMarginPct: 0 },
+      new Set(["BQ-66-GV"]),
+    );
+    expect(result.eligible).toBe(true);
+    expect(result.amountEur).toBe(2.5);
   });
 });
