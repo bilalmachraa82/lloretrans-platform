@@ -62,7 +62,7 @@ No login, escolhe um dos perfis pré-seeded. Cada role vê apenas os módulos qu
 ## Script para a próxima reunião com a Clarice (20 min)
 
 1. **Entra como Clarice.** Dashboard mostra os 6 KPIs — liga cada um a uma dor conhecida da reunião.
-2. **Abre MVP B · OCR.** Mostra as 9 facturas reais já classificadas (Moeve Pro, Policalço, Selcar, etc.). Entra em Selcar — vê a regra aprendida "Selcar = sistemas de frio" já em memória. Altera código → novo rule criado → próxima Selcar classifica-se sozinha. **Argumento:** o conhecimento tácito da administrativa passa a ser do sistema.
+2. **Abre MVP B · OCR.** Mostra as 9 facturas reais já classificadas (Würth, Policalço, Selcar, Popapneus, Prevrod, Vesauto/Carby, Flexbor, SGP-Global Parts, Blinker). Entra em Policalço ou Selcar — vê a regra aprendida por fornecedor já em memória. Altera código → novo rule criado → próxima factura desse fornecedor classifica-se sozinha. **Argumento:** o conhecimento tácito da administrativa passa a ser do sistema.
 3. **MVP A · km.** Filtra verdes → clica "Aprovar todas" → audit log regista. Abre uma amarela → mostra o valor GPS proposto → aceita com 1 clique. **Argumento:** tempo que era manual + risco de passar erros para facturação, eliminado.
 4. **MVP E · Bolsa.** Vista kanban. Abre uma carga em deviation_detected → mostra alerta factura fornecedor. Vai a `/bolsa/commissions` → vê comissão calculada sem Excel. **Argumento:** substitui o Excel de 1000 linhas e protege os comerciais de erros de cruzamento.
 5. **MVP F · Oficina.** Abre `/oficina/new` como mecânico. Mostra que em 6 toques e 2 min a folha está submetida. **Argumento principal:** risco de adopção é real — apresenta o processo honesto de piloto com 1 mecânico antes de alargar.

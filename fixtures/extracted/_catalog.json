@@ -1,9 +1,11 @@
 {
   "description": "Catálogo das 9 facturas reais (validadas com PDFs enviados pelo Éder em 2026-04-20). Fornecedores reais Lloretrans: Würth, Policalço, Selcar, Popapneus, Prevrod, Carby/Vesauto, Flexbor, SGP-Global Parts, Blinker.",
   "note": "Em produção, esta extracção é feita por Azure Document Intelligence EU ou Claude API. O resultado fica cacheado em ocr_extractions. Este catálogo simula o cache com layouts reais já vistos.",
-  "source": "Anexos ao email Éder 2026-04-20 (pasta ~/Downloads/AITIPRO/Fatura*.pdf)",
+  "source": "Hash match against fixtures/aitipro/source-manifest.json generated from /Users/bilal/Downloads/AITIPRO",
   "entries": [
     {
+      "sourceFilename": "Fatura 4.pdf",
+      "fixtureFilename": "doc14723420260417152437.pdf",
       "filename": "doc14723420260417152437.pdf",
       "supplier": {
         "name": "Würth Portugal - Técnica de Montagem, Lda.",
@@ -27,13 +29,43 @@
         "note": "Consumíveis internos — sem matrícula específica"
       },
       "lines": [
-        { "description": "DOS FRENADOR ROLAMENTOS EXTRA FORTE 50G", "quantity": 2, "unitPrice": 40.0, "vatRate": 23, "total": 56.0, "serviceCode": "I8" },
-        { "description": "CA2050 - COLA SUPER RÁPIDA 20GR", "quantity": 2, "unitPrice": 11.74, "vatRate": 23, "total": 16.44, "serviceCode": "I8" },
-        { "description": "BROCA COMBI SMARTSTEP HSS M10", "quantity": 2, "unitPrice": 42.91, "vatRate": 23, "total": 68.66, "serviceCode": "I8" },
-        { "description": "PACK CHAPA MATRICULA", "quantity": 1, "unitPrice": 89.0, "vatRate": 23, "total": 89.0, "serviceCode": "I8" }
+        {
+          "description": "DOS FRENADOR ROLAMENTOS EXTRA FORTE 50G",
+          "quantity": 2,
+          "unitPrice": 40,
+          "vatRate": 23,
+          "total": 56,
+          "serviceCode": "I8"
+        },
+        {
+          "description": "CA2050 - COLA SUPER RÁPIDA 20GR",
+          "quantity": 2,
+          "unitPrice": 11.74,
+          "vatRate": 23,
+          "total": 16.44,
+          "serviceCode": "I8"
+        },
+        {
+          "description": "BROCA COMBI SMARTSTEP HSS M10",
+          "quantity": 2,
+          "unitPrice": 42.91,
+          "vatRate": 23,
+          "total": 68.66,
+          "serviceCode": "I8"
+        },
+        {
+          "description": "PACK CHAPA MATRICULA",
+          "quantity": 1,
+          "unitPrice": 89,
+          "vatRate": 23,
+          "total": 89,
+          "serviceCode": "I8"
+        }
       ]
     },
     {
+      "sourceFilename": "Fatura 3.pdf",
+      "fixtureFilename": "doc14723520260417152501.pdf",
       "filename": "doc14723520260417152501.pdf",
       "supplier": {
         "name": "Policalço - Peças Para Pesados, Lda.",
@@ -44,9 +76,9 @@
         "number": "FT 2026A1/3881",
         "issuedAt": "2026-04-07",
         "dueAt": "2026-05-07",
-        "totalNet": 1000.0,
-        "totalVat": 230.0,
-        "totalGross": 1230.0,
+        "totalNet": 1000,
+        "totalVat": 230,
+        "totalGross": 1230,
         "currency": "EUR",
         "plate": null
       },
@@ -57,12 +89,35 @@
         "note": "Calipers travão pesados (Meritor, BPW) → Mecânica Geral interna"
       },
       "lines": [
-        { "description": "CALIPER REPARADO MERITOR DUCO 225 ESQ AF ESQUERDO", "quantity": 1, "unitPrice": 200.0, "vatRate": 23, "total": 200.0, "serviceCode": "L7" },
-        { "description": "CALIPER REPARADO BPW 010 DIREITO", "quantity": 2, "unitPrice": 200.0, "vatRate": 23, "total": 400.0, "serviceCode": "L7" },
-        { "description": "CALIPER REPARADO BPW 020 ESQUERDO", "quantity": 2, "unitPrice": 200.0, "vatRate": 23, "total": 400.0, "serviceCode": "L7" }
+        {
+          "description": "CALIPER REPARADO MERITOR DUCO 225 ESQ AF ESQUERDO",
+          "quantity": 1,
+          "unitPrice": 200,
+          "vatRate": 23,
+          "total": 200,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "CALIPER REPARADO BPW 010 DIREITO",
+          "quantity": 2,
+          "unitPrice": 200,
+          "vatRate": 23,
+          "total": 400,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "CALIPER REPARADO BPW 020 ESQUERDO",
+          "quantity": 2,
+          "unitPrice": 200,
+          "vatRate": 23,
+          "total": 400,
+          "serviceCode": "L7"
+        }
       ]
     },
     {
+      "sourceFilename": "Fatura 2.pdf",
+      "fixtureFilename": "doc14723620260417152535.pdf",
       "filename": "doc14723620260417152535.pdf",
       "supplier": {
         "name": "Selcar / Rodrigues & Carvalho, Lda.",
@@ -86,13 +141,43 @@
         "note": "Peças IVECO: filtros óleo/gasóleo/ar + bomba água"
       },
       "lines": [
-        { "description": "Filtro de combustível (ADD62306)", "quantity": 1, "unitPrice": 7.71, "vatRate": 23, "total": 7.71, "serviceCode": "L7" },
-        { "description": "Filtro de óleo Mahle (OC297)", "quantity": 1, "unitPrice": 15.16, "vatRate": 23, "total": 15.16, "serviceCode": "L7" },
-        { "description": "Filtro de ar (ADC42236)", "quantity": 1, "unitPrice": 25.32, "vatRate": 23, "total": 25.32, "serviceCode": "L7" },
-        { "description": "Bomba de água (ADC49144)", "quantity": 1, "unitPrice": 56.4, "vatRate": 23, "total": 56.4, "serviceCode": "L7" }
+        {
+          "description": "Filtro de combustível (ADD62306)",
+          "quantity": 1,
+          "unitPrice": 7.71,
+          "vatRate": 23,
+          "total": 7.71,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "Filtro de óleo Mahle (OC297)",
+          "quantity": 1,
+          "unitPrice": 15.16,
+          "vatRate": 23,
+          "total": 15.16,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "Filtro de ar (ADC42236)",
+          "quantity": 1,
+          "unitPrice": 25.32,
+          "vatRate": 23,
+          "total": 25.32,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "Bomba de água (ADC49144)",
+          "quantity": 1,
+          "unitPrice": 56.4,
+          "vatRate": 23,
+          "total": 56.4,
+          "serviceCode": "L7"
+        }
       ]
     },
     {
+      "sourceFilename": "Fatura.pdf",
+      "fixtureFilename": "doc14723720260417152559.pdf",
       "filename": "doc14723720260417152559.pdf",
       "supplier": {
         "name": "Popapneus, Lda.",
@@ -116,13 +201,43 @@
         "note": "Pneu Bridgestone 385/55 R22.5 + equilíbrios → Pneus interno"
       },
       "lines": [
-        { "description": "U.M.A. Unidade Móvel Assistência", "quantity": 1, "unitPrice": 40.0, "vatRate": 23, "total": 40.0, "serviceCode": "L1" },
-        { "description": "Rebarbar + Aplicar Aparelho ABA Jante 22.5", "quantity": 2, "unitPrice": 15.5, "vatRate": 23, "total": 31.0, "serviceCode": "L1" },
-        { "description": "Equilíbrio roda pesada esfera cromática vidro", "quantity": 2, "unitPrice": 32.52, "vatRate": 23, "total": 65.04, "serviceCode": "L1" },
-        { "description": "Bridgestone 385/55 R22.5 RS02 Drive (Eixo Direção)", "quantity": 2, "unitPrice": 565.0, "vatRate": 23, "total": 1130.0, "serviceCode": "L1" }
+        {
+          "description": "U.M.A. Unidade Móvel Assistência",
+          "quantity": 1,
+          "unitPrice": 40,
+          "vatRate": 23,
+          "total": 40,
+          "serviceCode": "L1"
+        },
+        {
+          "description": "Rebarbar + Aplicar Aparelho ABA Jante 22.5",
+          "quantity": 2,
+          "unitPrice": 15.5,
+          "vatRate": 23,
+          "total": 31,
+          "serviceCode": "L1"
+        },
+        {
+          "description": "Equilíbrio roda pesada esfera cromática vidro",
+          "quantity": 2,
+          "unitPrice": 32.52,
+          "vatRate": 23,
+          "total": 65.04,
+          "serviceCode": "L1"
+        },
+        {
+          "description": "Bridgestone 385/55 R22.5 RS02 Drive (Eixo Direção)",
+          "quantity": 2,
+          "unitPrice": 565,
+          "vatRate": 23,
+          "total": 1130,
+          "serviceCode": "L1"
+        }
       ]
     },
     {
+      "sourceFilename": "Fatura 9.pdf",
+      "fixtureFilename": "doc14723820260417152625.pdf",
       "filename": "doc14723820260417152625.pdf",
       "supplier": {
         "name": "Prevrod - Consultadoria, Lda.",
@@ -133,7 +248,7 @@
         "number": "FT FT12/11649",
         "issuedAt": "2026-04-07",
         "dueAt": "2026-05-07",
-        "totalNet": 489.0,
+        "totalNet": 489,
         "totalVat": 112.47,
         "totalGross": 601.47,
         "currency": "EUR",
@@ -146,10 +261,19 @@
         "note": "Mensalidade PSLR · legislação rodoviária (software PHC GO do fornecedor)"
       },
       "lines": [
-        { "description": "PSLR - Prestação de serviços de legislação rodoviária, mês de março", "quantity": 1, "unitPrice": 489.0, "vatRate": 23, "total": 489.0, "serviceCode": "I2" }
+        {
+          "description": "PSLR - Prestação de serviços de legislação rodoviária, mês de março",
+          "quantity": 1,
+          "unitPrice": 489,
+          "vatRate": 23,
+          "total": 489,
+          "serviceCode": "I2"
+        }
       ]
     },
     {
+      "sourceFilename": "Fatura 8.pdf",
+      "fixtureFilename": "doc14723920260417152650.pdf",
       "filename": "doc14723920260417152650.pdf",
       "supplier": {
         "name": "Vesauto - Automóveis e Reparações, S.A. (Carby/Dacia)",
@@ -173,13 +297,43 @@
         "note": "Revisão 120/150K em Dacia Sandero III BS-95-JN · filtros, velas, correia"
       },
       "lines": [
-        { "description": "Revisão 120/150K · mão-de-obra", "quantity": 4, "unitPrice": 65.0, "vatRate": 23, "total": 260.0, "serviceCode": "L7" },
-        { "description": "Filtro habitáculo + óleo + ar + gasóleo (kit)", "quantity": 1, "unitPrice": 64.82, "vatRate": 23, "total": 64.82, "serviceCode": "L7" },
-        { "description": "Óleo 0W20 ELF EVO C5 RN (4.1L)", "quantity": 1, "unitPrice": 126.54, "vatRate": 23, "total": 126.54, "serviceCode": "L7" },
-        { "description": "3× Velas ignição + correia estriada + antigel", "quantity": 1, "unitPrice": 180.21, "vatRate": 23, "total": 180.21, "serviceCode": "L7" }
+        {
+          "description": "Revisão 120/150K · mão-de-obra",
+          "quantity": 4,
+          "unitPrice": 65,
+          "vatRate": 23,
+          "total": 260,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "Filtro habitáculo + óleo + ar + gasóleo (kit)",
+          "quantity": 1,
+          "unitPrice": 64.82,
+          "vatRate": 23,
+          "total": 64.82,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "Óleo 0W20 ELF EVO C5 RN (4.1L)",
+          "quantity": 1,
+          "unitPrice": 126.54,
+          "vatRate": 23,
+          "total": 126.54,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "3× Velas ignição + correia estriada + antigel",
+          "quantity": 1,
+          "unitPrice": 180.21,
+          "vatRate": 23,
+          "total": 180.21,
+          "serviceCode": "L7"
+        }
       ]
     },
     {
+      "sourceFilename": "Fatura 7.pdf",
+      "fixtureFilename": "doc14724020260417152720.pdf",
       "filename": "doc14724020260417152720.pdf",
       "supplier": {
         "name": "Flexbor - Soc. Técnica de Equipamentos, Lda.",
@@ -203,13 +357,43 @@
         "note": "Carretos 3/4\" + corrente de transmissão Renold · software PRIMAVERA BSS"
       },
       "lines": [
-        { "description": "Carreto simples 3/4\" Z=18 (25013418AP)", "quantity": 1, "unitPrice": 16.27, "vatRate": 23, "total": 16.27, "serviceCode": "L7" },
-        { "description": "Carreto simples 3/4\" Z=15 (25013415AP)", "quantity": 5, "unitPrice": 12.15, "vatRate": 23, "total": 60.75, "serviceCode": "L7" },
-        { "description": "Corrente transmissão simples Renold ASA60H-1 (3/4\")", "quantity": 10, "unitPrice": 16.07, "vatRate": 23, "total": 160.69, "serviceCode": "L7" },
-        { "description": "Elo de ligação / redução ASA060H", "quantity": 14, "unitPrice": 4.41, "vatRate": 23, "total": 61.7, "serviceCode": "L7" }
+        {
+          "description": "Carreto simples 3/4\" Z=18 (25013418AP)",
+          "quantity": 1,
+          "unitPrice": 16.27,
+          "vatRate": 23,
+          "total": 16.27,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "Carreto simples 3/4\" Z=15 (25013415AP)",
+          "quantity": 5,
+          "unitPrice": 12.15,
+          "vatRate": 23,
+          "total": 60.75,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "Corrente transmissão simples Renold ASA60H-1 (3/4\")",
+          "quantity": 10,
+          "unitPrice": 16.07,
+          "vatRate": 23,
+          "total": 160.69,
+          "serviceCode": "L7"
+        },
+        {
+          "description": "Elo de ligação / redução ASA060H",
+          "quantity": 14,
+          "unitPrice": 4.41,
+          "vatRate": 23,
+          "total": 61.7,
+          "serviceCode": "L7"
+        }
       ]
     },
     {
+      "sourceFilename": "Fatura 6.pdf",
+      "fixtureFilename": "doc14724120260417152817.pdf",
       "filename": "doc14724120260417152817.pdf",
       "supplier": {
         "name": "SGP-Global Parts, Lda.",
@@ -220,7 +404,7 @@
         "number": "FT F69/0000004725",
         "issuedAt": "2026-04-09",
         "dueAt": "2026-06-30",
-        "totalNet": 250.0,
+        "totalNet": 250,
         "totalVat": 57.5,
         "totalGross": 307.5,
         "currency": "EUR",
@@ -233,10 +417,19 @@
         "note": "Tubo · software PHC GO do fornecedor"
       },
       "lines": [
-        { "description": "TUBO (0040/2357654)", "quantity": 1, "unitPrice": 250.0, "vatRate": 23, "total": 250.0, "serviceCode": "L7" }
+        {
+          "description": "TUBO (0040/2357654)",
+          "quantity": 1,
+          "unitPrice": 250,
+          "vatRate": 23,
+          "total": 250,
+          "serviceCode": "L7"
+        }
       ]
     },
     {
+      "sourceFilename": "Fatura 5.pdf",
+      "fixtureFilename": "doc14724220260417152924.pdf",
       "filename": "doc14724220260417152924.pdf",
       "supplier": {
         "name": "Blinker Portugal, Lda.",
@@ -260,10 +453,38 @@
         "note": "Fusíveis + terminais eléctricos · Eletricista interno"
       },
       "lines": [
-        { "description": "Fusível ligável (5/10/3/15/20/25/30 A) · sortido", "quantity": 325, "unitPrice": 0.19, "vatRate": 23, "total": 61.62, "serviceCode": "L2" },
-        { "description": "Fusível mini (5/10/15/20/25/30 A) · sortido", "quantity": 150, "unitPrice": 0.22, "vatRate": 23, "total": 32.14, "serviceCode": "L2" },
-        { "description": "Fusível maxi 50/60 A", "quantity": 40, "unitPrice": 1.13, "vatRate": 23, "total": 45.2, "serviceCode": "L2" },
-        { "description": "Terminal especial masc./fêmea 1,5mm + estanque com estanho", "quantity": 200, "unitPrice": 0.83, "vatRate": 23, "total": 166.13, "serviceCode": "L2" }
+        {
+          "description": "Fusível ligável (5/10/3/15/20/25/30 A) · sortido",
+          "quantity": 325,
+          "unitPrice": 0.19,
+          "vatRate": 23,
+          "total": 61.62,
+          "serviceCode": "L2"
+        },
+        {
+          "description": "Fusível mini (5/10/15/20/25/30 A) · sortido",
+          "quantity": 150,
+          "unitPrice": 0.22,
+          "vatRate": 23,
+          "total": 32.14,
+          "serviceCode": "L2"
+        },
+        {
+          "description": "Fusível maxi 50/60 A",
+          "quantity": 40,
+          "unitPrice": 1.13,
+          "vatRate": 23,
+          "total": 45.2,
+          "serviceCode": "L2"
+        },
+        {
+          "description": "Terminal especial masc./fêmea 1,5mm + estanque com estanho",
+          "quantity": 200,
+          "unitPrice": 0.83,
+          "vatRate": 23,
+          "total": 166.13,
+          "serviceCode": "L2"
+        }
       ]
     }
   ]

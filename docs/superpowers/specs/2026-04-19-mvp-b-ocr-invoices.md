@@ -6,7 +6,7 @@
 
 ## Dor
 
-Facturas de fornecedor (9 reais amostra: Moeve Pro, Policalço, Selcar/Create Business, Prevrod, Popapneus, Dieselplace, Lubrigaz, Tecnicauto, Eurocamiones) chegam em PDF/papel, lançamento manual em PHC com classificação (S1/S2/S3/S9/S17 + obra interno/externo) por conhecimento tácito. Risco: pessoa que sabe sair = perda.
+Facturas de fornecedor (9 reais amostra: Würth, Policalço, Selcar, Popapneus, Prevrod, Vesauto/Carby, Flexbor, SGP-Global Parts, Blinker) chegam em PDF/papel, lançamento manual em PHC com classificação (S1-S9 externos, L1-L8 internos, I0-I9 operações internas + obra interno/externo) por conhecimento tácito. Risco: pessoa que sabe sair = perda.
 
 ## Solução (v1)
 

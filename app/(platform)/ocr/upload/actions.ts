@@ -11,6 +11,8 @@ import { audit } from "@/lib/audit";
 import { randomId } from "@/lib/utils";
 
 interface CatalogEntry {
+  sourceFilename: string;
+  fixtureFilename: string;
   filename: string;
   supplier: { name: string; taxId: string };
   invoice: {
@@ -37,7 +39,7 @@ export async function uploadInvoice(formData: FormData): Promise<void> {
 
   const catalogPath = path.join(process.cwd(), "fixtures", "extracted", "_catalog.json");
   const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf-8")) as { entries: CatalogEntry[] };
-  const entry = catalog.entries.find((e) => e.filename === fixtureFilename);
+  const entry = catalog.entries.find((e) => e.fixtureFilename === fixtureFilename);
   if (!entry) throw new Error("Fixture não encontrado");
 
   const existingSupplier = await db.select().from(suppliers).where(eq(suppliers.taxId, entry.supplier.taxId)).limit(1);
@@ -63,7 +65,7 @@ export async function uploadInvoice(formData: FormData): Promise<void> {
     workCode: entry.classification.workCode,
     state: "pending_review",
     confidenceAvg: entry.classification.confidence,
-    sourcePath: `/fixtures/real-invoices/${entry.filename}`,
+    sourcePath: `/fixtures/real-invoices/${entry.fixtureFilename}`,
     sourceHash: `reupload_${Date.now()}`,
     uploadedBy: session.userId,
     createdAt: now,
@@ -105,7 +107,7 @@ export async function uploadInvoice(formData: FormData): Promise<void> {
     action: "invoice.upload",
     entityType: "invoice",
     entityId: invId,
-    after: { filename: entry.filename, engine: "azure-doc-intel-stub" },
+    after: { filename: entry.fixtureFilename, sourceFilename: entry.sourceFilename, engine: "azure-doc-intel-stub" },
   });
 
   redirect(`/ocr/${invId}`);
