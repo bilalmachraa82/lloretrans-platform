@@ -47,9 +47,17 @@ const TEMPLATES: Record<string, Item[]> = {
     { id: "t4", kind: "part", description: "Pastilhas travão (jogo)", partCode: "PST-4W", quantity: 1, unitPrice: 285 },
     { id: "t5", kind: "labour", description: "Mão-de-obra travões", partCode: "", quantity: 2, unitPrice: 92 },
   ],
-  S17: [
+  L1: [
     { id: "t6", kind: "part", description: "Pneu 315/70 R22.5", partCode: "TYR-315", quantity: 4, unitPrice: 485 },
     { id: "t7", kind: "labour", description: "Montagem + equilibragem", partCode: "", quantity: 4, unitPrice: 25 },
+  ],
+  L2: [
+    { id: "t8", kind: "part", description: "Lâmpadas e cablagem", partCode: "ELEC-GEN", quantity: 1, unitPrice: 35 },
+    { id: "t9", kind: "labour", description: "Diagnóstico eléctrico", partCode: "", quantity: 1, unitPrice: 55 },
+  ],
+  L7: [
+    { id: "t10", kind: "part", description: "Kit revisão interna", partCode: "REV-INT", quantity: 1, unitPrice: 145 },
+    { id: "t11", kind: "labour", description: "Mecânica geral interna", partCode: "", quantity: 2, unitPrice: 55 },
   ],
 };
 
@@ -212,7 +220,7 @@ export function WorkOrderWizard({
           <CardHeader><CardTitle className="text-base">2. Tipo de serviço</CardTitle></CardHeader>
           <CardContent className="grid gap-2 sm:grid-cols-2">
             {serviceCodes
-              .filter((c) => c.kind === "oficina")
+              .filter((c) => c.kind === "oficina_interna" || c.kind === "oficina_externa")
               .map((c) => (
                 <button
                   key={c.code}
