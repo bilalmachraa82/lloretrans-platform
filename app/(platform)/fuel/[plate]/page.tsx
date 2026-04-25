@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { formatEur, formatNumber } from "@/lib/money";
 import { formatDate, formatDateTime } from "@/lib/dates";
 import { FuelComboChart } from "@/components/charts/combo-chart";
+import { FUEL_PROVIDER_LABELS, type FuelProvider } from "@/lib/fuel/provider-model";
 import { resolveAnomaly, reopenAnomaly } from "../actions";
 
 export default async function VehicleFuelPage({ params }: { params: Promise<{ plate: string }> }) {
@@ -41,6 +42,11 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
         totalEur: fuelFills.totalEur,
         location: fuelFills.location,
         cardNumber: fuelFills.cardNumber,
+        product: fuelFills.product,
+        stationCountry: fuelFills.stationCountry,
+        providerInvoiceNumber: fuelFills.providerInvoiceNumber,
+        sourceFile: fuelFills.sourceFile,
+        driverNameRaw: fuelFills.driverNameRaw,
         driverName: drivers.name,
       })
       .from(fuelFills)
@@ -94,9 +100,12 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Consumo CANBUS vs abastecimentos</CardTitle>
+          <CardTitle className="text-base">Abastecimentos vs odómetro disponível</CardTitle>
         </CardHeader>
         <CardContent>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Sinalização demo baseada em abastecimentos + odómetro disponível. Validação final depende da API Frotcom de leitura.
+          </p>
           <FuelComboChart data={chartData} />
         </CardContent>
       </Card>
@@ -149,9 +158,13 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
                 <tr>
                   <th>Quando</th>
                   <th>Fonte</th>
+                  <th>Produto</th>
+                  <th>País</th>
                   <th>Local</th>
                   <th>Motorista</th>
                   <th>Cartão</th>
+                  <th>Fatura fornecedor</th>
+                  <th>Ficheiro origem</th>
                   <th className="text-right">Litros</th>
                   <th className="text-right">€/L</th>
                   <th className="text-right">Total</th>
@@ -161,10 +174,14 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
                 {fills.slice(0, 100).map((f) => (
                   <tr key={f.id}>
                     <td className="text-xs whitespace-nowrap">{formatDateTime(f.filledAt)}</td>
-                    <td><Badge variant={f.source === "bomba_interna" ? "default" : "secondary"}>{f.source}</Badge></td>
+                    <td><Badge variant={f.source === "bomba_interna" ? "default" : "secondary"}>{providerLabel(f.source)}</Badge></td>
+                    <td className="text-xs">{f.product ?? "—"}</td>
+                    <td className="text-xs">{f.stationCountry ?? "—"}</td>
                     <td className="text-xs">{f.location}</td>
-                    <td className="text-xs">{f.driverName ?? "—"}</td>
+                    <td className="text-xs">{f.driverName ?? f.driverNameRaw ?? "—"}</td>
                     <td className="font-mono text-xs">{f.cardNumber}</td>
+                    <td className="font-mono text-xs">{f.providerInvoiceNumber ?? "—"}</td>
+                    <td className="text-xs">{f.sourceFile ?? "—"}</td>
                     <td className="text-right font-mono">{formatNumber(f.liters)}</td>
                     <td className="text-right font-mono">{f.pricePerLiter?.toFixed(3) ?? "—"}</td>
                     <td className="text-right font-mono">{formatEur(f.totalEur)}</td>
@@ -177,6 +194,10 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
       </Card>
     </div>
   );
+}
+
+function providerLabel(source: string): string {
+  return FUEL_PROVIDER_LABELS[source as FuelProvider] ?? source;
 }
 
 function Kpi({ label, value }: { label: string; value: string }) {

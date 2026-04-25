@@ -81,7 +81,7 @@ export default async function FuelPage() {
     <div className="space-y-6">
       <PageHeader
         title="Combustível · últimos 30 dias"
-        description="CANBUS Frotcom × abastecimentos bomba interna + SEPSA + Repsol + Anamor"
+        description="Abastecimentos reais Cepsa, Repsol, Radius Velocity e bomba interna · Frotcom GPS/API por confirmar"
         actions={
           <form action={exportMonthlyReport} className="flex gap-2">
             <input type="hidden" name="year" value={now.getFullYear()} />
@@ -99,10 +99,20 @@ export default async function FuelPage() {
       </div>
 
       <Card>
+        <CardContent className="p-4 text-sm text-muted-foreground">
+          Dados reais carregados: Cepsa 1261 linhas · Repsol 175 · Radius 96 · Bomba interna 629.
+          Frotcom anexo é mensalidade/equipamento, não leitura CANBUS.
+        </CardContent>
+      </Card>
+
+      <Card>
         <CardHeader>
-          <CardTitle className="text-base">Consumo médio frota por dia (CANBUS)</CardTitle>
+          <CardTitle className="text-base">Sinalização demo por dia</CardTitle>
         </CardHeader>
         <CardContent>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Sinalização demo baseada em abastecimentos + odómetro disponível. Validação final depende da API Frotcom de leitura.
+          </p>
           <SimpleLineChart data={chartData} yLabel="L/dia médio" />
         </CardContent>
       </Card>
