@@ -2,7 +2,7 @@
 
 **Versão:** 1.0 · 2026-04-19
 **Dependências de infra:** spec mestre 2026-04-19-platform-architecture.md
-**Dados seed:** 240 cargas em 3 meses · 2 comerciais (Éder 18%, Miguel 15%) · 160 comissões
+**Dados reais disponíveis:** 306 cargas datadas do Excel `Cargas Aluguer.xlsx` · 299 linhas com preço compra/venda · 26 transportadores · 41 clientes · margem global -€1.800.
 
 ## Dor
 
@@ -26,9 +26,9 @@ Transições só via acção humana. Cada transição escreve `freight_state_tra
 
 ### Comissões
 
-- Regra padrão: **15% da margem** (`priceSell - priceBuy`).
-- Regra override por comercial (Éder = 18%).
-- `minMarginPct` opcional (filtra cargas com margem mínima).
+- Regra confirmada: **20% do lucro total** (`priceSell - priceBuy`) + bónus de **€2,50 nacional** ou **€5 internacional** quando a carga usa viatura Lloretrans.
+- Em aberto: confirmar se `PREÇO CLIENTE` e `PAGO TRANSPORTADOR` representam venda/custo; o Excel mostra margem global negativa.
+- `minMarginPct` opcional (filtra cargas com margem mínima se o cliente formalizar essa regra).
 - `computeCommissions(period)` agrega cargas `paid` do mês e gera rows em `commissions`.
 - `markCommissionsPaid(period, salesperson)` marca pago + audit.
 

@@ -85,7 +85,7 @@ lloretrans-platform/
 Schema único `db/schema.ts` mas organizado por secções lógicas:
 
 - **Core:** `users`, `roles`, `companies` (Lloretrans + empresas do grupo), `audit_log`, `feature_flags`.
-- **Masters:** `vehicles` (matrícula, tipologia, empresa proprietária), `service_codes` (S1/S2/S3/S9/S17 + descrições), `work_codes` (interno/externo), `suppliers` (NIF + regras OCR), `clients` (master PHC).
+- **Masters:** `vehicles` (matrícula, tipologia, empresa proprietária), `service_codes` (S1-S9 externos, L1-L8 internos, I0-I9 operações internas + descrições), `work_codes` (interno/externo), `suppliers` (NIF + regras OCR), `clients` (master PHC).
 - **MVP A:** `trips`, `km_reconciliations`, `km_approvals`.
 - **MVP B:** `invoices`, `invoice_lines`, `supplier_rules`, `ocr_extractions`.
 - **MVP C:** `documents`, `document_associations`, `document_permissions`.
@@ -114,7 +114,7 @@ export function createLogueTransClient(): LogueTransClient {
 }
 ```
 
-Mesma pattern para Frotcom, PHC, SEPSA, Repsol, Anamor.
+Mesma pattern para Frotcom, PHC, Cepsa, Repsol, Radius Velocity e bomba interna.
 
 ### 3.5 Auth — estratégia
 

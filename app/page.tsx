@@ -39,8 +39,8 @@ const MODULES = [
     problem: "50 fornecedores, 50 layouts. Conhecimento tácito de quem classifica sai com a pessoa.",
     solution: "Primeira factura de cada fornecedor: tu ensinas o sistema. A partir daí, automática. Export XML PHC.",
     icon: ReceiptText,
-    metric: "9+180",
-    metricLabel: "facturas reais + sintéticas",
+    metric: "9",
+    metricLabel: "facturas reais mapeadas",
   },
   {
     code: "C",
@@ -49,18 +49,18 @@ const MODULES = [
     problem: "CMR, guias, tickets de frio em papel disperso. WhatsApp caótico. Documentos perdem-se.",
     solution: "Hub único. 1 operador digitaliza. Associação automática à viagem por matrícula + data.",
     icon: FileStack,
-    metric: "1210",
-    metricLabel: "docs indexados",
+    metric: "4",
+    metricLabel: "amostras reais",
   },
   {
     code: "D",
     slug: "fuel",
     title: "Combustível",
-    problem: "CANBUS vs bomba interna vs cartões (SEPSA/REPSOL/ANAMOR) em 4 silos. Fuga invisível.",
-    solution: "Cruzamento automático. L/100 km por viatura. Anomalias sinalizadas, decisão humana.",
+    problem: "Cepsa/Repsol/Radius Velocity + bomba interna em ficheiros. Frotcom API de leitura pendente. Cruzamento manual.",
+    solution: "Cruzamento automático dos abastecimentos. L/100 km por viatura quando houver leitura. Anomalias sinalizadas, decisão humana.",
     icon: Fuel,
-    metric: "74",
-    metricLabel: "anomalias detectadas",
+    metric: "2161",
+    metricLabel: "linhas reais",
   },
   {
     code: "E",
@@ -69,8 +69,8 @@ const MODULES = [
     problem: "Excel 1000+ linhas. Factura cliente chega 1 mês depois. Comissões calculadas à mão.",
     solution: "Fluxo com 5 estados: do pedido à cobrança. Comissões automáticas. Alertas de desvio e atraso.",
     icon: PackageSearch,
-    metric: "240",
-    metricLabel: "cargas em 3 meses",
+    metric: "306",
+    metricLabel: "cargas reais Excel",
   },
   {
     code: "F",
@@ -79,8 +79,8 @@ const MODULES = [
     problem: "Mecânico preenche papel. Administrativa relança no PHC. Duplicação total.",
     solution: "App mobile offline-first. Mecânico em 3 minutos. Admin valida. Export PHC.",
     icon: Wrench,
-    metric: "360",
-    metricLabel: "folhas digitais",
+    metric: "17",
+    metricLabel: "itens checklist papel",
   },
 ];
 
@@ -188,8 +188,8 @@ export default function LandingPage() {
               />
             </div>
             <p className="text-[11px] text-muted-foreground mt-5 pl-6 lg:pl-10 leading-relaxed">
-              Ambiente de demonstração com dados determinísticos (9 facturas reais da oficina, restante sintético).
-              Produção replica o mesmo modelo contra os vossos sistemas.
+              Ambiente de demonstração com fixtures reais do evidence pack e dados determinísticos complementares.
+              Produção replica o mesmo modelo contra os vossos sistemas, após confirmação das integrações.
             </p>
           </div>
         </div>
@@ -330,7 +330,7 @@ export default function LandingPage() {
               <TrustCard icon={Globe} title="Dados na UE" body="Neon Postgres em Frankfurt (aws-eu-central-1). Deploy Vercel fra1. Zero dependências US." />
               <TrustCard icon={ShieldCheck} title="RGPD by default" body="Audit log imutável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
               <TrustCard icon={CheckCircle2} title="Humano no loop" body="IA regista, classifica, sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
-              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores prontos para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol, Radius. APIs Frotcom e Logue Trans confirmadas pelo cliente; falta integrador PHC do grupo." />
+              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores prontos para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do integrador PHC do grupo." />
             </div>
           </div>
         </div>

@@ -21,7 +21,7 @@ Mecânico preenche folha em papel. Administrativa da oficina relança manualment
 ## Fluxo multi-step
 
 1. **Matrícula** — autocomplete do master `vehicles`.
-2. **Serviço** — dropdown S1/S2/S3/S17 → carrega template de peças típicas.
+2. **Serviço** — dropdown S1-S9 externos, L1-L8 internos, I0-I9 operações internas → carrega template de peças típicas.
 3. **Items** — adicionar linhas: peça (código + descrição + qt + valor) ou mão-de-obra.
 4. **Fotos** — 3 stages: before / detail / after · `<input capture>`.
 5. **Assinatura** — canvas + `signature_pad` library · SVG path guardado.

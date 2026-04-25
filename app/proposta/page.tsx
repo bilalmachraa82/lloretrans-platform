@@ -36,7 +36,7 @@ const MVPS = [
     title: "Validação de Quilómetros",
     dor: "Administrativas entram em duas aplicações, viagem a viagem, a cruzar Logue Trans com Frotcom. Erros passam para a factura.",
     entrega:
-      "Dashboard diário com semáforo verde/amarelo/vermelho. Threshold configurável (default 10 km). Bulk-approve das verdes com um clique. Export CSV para PHC.",
+      "Dashboard diário com semáforo verde/amarelo/vermelho. Threshold confirmado 3 km. Bulk-approve das verdes com um clique. Export CSV para PHC.",
     semanas: "2–3",
     dependencias: "API Logue Trans (Hélio) · credenciais Frotcom (grupo)",
     tier: "Core · PRO · Enterprise",
@@ -70,11 +70,11 @@ const MVPS = [
     slug: "fuel",
     icon: Fuel,
     title: "Médias de Combustível",
-    dor: "CANBUS Frotcom, bomba interna, cartões SEPSA/REPSOL/ANAMOR em 4 silos. Fuga ou erro passa despercebido semanas.",
+    dor: "Cepsa/Repsol/Radius/bomba interna + Frotcom API pendente. O cruzamento manual deixa fuga ou erro passar despercebido semanas.",
     entrega:
-      "Cruzamento dos 4 silos. L/100km por viatura com baseline adaptativo. Anomalias sinalizadas (sinalização, não bloqueio — regra da Clarice). Relatório mensal.",
+      "Cruzamento dos abastecimentos reais por fornecedor. L/100km por viatura com baseline adaptativo quando a leitura Frotcom estiver disponível. Anomalias sinalizadas, não bloqueadas — regra da Clarice.",
     semanas: "3–4",
-    dependencias: "Plano Frotcom inclui CANBUS · método ingestão dos 3 cartões externos (API, CSV ou portal)",
+    dependencias: "API Frotcom de leitura por confirmar · ingestão periódica Cepsa/Repsol/Radius/bomba interna",
     tier: "PRO · Enterprise",
   },
   {
@@ -84,9 +84,9 @@ const MVPS = [
     title: "Bolsa de Carga + Comissões",
     dor: "Excel com 1000+ linhas/ano. Factura polaca demora 1 mês — comercial já não lembra. Comissões calculadas à mão no fim do mês.",
     entrega:
-      "Fluxo com 5 estados: agendado → entregue → fornecedor facturou → cliente facturou → pago. Comissões calculadas automaticamente (Éder 18%, default 15%). Alertas de desvio de factura e atraso de pagamento. Export Excel.",
+      "Excel real de 306 cargas em tabela auditada, com R/NR, CMR, facturas fornecedor/cliente e comissões por regra confirmada: 20% do lucro total + €2,50 nacional ou €5 internacional em viatura Lloretrans.",
     semanas: "6–10",
-    dependencias: "Integrador PHC (master clientes/fornecedores + emissão facturas) · regra de comissão formalizada",
+    dependencias: "Integrador PHC (master clientes/fornecedores + emissão facturas) · confirmar se PREÇO CLIENTE/PAGO TRANSPORTADOR representam venda/custo; Excel mostra margem global -€1.800",
     tier: "Enterprise",
   },
   {
@@ -143,7 +143,7 @@ const TIERS = [
     includes: [
       "6 MVPs + módulo Admin completo",
       "Multi-empresa com permissões cross (Frutas, Tomate, Cerejas)",
-      "APIs Logue Trans + Frotcom + SEPSA/REPSOL/ANAMOR",
+      "APIs Logue Trans + Frotcom leitura + Cepsa/Repsol/Radius/bomba interna",
       "PWA oficina + onboarding personalizado de mecânicos",
       "SLA 99% uptime · DPA formal assinado",
       "Roadmap conjunto · sprint review mensal com direcção",
@@ -175,10 +175,10 @@ const DEPENDENCIES = [
     mitigacao: "Demo opera com export XML enquanto integrador não está disponível",
   },
   {
-    label: "Plano Frotcom com CANBUS",
+    label: "API Frotcom de leitura",
     owner: "Administração grupo",
     bloqueia: "Precisão do MVP D",
-    mitigacao: "Viaturas sem CANBUS continuam a usar cartões · baseline híbrido",
+    mitigacao: "Enquanto não houver leitura live, o MVP D sinaliza com abastecimentos reais + odómetro disponível",
   },
   {
     label: "Shadow session administrativa",

@@ -4,7 +4,7 @@
 
 Next.js 15 único com 6 módulos operacionais cobrindo os 6 fluxos do PRD 2026-04-19.
 Todas as integrações externas (Logue Trans, Frotcom, PHC, cartões combustível) são stubs
-que lêem de dados sintéticos + 9 facturas reais da Lloretrans.
+que lêem de fixtures reais AITIPRO + dados demo complementares.
 
 **Demo-mode flag:** `USE_LIVE_APIS=false` por default. Trocar adaptadores stub → live é simples
 quando chegarem credenciais do cliente.
@@ -17,12 +17,9 @@ quando chegarem credenciais do cliente.
 npm install
 cp .env.example .env.local   # editar com DATABASE_URL do teu projecto Neon
 npm run db:push              # aplica schema em Neon (idempotente)
-npm run db:seed              # dataset determinista (2243 viagens, 189 facturas, ...)
+npm run db:seed              # fixtures reais AITIPRO + dados demo complementares
 npm run dev                  # arranca em http://localhost:3001
 ```
-
-No login, escolhe um dos 12 perfis pré-seeded. Cada role vê apenas os módulos que lhe
-interessam (`lib/auth/types.ts` → `MVP_ACCESS`).
 
 No login, escolhe um dos perfis pré-seeded. Cada role vê apenas os módulos que lhe interessam (`lib/auth/types.ts` → `MVP_ACCESS`).
 
@@ -35,7 +32,7 @@ No login, escolhe um dos perfis pré-seeded. Cada role vê apenas os módulos qu
 | km | A · Validação km | `/km` | Logue Trans × Frotcom · **tolerância 3 km** (verde ≤3 · amarelo ≤9 · vermelho) · bulk approve · audit |
 | ocr | B · OCR Facturas | `/ocr` | **9 facturas reais** mapeadas (Würth, Policalço, Selcar, Popapneus, Prevrod, Carby/Dacia, Flexbor, SGP, Blinker) · regras aprendidas por fornecedor · export XML PHC Advanced |
 | docs | C · Digitalização Central | `/docs` | Hub CMR + guias · associação automática à viagem · permissões cross-empresa (volume real: 4 000/mês) |
-| fuel | D · Combustível | `/fuel` | CANBUS × cartões (Cepsa, Repsol, Radius Velocity) + bomba interna · ranking L/100km · detecção de anomalias |
+| fuel | D · Combustível | `/fuel` | Cepsa, Repsol, Radius Velocity + bomba interna · Frotcom API de leitura por confirmar · ranking L/100km · detecção de anomalias |
 | bolsa | E · Bolsa de Carga | `/bolsa` | State machine 5 estados · **comissões: 20% lucro + €2,50 nac / €5 intl (só carros Lloretrans)** · alertas deviation/atraso |
 | oficina | F · Folha de Obra PWA | `/oficina` | **Telemóvel · offline** · 17-item checklist + substituição/verificação · assinatura canvas · export PHC Advanced |
 
@@ -61,12 +58,13 @@ No login, escolhe um dos perfis pré-seeded. Cada role vê apenas os módulos qu
 
 ## Script para a próxima reunião com a Clarice (20 min)
 
-1. **Entra como Clarice.** Dashboard mostra os 6 KPIs — liga cada um a uma dor conhecida da reunião.
-2. **Abre MVP B · OCR.** Mostra as 9 facturas reais já classificadas (Würth, Policalço, Selcar, Popapneus, Prevrod, Vesauto/Carby, Flexbor, SGP-Global Parts, Blinker). Entra em Policalço ou Selcar — vê a regra aprendida por fornecedor já em memória. Altera código → novo rule criado → próxima factura desse fornecedor classifica-se sozinha. **Argumento:** o conhecimento tácito da administrativa passa a ser do sistema.
-3. **MVP A · km.** Filtra verdes → clica "Aprovar todas" → audit log regista. Abre uma amarela → mostra o valor GPS proposto → aceita com 1 clique. **Argumento:** tempo que era manual + risco de passar erros para facturação, eliminado.
-4. **MVP E · Bolsa.** Vista kanban. Abre uma carga em deviation_detected → mostra alerta factura fornecedor. Vai a `/bolsa/commissions` → vê comissão calculada sem Excel. **Argumento:** substitui o Excel de 1000 linhas e protege os comerciais de erros de cruzamento.
-5. **MVP F · Oficina.** Abre `/oficina/new` como mecânico. Mostra que em 6 toques e 2 min a folha está submetida. **Argumento principal:** risco de adopção é real — apresenta o processo honesto de piloto com 1 mecânico antes de alargar.
-6. **Admin · Audit log.** Scroll. Cada click é rastreável. **Argumento:** RGPD e auditoria operacional sem esforço extra.
+1. **Admin · evidência carregada.** Começa em `/admin`: mostra masters reais, famílias S1-S9/L1-L8/I0-I9 e fornecedores OCR. **Argumento:** a demo já está ancorada no evidence pack recebido, não em dados inventados.
+2. **MVP E · Bolsa.** Abre `/bolsa` em tabela. Mostra as 306 cargas do Excel, R/NR, CMR, factura cliente, factura fornecedor e transportador. **Argumento:** substitui o Excel operacional sem mudar a lógica da equipa.
+3. **MVP E · comissão.** Abre uma carga Lloretrans e o relatório `/bolsa/commissions`. Mostra a regra 20% lucro + €2,50 nacional / €5 internacional e explica a margem global negativa do Excel como pergunta em aberto. **Argumento:** não prometemos lucro automático; damos rastreio e cálculo auditável.
+4. **MVP D · combustível.** Abre `/fuel`. Mostra Cepsa 1261 linhas, Repsol 175, Radius 96 e bomba interna 629. Explica que o ficheiro Frotcom recebido é mensalidade/equipamento; leitura API está pendente. **Argumento:** sinalização, não bloqueio.
+5. **MVP B · OCR.** Mostra as 9 facturas reais já classificadas (Würth, Policalço, Selcar, Popapneus, Prevrod, Carby/Dacia, Flexbor, SGP-Global Parts, Blinker). Entra em Policalço ou Selcar — vê a regra aprendida por fornecedor já em memória. **Argumento:** o conhecimento tácito da administrativa passa a ser do sistema.
+6. **MVP F · Oficina.** Abre `/oficina/new` como mecânico. Mostra o checklist de 17 itens da folha em papel e os códigos reais. **Argumento principal:** risco de adopção é real; piloto com 1 mecânico antes de alargar.
+7. **Perguntas abertas.** Fecha com as 5 perguntas ao Éder: sentido de `PREÇO CLIENTE`/`PAGO TRANSPORTADOR`, bónus com lucro zero, tolerância combustível, contacto integrador PHC, cobertura da digitalização.
 
 ---
 
@@ -86,11 +84,11 @@ Cada MVP foi desenhado para vender **controlo**, não tempo. O tempo é consequ�
 | 60 viaturas, 50 motoristas | Seed determinista PT (base real: 138 Lloretrans + frota grupo) | PHC Advanced master · integrador PHC por confirmar |
 | Viagens Logue Trans | Seed com jitter realista | API Logue Trans (aguarda Hélio) |
 | GPS Frotcom | Seed aligned com trips | Frotcom API |
-| Abastecimentos SEPSA/Repsol/Anamor | Seed | APIs ou CSV mensal |
-| CANBUS | Seed | Frotcom (confirmar plano inclui CANBUS) |
+| Abastecimentos Cepsa/Repsol/Radius/bomba interna | ✓ extraídos de ficheiros reais (2161 linhas) | APIs ou CSV mensal por fornecedor |
+| Frotcom leitura operacional | ⏳ pendente — ficheiro recebido é mensalidade/equipamento | Pedir API de leitura à Frotcom |
 | PHC export | XML local download | Integrador PHC do grupo |
-| Bolsa 240 cargas | Seed determinista | Novas criadas via UI |
-| Folhas oficina 360 | Seed | Criadas via PWA |
+| Bolsa 306 cargas | ✓ extraídas do Excel real | Novas criadas via UI |
+| Folhas oficina | Checklist real de 17 itens + demo seed | Criadas via PWA |
 
 Flag `USE_LIVE_APIS=true` + credenciais no `.env` activa as implementações `live` dos adaptadores.
 
@@ -103,12 +101,12 @@ Actualizado 2026-04-20 com feedback do Éder (resposta ao questionário):
 | # | Assunção | Estado | Fonte |
 |---|----------|--------|-------|
 | 1 | **API Logue Trans** existe e é lida | ✅ **Confirmada** — depende do dept. informática abrir acesso | Éder |
-| 2 | **API Frotcom** (leitura) | ✅ **Confirmada** — Éder pode pedir `API de Leitura` à Frotcom | Éder |
-| 3 | Plano Frotcom inclui CANBUS em **toda** a frota | ⏳ Por confirmar | pendente |
+| 2 | **API Frotcom** (leitura) | ⏳ Éder pode pedir `API de Leitura` à Frotcom; acesso técnico ainda pendente | Éder |
+| 3 | Cobertura Frotcom por viatura e campos disponíveis | ⏳ Por confirmar | pendente |
 | 4 | Integrador PHC colabora (escrita B/E/F) | ⏳ Contacto ainda não enviado; demo opera em modo degradado (XML) | pendente |
 | 5 | **Tabela códigos serviço** completa | ✅ **Recebida** — S1–S9 externos (cliente) · L1–L8 + I0–I9 internos | PDF Éder |
 | 6 | **Base viaturas grupo (interna/externa)** | ✅ **Recebida** — Viaturas Grupo.xlsx + Relação Lloretrans.xlsx | Éder |
-| 7 | **Margem km tolerável** | ✅ **3 km máximo** (era 10 km no seed inicial) | Éder |
+| 7 | **Margem km tolerável** | ✅ **3 km máximo** | Éder |
 | 8 | **Volume digitalização** | ✅ **4 000 facturas/mês** | Éder |
 | 9 | **Regras comissão comerciais** | ✅ **20% do lucro + €2,50 nacional · €5 internacional (só viaturas Lloretrans)** | Éder |
 | 10 | **Versão PHC** | ✅ **PHC Advanced** (não CS) | Éder |

@@ -12,8 +12,8 @@ Administrativas de faturação validam viagem-a-viagem comparando km declarados 
 
 Dashboard que recebe reconciliações pré-calculadas pelo seed/pipeline e apresenta-as por dia. Regra:
 
-- `|delta| <= threshold` (default 10 km) → **verde** → autoaprovação via botão bulk.
-- `10 < |delta| <= 30` → **amarelo** → pré-preenche `proposedKm` com valor GPS; administrativa confirma ou sobrepõe.
+- `|delta| <= threshold` (threshold confirmado 3 km) → **verde** → autoaprovação via botão bulk.
+- `3 < |delta| <= 9` → **amarelo** → pré-preenche `proposedKm` com valor GPS; administrativa confirma ou sobrepõe.
 - `|delta| > 30`, GPS sem sinal, ou motorista não lançou → **vermelho** → investigação humana obrigatória.
 
 GPS é fonte de verdade — excepto em `red` por gap de sinal, onde administrativa lança valor manual com motivo.
