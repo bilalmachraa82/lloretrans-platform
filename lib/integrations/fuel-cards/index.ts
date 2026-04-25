@@ -1,8 +1,9 @@
 import { db } from "@/db/client";
 import { fuelFills, vehicles } from "@/db/schema";
+import type { FuelProvider } from "@/lib/fuel/provider-model";
 import { and, eq, gte, lte } from "drizzle-orm";
 
-export type FuelCardProvider = "sepsa" | "repsol" | "anamor" | "bomba_interna";
+export type FuelCardProvider = FuelProvider;
 
 export interface FuelCardTransaction {
   provider: FuelCardProvider;

@@ -1,0 +1,29 @@
+{
+  "providers": {
+    "cepsa": {
+      "rows": 1261,
+      "totalLiters": 252635.02,
+      "totalEur": 383711.59
+    },
+    "repsol": {
+      "rows": 175,
+      "totalLiters": 17074.56,
+      "totalEur": 25847.72
+    },
+    "radius_velocity": {
+      "rows": 96,
+      "totalLiters": 32387.88,
+      "totalEur": 32450.29
+    },
+    "bomba_interna": {
+      "rows": 629,
+      "totalLiters": 111734.05,
+      "totalEur": 144938.48
+    },
+    "frotcom_fee": {
+      "rows": 181,
+      "totalLiters": 0,
+      "totalEur": 3824.2
+    }
+  }
+}
