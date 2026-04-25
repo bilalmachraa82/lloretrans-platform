@@ -31,8 +31,8 @@ export default async function DocsUploadPage() {
               <Upload className="h-10 w-10 text-muted-foreground" />
               <div className="text-sm font-medium">Arrastar PDFs ou carregar</div>
               <div className="text-xs text-muted-foreground max-w-md">
-                Demo: número abaixo simula ingestão. Em prod, scanner da portaria ou pasta de rede monitorizada
-                alimenta este hub · Azure Blob EU.
+                Amostras reais disponíveis: CMR, Guia Receção, Guia Transporte, Ticket Frio.
+                O upload real continua em modo demo; produção liga scanner/pasta de rede a Blob EU.
               </div>
               <input type="file" id="files" name="filename" multiple accept="application/pdf,image/*" className="hidden" />
             </label>

@@ -1,0 +1,6 @@
+[
+  { "sourceFilename": "CMR.jpeg", "kind": "cmr", "direction": "saida" },
+  { "sourceFilename": "Guia Receção.jpeg", "kind": "guia_recepcao", "direction": "entrada" },
+  { "sourceFilename": "Guia Transporte.jpeg", "kind": "guia_remessa", "direction": "saida" },
+  { "sourceFilename": "Ticket Frio.jpeg", "kind": "ticket_frio", "direction": "saida" }
+]

@@ -11,10 +11,13 @@ export function resolvePermissionScope(session: Pick<AuthSession, "role" | "comp
 }
 
 export function detectKindFromFilename(filename: string): IngestKind {
-  const lower = filename.toLowerCase();
+  const lower = filename
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
   if (lower.includes("cmr")) return "cmr";
-  if (lower.includes("recep")) return "guia_recepcao";
-  if (lower.includes("remessa") || lower.includes("remes") || lower.includes("guia")) return "guia_remessa";
+  if (lower.includes("rececao") || lower.includes("recepcao") || lower.includes("recep")) return "guia_recepcao";
+  if (lower.includes("transporte") || lower.includes("remessa") || lower.includes("remes") || lower.includes("guia")) return "guia_remessa";
   if (lower.includes("frio") || lower.includes("temp")) return "ticket_frio";
   if (lower.includes("tara")) return "controlo_tara";
   return "cmr";
