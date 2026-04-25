@@ -1,0 +1,275 @@
+{
+  "sourceRoot": "/Users/bilal/Downloads/AITIPRO",
+  "generatedAt": "2026-04-25T16:10:13.582Z",
+  "files": [
+    {
+      "relativePath": "CMR.jpeg",
+      "extension": ".jpeg",
+      "bytes": 160699,
+      "sha256": "a4d726b80b5a930ec37ac0cc0dbbc994df3f2ba799107297f50a84d9322b775a",
+      "usage": [
+        "MVP C"
+      ],
+      "privacyClass": "operational"
+    },
+    {
+      "relativePath": "Cargas Aluguer.xlsx",
+      "extension": ".xlsx",
+      "bytes": 117935,
+      "sha256": "0ce452d854784bede5464a23ddf3367179d1962cf0561283938fa28d38f71937",
+      "usage": [
+        "MVP E"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Combustível/Cepsa/transacciones-cepsa-19-03-2026.xlsx",
+      "extension": ".xlsx",
+      "bytes": 140706,
+      "sha256": "329a039cb6fe42f2ebce14eee3a03bd22ce740b4725282f0fabb79ec3c5893f6",
+      "usage": [
+        "MVP D"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Combustível/Frotcom/Cópia de LLORETRANS_Mar.xlsx",
+      "extension": ".xlsx",
+      "bytes": 27360,
+      "sha256": "658c5c983e0231124a394f533b4092c8f83a35d1e4b771ba56cd80f4df553994",
+      "usage": [
+        "MVP D"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Combustível/Radius velocity/Lloretrans, Unipessoal Lda (195621001) - Transactions (28).xlsx",
+      "extension": ".xlsx",
+      "bytes": 14279,
+      "sha256": "baacbf2bc667862284d4a5bdb30b41d5a0d606a1da68d1b8f126719befb3610b",
+      "usage": [
+        "MVP D"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Combustível/Radius velocity/Lloretrans, Unipessoal Lda (195621001) - Transactions (29).xlsx",
+      "extension": ".xlsx",
+      "bytes": 13434,
+      "sha256": "5881cca14337d4935995b6af6e81f9c2f1f8f363fb360b0b7b5ed043f1386b30",
+      "usage": [
+        "MVP D"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Combustível/interno/Transactions.xls",
+      "extension": ".xls",
+      "bytes": 227840,
+      "sha256": "8c6d15f6d3103cf9c262cfeb5dbce1daff57015f7ad7966ba2496aa43ca1eef3",
+      "usage": [
+        "MVP D"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Combustível/repsol/Cópia de Operaciones202602.xls",
+      "extension": ".xls",
+      "bytes": 147968,
+      "sha256": "8aea6857bd9a5ea3cac0a7247cb8e94fbaec428372509136ddd0c6772fdc6a1c",
+      "usage": [
+        "MVP D"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 10.pdf",
+      "extension": ".pdf",
+      "bytes": 293833,
+      "sha256": "09b1465aa04e7ba41233c52df732e41d7a90d7ee159767b32f59ebcc96c29b16",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 11.pdf",
+      "extension": ".pdf",
+      "bytes": 302131,
+      "sha256": "4477982b764341cdd9ccfb8f33ec52d175c9a91f06857e48659145c521cb5204",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 2.pdf",
+      "extension": ".pdf",
+      "bytes": 185374,
+      "sha256": "19fc6c24eef976a1d11308e0189af69be4db377d2e443ee2891abf9141d05419",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 3.pdf",
+      "extension": ".pdf",
+      "bytes": 168387,
+      "sha256": "68cdcf2d8f6d85161c18eb06fd8d3133a0ea3ad970575526cb7c05420f30c9c8",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 4.pdf",
+      "extension": ".pdf",
+      "bytes": 237445,
+      "sha256": "f18591bd78ec48dbd9b2a317fcce471f05eda349e22471fd0c150750339bfec6",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 5.pdf",
+      "extension": ".pdf",
+      "bytes": 205540,
+      "sha256": "6f568fb5b71151b19dd1c18595c0b61cb3b63abda5e0506b204197fe154ca114",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 6.pdf",
+      "extension": ".pdf",
+      "bytes": 164762,
+      "sha256": "fd7a8b406c7f60db385caab57e18ae71f51b86629aa3d1c364317544f290e29f",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 7.pdf",
+      "extension": ".pdf",
+      "bytes": 483833,
+      "sha256": "46768ffffe13f7f88f5d63f41c30fa178d8e10415e0023273396238b896c2c2a",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 8.pdf",
+      "extension": ".pdf",
+      "bytes": 240663,
+      "sha256": "92ac2a4a9a383d181e839118611e027016c50929e1fa9145eb14dcc1ef3e27a9",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura 9.pdf",
+      "extension": ".pdf",
+      "bytes": 202136,
+      "sha256": "9ac8cc41f89fab9df1dc41cd4b5956d8f4a63c3cbddfb13b77df466747f5323b",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Fatura.pdf",
+      "extension": ".pdf",
+      "bytes": 226137,
+      "sha256": "8d424ab83bf25aa47bfc97677083662bfe394675625266befdea9cf98b4342bf",
+      "usage": [
+        "MVP B"
+      ],
+      "privacyClass": "financial"
+    },
+    {
+      "relativePath": "Folha de Obra.pdf",
+      "extension": ".pdf",
+      "bytes": 223213,
+      "sha256": "9c783d8788278f9cdb8f609c14fd77628c8b012dd7749b01c9cf46d5eb59085a",
+      "usage": [
+        "MVP F"
+      ],
+      "privacyClass": "commercial"
+    },
+    {
+      "relativePath": "Guia Receção.jpeg",
+      "extension": ".jpeg",
+      "bytes": 139838,
+      "sha256": "27aba397b8ebc140fb6563d694202f8d48b03c83890969d492fc68abef0245f7",
+      "usage": [
+        "MVP C"
+      ],
+      "privacyClass": "operational"
+    },
+    {
+      "relativePath": "Guia Transporte.jpeg",
+      "extension": ".jpeg",
+      "bytes": 160416,
+      "sha256": "9f7fece8438eaae2095bcc3e84eef4b1c37d463193beac50c15a710076dde9c6",
+      "usage": [
+        "MVP C"
+      ],
+      "privacyClass": "operational"
+    },
+    {
+      "relativePath": "Relação de todos os carros Lloretrans.xlsx",
+      "extension": ".xlsx",
+      "bytes": 24711,
+      "sha256": "097130f189058e38c5be5ff4f19c033f93dd2b030435757f47278b4ca98555ff",
+      "usage": [
+        "Admin",
+        "MVP A",
+        "MVP D",
+        "MVP E",
+        "MVP F"
+      ],
+      "privacyClass": "pii"
+    },
+    {
+      "relativePath": "Tabela de códigos.pdf",
+      "extension": ".pdf",
+      "bytes": 237464,
+      "sha256": "c87c244bbda484ef08f7269cc614d96c76033a489cf5b7fb41f020f2517c1f62",
+      "usage": [
+        "MVP B",
+        "MVP F"
+      ],
+      "privacyClass": "commercial"
+    },
+    {
+      "relativePath": "Ticket Frio.jpeg",
+      "extension": ".jpeg",
+      "bytes": 247135,
+      "sha256": "6ec473c3c4a2f22818294afe88e759f70389ae4654c05a82fdb9fe36c6da4f14",
+      "usage": [
+        "MVP C"
+      ],
+      "privacyClass": "operational"
+    },
+    {
+      "relativePath": "Viaturas Grupo.xlsx",
+      "extension": ".xlsx",
+      "bytes": 2716563,
+      "sha256": "b81222c0fc45127469586bdaa4c177f73cbd36cd9eb5e398ed0caed810f3c42e",
+      "usage": [
+        "Admin",
+        "MVP A",
+        "MVP D",
+        "MVP E",
+        "MVP F"
+      ],
+      "privacyClass": "pii"
+    }
+  ]
+}
