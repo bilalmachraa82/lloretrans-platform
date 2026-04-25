@@ -1,14 +1,6 @@
 /**
- * Seed Postgres (Neon) completo para a plataforma Lloretrans × AiTiPro.
- * Determinista — run `npm run db:reset` dá sempre o mesmo dataset.
- *
- * Volumes alinhados com PRD 2026-04-19:
- * - 4 empresas grupo, ~60 viaturas, ~50 motoristas
- * - 30 dias de viagens (~15/dia viatura activa)
- * - 9 facturas reais + ~180 sintéticas em vários estados
- * - ~80 cargas bolsa/mês × 3 meses
- * - ~120 folhas oficina/mês × 3 meses
- * - Abastecimentos diários por viatura
+ * Seed Postgres (Neon) para demo Lloretrans × AiTiPro.
+ * Fonte principal: fixtures/aitipro/* gerados a partir da pasta de evidência do Éder.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -16,39 +8,15 @@ import { config } from "dotenv";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "../db/schema";
+import { computeCommissionAmount } from "../lib/commission-rule";
 
 config({ path: ".env.local" });
 
 const DATABASE_URL = process.env.DATABASE_URL_DIRECT ?? process.env.DATABASE_URL;
 if (!DATABASE_URL) throw new Error("DATABASE_URL not set");
 
-let rngSeed = 42;
-function rng(): number {
-  rngSeed = (rngSeed * 1103515245 + 12345) % 2147483647;
-  return rngSeed / 2147483647;
-}
-function rngInt(min: number, max: number): number {
-  return Math.floor(rng() * (max - min + 1)) + min;
-}
-function rngPick<T>(arr: T[]): T {
-  return arr[rngInt(0, arr.length - 1)]!;
-}
-function rngBool(prob: number): boolean {
-  return rng() < prob;
-}
-
-function id(prefix: string, n: number): string {
-  return `${prefix}_${n.toString().padStart(5, "0")}`;
-}
-
-function dt(daysAgo: number, hour = 8, min = 0): Date {
-  const d = new Date();
-  d.setHours(hour, min, 0, 0);
-  d.setDate(d.getDate() - daysAgo);
-  return d;
-}
-
 const ALL_TABLES_IN_ORDER = [
+  "work_order_checklist_answers",
   "work_order_signatures",
   "work_order_photos",
   "work_order_items",
@@ -84,27 +52,172 @@ const ALL_TABLES_IN_ORDER = [
   "feature_flags",
 ];
 
+interface ServiceCodeFixture {
+  code: string;
+  label: string;
+  description: string;
+  kind: string;
+}
+
+interface VehicleFixture {
+  plate: string;
+  source: string;
+  companyRaw: string | null;
+  driverRaw: string | null;
+  trailerPlate: string | null;
+  brand: string | null;
+  model: string | null;
+  category: string | null;
+  gps: "SIM" | "NÃO" | null;
+  active: boolean;
+}
+
+interface DriverFixture {
+  name: string;
+  contactRaw: string | null;
+  source: string;
+}
+
+interface FreightFixture {
+  sourceRow: number;
+  tractorPlate: string | null;
+  trailerPlate: string | null;
+  transporter: string;
+  carrierKind: "internal_lloretrans" | "external_transporter";
+  date: string | null;
+  client: string;
+  origin: string;
+  destination: string;
+  priceClientEur: number | null;
+  paidTransporterEur: number | null;
+  marginEur: number | null;
+  customerInvoiceNumber: string | null;
+  observations: string | null;
+  cmrNumber: string | null;
+  supplierInvoiceNumber: string | null;
+  responsible: string | null;
+  serviceValueEur: number | null;
+  paymentRegularization: "R" | "NR" | null;
+  paymentMonth: string | null;
+}
+
+interface FuelFixture {
+  provider: "cepsa" | "repsol" | "radius_velocity" | "bomba_interna" | "frotcom_fee";
+  sourceFile: string;
+  sourceRow: number;
+  plate: string | null;
+  occurredAt: string | null;
+  product: string | null;
+  liters: number | null;
+  totalEur: number | null;
+  odometerKm: number | null;
+  cardNumber: string | null;
+  invoiceNumber: string | null;
+  station: string | null;
+  country: string | null;
+  driverRaw: string | null;
+}
+
+interface CatalogEntry {
+  sourceFilename: string;
+  fixtureFilename: string;
+  filename: string;
+  supplier: { name: string; taxId: string; category: string };
+  invoice: {
+    number: string;
+    issuedAt: string;
+    dueAt: string;
+    totalNet: number;
+    totalVat: number;
+    totalGross: number;
+    currency: string;
+    plate: string | null;
+  };
+  classification: { serviceCode: string; workCode: string; confidence: number };
+  lines: Array<{ description: string; quantity: number; unitPrice: number; vatRate: number; total: number; serviceCode: string }>;
+}
+
+let rngSeed = 42;
+function rng(): number {
+  rngSeed = (rngSeed * 1103515245 + 12345) % 2147483647;
+  return rngSeed / 2147483647;
+}
+
+function id(prefix: string, n: number): string {
+  return `${prefix}_${n.toString().padStart(5, "0")}`;
+}
+
+function dt(daysAgo: number, hour = 8, min = 0): Date {
+  const d = new Date();
+  d.setHours(hour, min, 0, 0);
+  d.setDate(d.getDate() - daysAgo);
+  return d;
+}
+
+function readJson<T>(relativePath: string): T {
+  return JSON.parse(fs.readFileSync(path.join(process.cwd(), relativePath), "utf-8")) as T;
+}
+
+function chunk<T>(arr: T[], n: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
+  return out;
+}
+
+function slug(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_|_$/g, "")
+    .slice(0, 48);
+}
+
+function companyIdFromRaw(companyRaw: string | null): string {
+  const text = (companyRaw ?? "").toLowerCase();
+  if (text.includes("tomate")) return "co_tdo";
+  if (text.includes("cereja")) return "co_cdn";
+  if (text.includes("frutas") || text.includes("patricia") || text.includes("pilar")) return "co_fdo";
+  return "co_llt";
+}
+
+function parseDate(value: string | null): Date | null {
+  if (!value) return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function monthPeriod(date: string | null): string {
+  return date?.slice(0, 7) ?? new Date().toISOString().slice(0, 7);
+}
+
 async function main(): Promise<void> {
   const sql = postgres(DATABASE_URL!, { max: 1, prepare: false });
   const db = drizzle(sql, { schema });
 
-  // Truncate all tables first
-  for (const t of ALL_TABLES_IN_ORDER) {
-    await sql.unsafe(`TRUNCATE TABLE "${t}" RESTART IDENTITY CASCADE;`).catch(() => {});
+  for (const table of ALL_TABLES_IN_ORDER) {
+    await sql.unsafe(`TRUNCATE TABLE "${table}" RESTART IDENTITY CASCADE;`).catch(() => {});
   }
   console.log("✓ Truncated tables");
 
-  // ────────── COMPANIES ──────────
+  const serviceCodeFixtures = readJson<Array<ServiceCodeFixture & { source?: string }>>("fixtures/aitipro/service-codes.json");
+  const vehicleFixtures = readJson<VehicleFixture[]>("fixtures/aitipro/vehicles.json");
+  const driverFixtures = readJson<DriverFixture[]>("fixtures/aitipro/drivers.json");
+  const freightFixtures = readJson<FreightFixture[]>("fixtures/aitipro/freight-loads.json");
+  const fuelFixtures = readJson<FuelFixture[]>("fixtures/aitipro/fuel-transactions.json");
+  const manifest = readJson<{ files: Array<{ relativePath: string; sha256: string }> }>("fixtures/aitipro/source-manifest.json");
+  const catalog = readJson<{ entries: CatalogEntry[] }>("fixtures/extracted/_catalog.json");
+
   const companies = [
-    { id: "co_llt", slug: "lloretrans", name: "Lloretrans, Unipessoal Lda.", taxId: "500111222", group: "patricia-pilar" },
-    { id: "co_fdo", slug: "frutas-oeste", name: "Frutas do Oeste, Lda.", taxId: "500333444", group: "patricia-pilar" },
-    { id: "co_tdo", slug: "tomate-oeste", name: "Tomate do Oeste, S.A.", taxId: "500555666", group: "patricia-pilar" },
-    { id: "co_cdn", slug: "cerejas-norte", name: "Cerejas do Norte, Lda.", taxId: "500777888", group: "patricia-pilar" },
+    { id: "co_llt", slug: "lloretrans", name: "Lloretrans, Unipessoal Lda.", taxId: "509750460", group: "patricia-pilar" },
+    { id: "co_fdo", slug: "frutas-oeste", name: "Frutas do Oeste, Lda.", taxId: "demo-500333444", group: "patricia-pilar" },
+    { id: "co_tdo", slug: "tomate-oeste", name: "Tomate do Oeste, S.A.", taxId: "demo-500555666", group: "patricia-pilar" },
+    { id: "co_cdn", slug: "cerejas-norte", name: "Cerejas do Norte, Lda.", taxId: "demo-500777888", group: "patricia-pilar" },
   ];
   await db.insert(schema.companies).values(companies.map((c) => ({ ...c, createdAt: dt(90) })));
   console.log(`✓ ${companies.length} companies`);
 
-  // ────────── USERS ──────────
   const users = [
     { id: "u_bilal", email: "bilal@aitipro.com", name: "Bilal Machraa", role: "admin", companyId: null },
     { id: "u_clarice", email: "clarice@lloretrans.pt", name: "Clarice Santos", role: "clarice", companyId: "co_llt" },
@@ -117,168 +230,108 @@ async function main(): Promise<void> {
     { id: "u_dig", email: "digit@lloretrans.pt", name: "Marta Silva", role: "digitalizacao", companyId: "co_llt" },
     { id: "u_mec1", email: "joao.mec@lloretrans.pt", name: "João Oliveira", role: "mecanico", companyId: "co_llt" },
     { id: "u_mec2", email: "pedro.mec@lloretrans.pt", name: "Pedro Reis", role: "mecanico", companyId: "co_llt" },
-    { id: "u_frutas", email: "patricia@frutasoeste.pt", name: "Patrícia Cardoso", role: "frutas", companyId: "co_fdo" },
   ];
   await db.insert(schema.users).values(users.map((u) => ({ ...u, active: true, createdAt: dt(60) })));
   console.log(`✓ ${users.length} users`);
 
-  // ────────── SERVICE CODES ──────────
-  // Fonte real: Tabela fornecida pelo Éder (2026-04-20).
-  // Duas gamas distintas:
-  //   S1–S9  → serviços prestados a viaturas de CLIENTES (Lloretrans factura-os)
-  //   L1–L8  → serviços executados em viaturas INTERNAS Lloretrans (despesa interna)
-  //   I0–I9  → operações internas adicionais (renting, tacógrafo, consumíveis, etc.)
-  const serviceCodes = [
-    // Serviços para veículos de CLIENTES externos
-    { code: "S1", label: "Pneus", description: "Pneus, equilibragem, alinhamento (veículo cliente)", kind: "oficina_externa" },
-    { code: "S2", label: "Eletricista", description: "Reparação eléctrica (veículo cliente)", kind: "oficina_externa" },
-    { code: "S3", label: "Motores de Frio", description: "Compressores, gás, frio (veículo cliente)", kind: "oficina_externa" },
-    { code: "S4", label: "Batechapa / Pintura / Fibra", description: "Chapa, pintura, fibra (veículo cliente)", kind: "oficina_externa" },
-    { code: "S5", label: "Substituição de Vidros", description: "Vidros (veículo cliente)", kind: "oficina_externa" },
-    { code: "S6", label: "Eletrónica e Programação", description: "Diagnóstico, ECU, programação (veículo cliente)", kind: "oficina_externa" },
-    { code: "S7", label: "Retificação e Torneiras", description: "Rectificação mecânica (veículo cliente)", kind: "oficina_externa" },
-    { code: "S8", label: "Mecânica Geral", description: "Motor, transmissão, travões (veículo cliente)", kind: "oficina_externa" },
-    { code: "S9", label: "Inspeção", description: "Inspecção IPO (veículo cliente)", kind: "oficina_externa" },
-    // Serviços para veículos INTERNOS Lloretrans (despesa)
-    { code: "L1", label: "Serviços de Pneus", description: "Pneus em viatura interna", kind: "oficina_interna" },
-    { code: "L2", label: "Serviços de Eletricista", description: "Eléctrica em viatura interna", kind: "oficina_interna" },
-    { code: "L3", label: "Serviços de Motores de Frio e Termógrafo", description: "Frio + termógrafo interno", kind: "oficina_interna" },
-    { code: "L4", label: "Serviços de Batechapa / Pintura / Fibra", description: "Chapa/pintura interna", kind: "oficina_interna" },
-    { code: "L5", label: "Substituição de Vidros", description: "Vidros em viatura interna", kind: "oficina_interna" },
-    { code: "L6", label: "Serviços de Retificação e Torneiras", description: "Rectificação mecânica interna", kind: "oficina_interna" },
-    { code: "L7", label: "Serviços de Mecânica Geral", description: "Mecânica geral interna", kind: "oficina_interna" },
-    { code: "L8", label: "Serviços de Eletrónica e Programação", description: "Electrónica/programação interna", kind: "oficina_interna" },
-    // Operações Internas (renting, tacógrafo, consumíveis, etc.)
-    { code: "I0", label: "Renting - Serviço de Gestão", description: "Gestão renting frota", kind: "operacao_interna" },
-    { code: "I1", label: "Renting - Valor de Aluguer", description: "Aluguer mensal frota", kind: "operacao_interna" },
-    { code: "I2", label: "Aferições Tacógrafo", description: "Calibrações e aferições tacógrafo", kind: "operacao_interna" },
-    { code: "I3", label: "Outros Fluidos Interno", description: "AdBlue, líquidos, aditivos", kind: "operacao_interna" },
-    { code: "I4", label: "Serviços de Manutenções Externas", description: "Manutenções subcontratadas", kind: "operacao_interna" },
-    { code: "I5", label: "Serviços ISQ - ATP", description: "Certificação ISQ / ATP frio", kind: "operacao_interna" },
-    { code: "I6", label: "Serviços Assistência em Viagem", description: "Socorro em rota", kind: "operacao_interna" },
-    { code: "I7", label: "Serviços de Inspeções", description: "IPO frota interna", kind: "operacao_interna" },
-    { code: "I8", label: "Consumíveis Veículos", description: "Ferramentas, consumíveis gerais", kind: "operacao_interna" },
-    { code: "I9", label: "Serviços Específicos Ocasionais", description: "Catch-all fora da tabela", kind: "operacao_interna" },
-    // Códigos fora de oficina (combustível, transporte) — não vêm da tabela Éder mas são usados pela bolsa/combustível
-    { code: "C1", label: "Combustível", description: "Gasóleo, AdBlue, cartões frota", kind: "combustivel" },
-    { code: "T1", label: "Transporte / Frete", description: "Viagens Lloretrans + bolsa de carga", kind: "transporte" },
-  ];
+  const serviceCodes = serviceCodeFixtures.map(({ code, label, description, kind }) => ({ code, label, description, kind }));
   await db.insert(schema.serviceCodes).values(serviceCodes);
-  console.log(`✓ ${serviceCodes.length} service codes (S1-S9 externos · L1-L8 + I0-I9 internos · C1/T1 operacional)`);
+  console.log(`✓ ${serviceCodes.length} service codes from fixtures`);
 
-  // ────────── WORK CODES ──────────
-  // Work codes mapeiam "qual empresa/obra é imputada a despesa".
-  // Separado das serviceCodes (serviceCode = tipo serviço · workCode = obra/empresa).
   const workCodes = [
     { code: "INT-OFI-LLT", label: "Oficina interna · Lloretrans", scope: "internal", companyId: "co_llt" },
     { code: "INT-COMB-LLT", label: "Combustível · Lloretrans", scope: "internal", companyId: "co_llt" },
     { code: "INT-ADM-LLT", label: "Administração · Lloretrans", scope: "internal", companyId: "co_llt" },
     { code: "EXT-CLIENTE", label: "Externo · Cliente oficina terceiro", scope: "external", companyId: null },
-    { code: "EXT-GP-FDO", label: "Grupo · Frutas do Oeste", scope: "external", companyId: "co_fdo" },
-    { code: "EXT-GP-TDO", label: "Grupo · Tomate do Oeste", scope: "external", companyId: "co_tdo" },
-    { code: "EXT-GP-CDN", label: "Grupo · Cerejas do Norte", scope: "external", companyId: "co_cdn" },
   ];
   await db.insert(schema.workCodes).values(workCodes);
   console.log(`✓ ${workCodes.length} work codes`);
 
-  // ────────── VEHICLES ──────────
-  const VEHICLE_KINDS = ["pesado_mercadorias", "pesado_frigorifico", "semi_reboque", "ligeiro_comercial"];
+  const vehiclePriority = (v: VehicleFixture): number =>
+    v.source === "viaturas_grupo_lloretrans" ? 0 : v.source === "relacao_lloretrans" ? 1 : v.source === "viaturas_grupo_gpp" ? 2 : 3;
+  const seenVehicles = new Set<string>();
   const vehicles: (typeof schema.vehicles.$inferInsert)[] = [];
-  const plates: string[] = [];
-  for (let i = 0; i < 60; i++) {
-    const letters1 = String.fromCharCode(65 + rngInt(0, 25)) + String.fromCharCode(65 + rngInt(0, 25));
-    const nums = rngInt(10, 99);
-    const letters2 = String.fromCharCode(65 + rngInt(0, 25)) + String.fromCharCode(65 + rngInt(0, 25));
-    const plate = `${letters1}-${nums.toString().padStart(2, "0")}-${letters2}`;
-    plates.push(plate);
-    const companyId = i < 45 ? "co_llt" : rngPick(["co_fdo", "co_tdo", "co_cdn"]);
+  for (const fixture of [...vehicleFixtures].sort((a, b) => vehiclePriority(a) - vehiclePriority(b))) {
+    if (seenVehicles.has(fixture.plate)) continue;
+    seenVehicles.add(fixture.plate);
+    const companyId = companyIdFromRaw(fixture.companyRaw);
     vehicles.push({
-      id: id("veh", i),
-      plate,
-      kind: rngPick(VEHICLE_KINDS),
+      id: id("veh", vehicles.length),
+      plate: fixture.plate,
+      kind: fixture.category ?? "pesado_mercadorias",
       companyId,
-      isInternal: companyId === "co_llt",
-      frotcomId: `frt_${plate.replace(/-/g, "")}`,
-      hasCanbus: rngBool(0.85),
-      active: true,
+      isInternal: (fixture.companyRaw ?? "").toLowerCase().includes("lloretrans"),
+      frotcomId: fixture.source,
+      hasCanbus: fixture.gps === "SIM",
+      active: fixture.active,
       createdAt: dt(90),
     });
   }
-  await db.insert(schema.vehicles).values(vehicles);
-  console.log(`✓ ${vehicles.length} vehicles`);
+  for (const c of chunk(vehicles, 400)) await db.insert(schema.vehicles).values(c);
+  console.log(`✓ vehicles: real fleet fixtures (${vehicles.length})`);
 
-  // ────────── DRIVERS ──────────
-  const firstNames = ["António", "João", "Manuel", "José", "Carlos", "Pedro", "Miguel", "Rui", "Nuno", "Paulo"];
-  const lastNames = ["Silva", "Santos", "Oliveira", "Rodrigues", "Marques", "Pereira", "Costa", "Ferreira", "Martins", "Fernandes"];
-  const drivers: (typeof schema.drivers.$inferInsert)[] = [];
-  for (let i = 0; i < 50; i++) {
-    drivers.push({
-      id: id("drv", i),
-      name: `${rngPick(firstNames)} ${rngPick(lastNames)}`,
-      employeeCode: `EMP${(1000 + i).toString()}`,
-      companyId: "co_llt",
-      logueTransId: `lt_drv_${i}`,
-      active: true,
-    });
-  }
-  await db.insert(schema.drivers).values(drivers);
-  console.log(`✓ ${drivers.length} drivers`);
+  const driverNames = new Map<string, DriverFixture>();
+  for (const fixture of driverFixtures) if (!driverNames.has(fixture.name)) driverNames.set(fixture.name, fixture);
+  const drivers: (typeof schema.drivers.$inferInsert)[] = [...driverNames.values()].map((fixture, index) => ({
+    id: id("drv", index),
+    name: fixture.name,
+    employeeCode: `AITI-${(index + 1).toString().padStart(4, "0")}`,
+    companyId: "co_llt",
+    logueTransId: fixture.source,
+    active: true,
+  }));
+  for (const c of chunk(drivers, 400)) await db.insert(schema.drivers).values(c);
+  console.log(`✓ drivers: real driver fixtures (${drivers.length})`);
 
-  // ────────── CLIENTS ──────────
-  const clientData = [
-    { id: "cli_01", name: "Sonae MC Distribuição", country: "PT", phcId: "PHC001", paymentTermsDays: 60 },
-    { id: "cli_02", name: "Grupo Jerónimo Martins", country: "PT", phcId: "PHC002", paymentTermsDays: 60 },
-    { id: "cli_03", name: "Lidl Portugal", country: "PT", phcId: "PHC003", paymentTermsDays: 60 },
-    { id: "cli_04", name: "Mercadona España", country: "ES", phcId: "PHC004", paymentTermsDays: 75 },
-    { id: "cli_05", name: "Carrefour France", country: "FR", phcId: "PHC005", paymentTermsDays: 90 },
-    { id: "cli_06", name: "Auchan Polska", country: "PL", phcId: "PHC006", paymentTermsDays: 120 },
-    { id: "cli_07", name: "Makro Cash & Carry", country: "PT", phcId: "PHC007", paymentTermsDays: 60 },
-    { id: "cli_08", name: "Pingo Doce", country: "PT", phcId: "PHC008", paymentTermsDays: 60 },
-  ];
-  await db.insert(schema.clients).values(clientData.map((c) => ({ ...c, taxId: null, createdAt: dt(180) })));
-  console.log(`✓ ${clientData.length} clients`);
+  const clientNames = [...new Set(freightFixtures.map((load) => load.client.trim()))].sort();
+  const clients = clientNames.map((name, index) => ({
+    id: id("cli", index),
+    taxId: null,
+    name,
+    country: "PT",
+    paymentTermsDays: 60,
+    phcId: null,
+    createdAt: dt(180),
+  }));
+  await db.insert(schema.clients).values(clients);
+  const clientIdByName = new Map(clients.map((client) => [client.name, client.id]));
+  console.log(`✓ clients: ${clients.length} from freight Excel`);
 
-  // ────────── SUPPLIERS (inclui os 9 reais + 4 comuns) ──────────
-  const catalogPath = path.join(process.cwd(), "fixtures", "extracted", "_catalog.json");
-  const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf-8")) as {
-    entries: Array<{
-      filename: string;
-      supplier: { name: string; taxId: string; category: string };
-      invoice: {
-        number: string;
-        issuedAt: string;
-        dueAt: string;
-        totalNet: number;
-        totalVat: number;
-        totalGross: number;
-        currency: string;
-        plate: string | null;
-      };
-      classification: { serviceCode: string; workCode: string; confidence: number; note?: string };
-      lines: Array<{ description: string; quantity: number; unitPrice: number; vatRate: number; total: number; serviceCode: string }>;
-    }>;
-  };
-
-  const supplierMap = new Map<string, string>();
-  const supplierRows: (typeof schema.suppliers.$inferInsert)[] = [];
-  catalog.entries.forEach((e, i) => {
-    const sid = id("sup", i);
-    supplierMap.set(e.supplier.taxId, sid);
-    supplierRows.push({
-      id: sid,
-      taxId: e.supplier.taxId,
-      name: e.supplier.name,
-      category: e.supplier.category,
-      defaultServiceCode: e.classification.serviceCode,
-      defaultWorkCode: e.classification.workCode,
-      contactEmail: `geral@${e.supplier.name.split(" ")[0].toLowerCase()}.pt`,
+  const suppliers: (typeof schema.suppliers.$inferInsert)[] = [];
+  const supplierIdByTax = new Map<string, string>();
+  for (const entry of catalog.entries) {
+    if (supplierIdByTax.has(entry.supplier.taxId)) continue;
+    const supplierId = id("sup", suppliers.length);
+    supplierIdByTax.set(entry.supplier.taxId, supplierId);
+    suppliers.push({
+      id: supplierId,
+      taxId: entry.supplier.taxId,
+      name: entry.supplier.name,
+      category: entry.supplier.category,
+      defaultServiceCode: entry.classification.serviceCode,
+      defaultWorkCode: entry.classification.workCode,
+      contactEmail: null,
       createdAt: dt(120),
     });
-  });
-  await db.insert(schema.suppliers).values(supplierRows);
-  console.log(`✓ ${supplierRows.length} suppliers (incluindo 9 reais)`);
+  }
+  const carrierIdByName = new Map<string, string>();
+  for (const transporter of [...new Set(freightFixtures.filter((load) => load.carrierKind === "external_transporter").map((load) => load.transporter))].sort()) {
+    const supplierId = id("sup", suppliers.length);
+    carrierIdByName.set(transporter, supplierId);
+    suppliers.push({
+      id: supplierId,
+      taxId: `carrier:${slug(transporter)}`,
+      name: transporter,
+      category: "Transportador externo · MVP E",
+      defaultServiceCode: "T1",
+      defaultWorkCode: "EXT-CLIENTE",
+      contactEmail: null,
+      createdAt: dt(120),
+    });
+  }
+  for (const c of chunk(suppliers, 400)) await db.insert(schema.suppliers).values(c);
+  console.log(`✓ suppliers: ${catalog.entries.length} OCR + ${carrierIdByName.size} freight carriers`);
 
-  // ────────── FEATURE FLAGS ──────────
   await db.insert(schema.featureFlags).values([
     { key: "mvp.a", enabled: true, description: "MVP A · Validação de km" },
     { key: "mvp.b", enabled: true, description: "MVP B · OCR facturas" },
@@ -289,590 +342,398 @@ async function main(): Promise<void> {
     { key: "integration.logue_trans_live", enabled: false, description: "API real Logue Trans" },
     { key: "integration.frotcom_live", enabled: false, description: "API real Frotcom" },
     { key: "integration.phc_live", enabled: false, description: "Integrador PHC" },
-    { key: "demo.seed_button", enabled: true, description: "Botão resetar demo" },
   ]);
-  console.log(`✓ feature flags`);
+  console.log("✓ feature flags");
 
-  // ────────── COMMISSION RULES ──────────
-  // Regras reais confirmadas por Éder (email 2026-04-20):
-  //   • 20% do lucro total (preçoVenda − preçoCompra)
-  //   • +€2,50 por carga NACIONAL feita com carro Lloretrans
-  //   • +€5,00 por carga INTERNACIONAL feita com carro Lloretrans
-  // Bónus fixos só aplicam se viatura usada for interna (`requireInternalVehicle = true`).
-  await db.insert(schema.commissionRules).values([
-    {
-      id: "cr_default",
-      salespersonId: null,
-      percentOfMargin: 0.20,
-      minMarginPct: 0,
-      fixedBonusNationalEur: 2.5,
-      fixedBonusInternationalEur: 5.0,
-      requireInternalVehicle: true,
-      activeFrom: dt(365),
-      activeTo: null,
-    },
-  ]);
+  const commissionRule = {
+    id: "cr_default",
+    salespersonId: null,
+    percentOfMargin: 0.2,
+    minMarginPct: 0,
+    fixedBonusNationalEur: 2.5,
+    fixedBonusInternationalEur: 5,
+    requireInternalVehicle: true,
+    activeFrom: dt(365),
+    activeTo: null,
+  };
+  await db.insert(schema.commissionRules).values([commissionRule]);
+  console.log("✓ commissionRules = 1");
 
-  // ────────── TRIPS (30 dias) ──────────
-  const internalPlates = vehicles.filter((v) => v.isInternal).map((v) => v.plate);
+  const vehicleIdByPlate = new Map(vehicles.map((vehicle) => [vehicle.plate, vehicle.id!]));
+  const internalPlateSet = new Set(vehicles.filter((vehicle) => vehicle.isInternal).map((vehicle) => vehicle.plate));
+  for (const load of freightFixtures) {
+    if (load.carrierKind === "internal_lloretrans" && load.tractorPlate) internalPlateSet.add(load.tractorPlate);
+  }
+
   const tripsRows: (typeof schema.trips.$inferInsert)[] = [];
   const reconRows: (typeof schema.kmReconciliations.$inferInsert)[] = [];
-  // Éder (email 2026-04-20): "No máximo 3 km de margem de erro".
-  // Acima disto é amarelo (revisão); acima de 3× threshold é vermelho.
-  const THRESHOLD_KM = 3;
-  const THRESHOLD_KM_RED = THRESHOLD_KM * 3;
-  const ORIGINS = ["Alverca", "Lisboa", "Porto", "Torres Vedras", "Leiria", "Setúbal"];
-  const DESTINATIONS = ["Madrid", "Valencia", "Sevilla", "Coimbra", "Braga", "Faro", "Barcelona", "Paris"];
-
-  for (let d = 0; d < 30; d++) {
-    const dailyPlates = internalPlates.filter(() => rngBool(0.85));
-    dailyPlates.forEach((plate, idx) => {
-      const tripsToday = rngInt(1, 3);
-      for (let t = 0; t < tripsToday; t++) {
-        const startHour = 6 + t * 5 + rngInt(0, 2);
-        const startedAt = dt(d, startHour, rngInt(0, 59));
-        const duration = rngInt(60, 300);
-        const endedAt = new Date(startedAt.getTime() + duration * 60 * 1000);
-        const kmGps = rngInt(40, 450);
-        let deltaKm = 0;
-        const noise = rng();
-        if (noise < 0.7) deltaKm = rngInt(-2, 2);
-        else if (noise < 0.9) deltaKm = rngInt(4, 9) * (rngBool(0.5) ? 1 : -1);
-        else deltaKm = rngInt(10, 40) * (rngBool(0.5) ? 1 : -1);
-        const kmDeclared = Math.max(10, kmGps + deltaKm);
-        const gpsHasGap = rngBool(0.03);
-        const driverMissed = rngBool(0.02);
-
-        const vid = vehicles.find((v) => v.plate === plate)!.id!;
-        const tripId = id("trip", tripsRows.length);
-        const externalId = `LT-${d}-${idx}-${t}`;
-
-        tripsRows.push({
-          id: tripId,
-          externalId,
-          vehicleId: vid,
-          driverId: drivers[rngInt(0, drivers.length - 1)].id!,
-          clientId: rngPick(clientData).id,
-          origin: rngPick(ORIGINS),
-          destination: rngPick(DESTINATIONS),
-          startedAt,
-          endedAt,
-          kmDeclared: driverMissed ? null : kmDeclared,
-          kmGps: gpsHasGap ? null : kmGps,
-          notes: gpsHasGap ? "GPS perdeu sinal em zona rural" : driverMissed ? "Motorista não lançou na app" : null,
-          source: "logue_trans",
-        });
-
-        const absDelta = Math.abs(deltaKm);
-        const state =
-          gpsHasGap || driverMissed
-            ? "red"
-            : absDelta <= THRESHOLD_KM
-              ? "green"
-              : absDelta <= THRESHOLD_KM_RED
-                ? "yellow"
-                : "red";
-
-        reconRows.push({
-          id: id("rec", reconRows.length),
-          tripId,
-          kmDeclared: driverMissed ? null : kmDeclared,
-          kmGps: gpsHasGap ? null : kmGps,
-          deltaKm: gpsHasGap || driverMissed ? null : deltaKm,
-          deltaPct: gpsHasGap || driverMissed ? null : deltaKm / kmGps,
-          thresholdKm: THRESHOLD_KM,
-          state,
-          proposedKm: state === "yellow" ? kmGps : null,
-          finalKm: null,
-          decidedBy: null,
-          decidedAt: null,
-          decisionReason: null,
-          createdAt: startedAt,
-          updatedAt: startedAt,
-        });
-      }
+  const tripVehicles = vehicles.filter((vehicle) => vehicle.isInternal && vehicle.active).slice(0, 80);
+  for (let i = 0; i < Math.min(160, tripVehicles.length * 2); i++) {
+    const vehicle = tripVehicles[i % tripVehicles.length]!;
+    const startedAt = dt(i % 30, 7 + (i % 8), 10);
+    const endedAt = new Date(startedAt.getTime() + 2 * 60 * 60 * 1000);
+    const kmGps = 120 + (i % 240);
+    const delta = i % 7 === 0 ? 6 : i % 13 === 0 ? 14 : 2;
+    const tripId = id("trip", i);
+    tripsRows.push({
+      id: tripId,
+      externalId: `AITI-TRIP-${i}`,
+      vehicleId: vehicle.id!,
+      driverId: drivers[i % drivers.length]?.id,
+      clientId: clients[i % clients.length]?.id,
+      origin: "Torres Vedras",
+      destination: i % 5 === 0 ? "Madrid" : "Lisboa",
+      startedAt,
+      endedAt,
+      kmDeclared: kmGps + delta,
+      kmGps,
+      notes: null,
+      source: "logue_trans_demo",
+    });
+    reconRows.push({
+      id: id("rec", i),
+      tripId,
+      kmDeclared: kmGps + delta,
+      kmGps,
+      deltaKm: delta,
+      deltaPct: delta / kmGps,
+      thresholdKm: 3,
+      state: delta <= 3 ? "green" : delta <= 9 ? "yellow" : "red",
+      proposedKm: delta > 3 ? kmGps : null,
+      finalKm: null,
+      decidedBy: null,
+      decidedAt: null,
+      decisionReason: null,
+      createdAt: startedAt,
+      updatedAt: startedAt,
     });
   }
-  const chunk = <T,>(arr: T[], n: number): T[][] => {
-    const out: T[][] = [];
-    for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
-    return out;
-  };
-  for (const c of chunk(tripsRows, 500)) await db.insert(schema.trips).values(c);
-  for (const c of chunk(reconRows, 500)) await db.insert(schema.kmReconciliations).values(c);
-  console.log(`✓ ${tripsRows.length} trips + reconciliations`);
+  for (const c of chunk(tripsRows, 400)) await db.insert(schema.trips).values(c);
+  for (const c of chunk(reconRows, 400)) await db.insert(schema.kmReconciliations).values(c);
+  console.log(`✓ km demo: ${tripsRows.length} trips`);
 
-  // ────────── INVOICES ──────────
   const invoiceRows: (typeof schema.invoices.$inferInsert)[] = [];
   const invoiceLineRows: (typeof schema.invoiceLines.$inferInsert)[] = [];
   const ocrRows: (typeof schema.ocrExtractions.$inferInsert)[] = [];
   const supplierRuleRows: (typeof schema.supplierRules.$inferInsert)[] = [];
-
-  catalog.entries.forEach((e, i) => {
-    const invId = id("inv", i);
-    const plateId = e.invoice.plate ? vehicles.find((v) => v.plate === e.invoice.plate)?.id ?? null : null;
-    const supplierId = supplierMap.get(e.supplier.taxId)!;
-
+  catalog.entries.forEach((entry, index) => {
+    const invoiceId = id("inv", index);
+    const supplierId = supplierIdByTax.get(entry.supplier.taxId)!;
     invoiceRows.push({
-      id: invId,
+      id: invoiceId,
       supplierId,
-      supplierNameRaw: e.supplier.name,
-      supplierTaxIdRaw: e.supplier.taxId,
-      invoiceNumber: e.invoice.number,
-      issuedAt: new Date(e.invoice.issuedAt),
-      dueAt: new Date(e.invoice.dueAt),
-      totalNet: e.invoice.totalNet,
-      totalVat: e.invoice.totalVat,
-      totalGross: e.invoice.totalGross,
-      currency: e.invoice.currency,
-      plate: e.invoice.plate,
-      vehicleId: plateId,
-      serviceCode: e.classification.serviceCode,
-      workCode: e.classification.workCode,
+      supplierNameRaw: entry.supplier.name,
+      supplierTaxIdRaw: entry.supplier.taxId,
+      invoiceNumber: entry.invoice.number,
+      issuedAt: new Date(entry.invoice.issuedAt),
+      dueAt: new Date(entry.invoice.dueAt),
+      totalNet: entry.invoice.totalNet,
+      totalVat: entry.invoice.totalVat,
+      totalGross: entry.invoice.totalGross,
+      currency: entry.invoice.currency,
+      plate: entry.invoice.plate,
+      vehicleId: entry.invoice.plate ? vehicleIdByPlate.get(entry.invoice.plate) ?? null : null,
+      serviceCode: entry.classification.serviceCode,
+      workCode: entry.classification.workCode,
       state: "pending_review",
-      confidenceAvg: e.classification.confidence,
-      sourcePath: `/fixtures/real-invoices/${e.filename}`,
-      sourceHash: `real_${i}_${e.invoice.number}`,
+      confidenceAvg: entry.classification.confidence,
+      sourcePath: `/fixtures/real-invoices/${entry.fixtureFilename}`,
+      sourceHash: `fixture:${entry.fixtureFilename}`,
       uploadedBy: "u_adm_of",
-      createdAt: dt(15 - i),
-      updatedAt: dt(15 - i),
+      createdAt: dt(15 - index),
+      updatedAt: dt(15 - index),
     });
-
-    e.lines.forEach((l, ln) => {
+    entry.lines.forEach((line, lineIndex) => {
       invoiceLineRows.push({
-        id: id(`il_real_${i}`, ln),
-        invoiceId: invId,
-        lineNumber: ln + 1,
-        description: l.description,
-        quantity: l.quantity,
-        unitPrice: l.unitPrice,
-        vatRate: l.vatRate,
-        total: l.total,
-        serviceCode: l.serviceCode,
-        confidence: 0.9 + rng() * 0.09,
+        id: id(`il_${index}`, lineIndex),
+        invoiceId,
+        lineNumber: lineIndex + 1,
+        description: line.description,
+        quantity: line.quantity,
+        unitPrice: line.unitPrice,
+        vatRate: line.vatRate,
+        total: line.total,
+        serviceCode: line.serviceCode,
+        confidence: 0.95,
       });
     });
-
     ocrRows.push({
-      id: id(`ocr_real_${i}`, 0),
-      invoiceId: invId,
+      id: id("ocr", index),
+      invoiceId,
       engine: "azure-doc-intel-stub",
-      rawText: `[scan · fixture catalog] ${e.supplier.name} · ${e.invoice.number}`,
-      rawJson: JSON.stringify(e),
-      confidencePerField: JSON.stringify({
-        supplier: 0.97,
-        invoiceNumber: 0.92,
-        total: 0.98,
-        plate: e.invoice.plate ? 0.85 : 0,
-        serviceCode: e.classification.confidence,
-      }),
-      createdAt: dt(15 - i),
+      rawText: `[fixture] ${entry.sourceFilename} · ${entry.supplier.name}`,
+      rawJson: JSON.stringify(entry),
+      confidencePerField: JSON.stringify({ supplier: 0.97, total: 0.98, serviceCode: entry.classification.confidence }),
+      createdAt: dt(15 - index),
     });
-
     supplierRuleRows.push({
-      id: id(`rule_${i}`, 0),
+      id: id("rule", index),
       supplierId,
       field: "service_code",
-      value: e.classification.serviceCode,
+      value: entry.classification.serviceCode,
       matchPattern: null,
-      learnedFromInvoiceId: invId,
-      hitCount: rngInt(2, 8),
+      learnedFromInvoiceId: invoiceId,
+      hitCount: 4,
       createdAt: dt(30),
     });
   });
-
-  for (let m = 0; m < 3; m++) {
-    for (let i = 0; i < 60; i++) {
-      const entry = rngPick(catalog.entries);
-      const sid = supplierMap.get(entry.supplier.taxId)!;
-      const invId = id("inv", catalog.entries.length + m * 60 + i);
-      const issued = dt(30 * m + i);
-      const stateRoll = rng();
-      let state: string;
-      let approvedBy: string | null = null;
-      let approvedAt: Date | null = null;
-      let exportedAt: Date | null = null;
-      if (stateRoll < 0.6) {
-        state = "approved";
-        approvedBy = "u_adm_of";
-        approvedAt = new Date(issued.getTime() + 2 * 86400000);
-        exportedAt = new Date(issued.getTime() + 3 * 86400000);
-      } else if (stateRoll < 0.85) {
-        state = "pending_review";
-      } else {
-        state = "pending_ocr";
-      }
-      const totalNet = 150 + rng() * 4000;
-      const totalVat = totalNet * 0.23;
-      const plate = rngBool(0.7) ? rngPick(internalPlates) : null;
-
-      invoiceRows.push({
-        id: invId,
-        supplierId: sid,
-        supplierNameRaw: entry.supplier.name,
-        supplierTaxIdRaw: entry.supplier.taxId,
-        invoiceNumber: `FT ${2026 - m}/SYN/${i.toString().padStart(4, "0")}`,
-        issuedAt: issued,
-        dueAt: new Date(issued.getTime() + 60 * 86400000),
-        totalNet: Math.round(totalNet * 100) / 100,
-        totalVat: Math.round(totalVat * 100) / 100,
-        totalGross: Math.round((totalNet + totalVat) * 100) / 100,
-        currency: "EUR",
-        plate,
-        vehicleId: plate ? vehicles.find((v) => v.plate === plate)?.id ?? null : null,
-        serviceCode: state !== "pending_ocr" ? entry.classification.serviceCode : null,
-        workCode: state !== "pending_ocr" ? entry.classification.workCode : null,
-        state,
-        confidenceAvg: state !== "pending_ocr" ? 0.7 + rng() * 0.25 : null,
-        sourcePath: `/synthetic/${invId}.pdf`,
-        sourceHash: `syn_${m}_${i}`,
-        uploadedBy: "u_adm_of",
-        approvedBy,
-        approvedAt,
-        exportedAt,
-        createdAt: issued,
-        updatedAt: approvedAt ?? issued,
-      });
-    }
-  }
-
   for (const c of chunk(invoiceRows, 400)) await db.insert(schema.invoices).values(c);
   for (const c of chunk(invoiceLineRows, 400)) await db.insert(schema.invoiceLines).values(c);
   for (const c of chunk(ocrRows, 400)) await db.insert(schema.ocrExtractions).values(c);
   for (const c of chunk(supplierRuleRows, 400)) await db.insert(schema.supplierRules).values(c);
-  console.log(`✓ ${invoiceRows.length} invoices (9 reais + ${invoiceRows.length - 9} sintéticas)`);
+  console.log(`✓ invoices: ${invoiceRows.length} real OCR fixtures`);
 
-  // ────────── DOCUMENTS (MVP C) ──────────
   const docRows: (typeof schema.documents.$inferInsert)[] = [];
-  const docAssocRows: (typeof schema.documentAssociations.$inferInsert)[] = [];
   const docPermRows: (typeof schema.documentPermissions.$inferInsert)[] = [];
-  const docKinds = ["cmr", "guia_remessa", "guia_recepcao", "ticket_frio", "controlo_tara"];
-
-  tripsRows.slice(0, 400).forEach((t, i) => {
-    const kinds = docKinds.slice(0, rngInt(2, 4));
-    kinds.forEach((k, ki) => {
-      const docId = id("doc", docRows.length);
-      const isOrphan = rngBool(0.08);
-      const cmrNumber = k === "cmr" ? `CMR-${2026}-${(10000 + i).toString()}` : null;
-      docRows.push({
-        id: docId,
-        kind: k,
-        cmrNumber,
-        plate: vehicles.find((v) => v.id === t.vehicleId)?.plate,
-        loadedAt: t.startedAt,
-        deliveredAt: t.endedAt,
-        sourcePath: `/uploads/doc_${docId}.pdf`,
-        sourceHash: `hash_${docId}`,
-        ocrText: `${k} para viagem ${t.externalId}`,
-        state: isOrphan ? "orphan" : "associated",
-        uploadedBy: "u_dig",
-        createdAt: t.startedAt,
-      });
-
-      if (!isOrphan) {
-        docAssocRows.push({
-          id: id("assoc", docAssocRows.length),
-          documentId: docId,
-          tripId: t.id!,
-          confidence: k === "cmr" ? 0.99 : 0.85 + rng() * 0.1,
-          method: k === "cmr" ? "cmr_exact" : "plate_date_match",
-          confirmedBy: null,
-          confirmedAt: null,
-          createdAt: t.startedAt,
-        });
-      }
-
-      docPermRows.push({
-        id: id("dperm", docPermRows.length),
-        documentId: docId,
-        companyId: "co_llt",
-        canRead: true,
-        canDownload: true,
-      });
-      if (rngBool(0.3)) {
-        docPermRows.push({
-          id: id("dperm", docPermRows.length),
-          documentId: docId,
-          companyId: "co_fdo",
-          canRead: true,
-          canDownload: true,
-        });
-      }
+  const docSamples = [
+    { sourceFilename: "CMR.jpeg", kind: "cmr", direction: "saida" },
+    { sourceFilename: "Guia Receção.jpeg", kind: "guia_recepcao", direction: "entrada" },
+    { sourceFilename: "Guia Transporte.jpeg", kind: "guia_remessa", direction: "saida" },
+    { sourceFilename: "Ticket Frio.jpeg", kind: "ticket_frio", direction: "saida" },
+  ];
+  docSamples.forEach((sample, index) => {
+    const manifestFile = manifest.files.find((file) => file.relativePath === sample.sourceFilename);
+    const documentId = id("doc", index);
+    docRows.push({
+      id: documentId,
+      kind: sample.kind,
+      direction: sample.direction,
+      cmrNumber: sample.kind === "cmr" ? "CMR-DEMO" : null,
+      plate: tripVehicles[index]?.plate ?? null,
+      loadedAt: dt(index + 1),
+      deliveredAt: dt(index),
+      sourcePath: `/Users/bilal/Downloads/AITIPRO/${sample.sourceFilename}`,
+      sourceHash: manifestFile?.sha256 ?? `doc-sample-${index}`,
+      ocrText: `${sample.kind} · amostra real`,
+      state: index === 1 ? "orphan" : "associated",
+      uploadedBy: "u_dig",
+      createdAt: dt(index + 1),
     });
+    docPermRows.push({ id: id("dperm", index), documentId, companyId: "co_llt", canRead: true, canDownload: true });
   });
-  for (const c of chunk(docRows, 400)) await db.insert(schema.documents).values(c);
-  for (const c of chunk(docAssocRows, 400)) await db.insert(schema.documentAssociations).values(c);
-  for (const c of chunk(docPermRows, 400)) await db.insert(schema.documentPermissions).values(c);
-  console.log(`✓ ${docRows.length} documents (${docRows.filter((d) => d.state === "orphan").length} órfãos)`);
+  await db.insert(schema.documents).values(docRows);
+  await db.insert(schema.documentPermissions).values(docPermRows);
+  console.log(`✓ documents: ${docRows.length} real samples`);
 
-  // ────────── FUEL (MVP D) ──────────
-  const fuelCanbusRows: (typeof schema.fuelReadingsCanbus.$inferInsert)[] = [];
+  const extraVehicles: (typeof schema.vehicles.$inferInsert)[] = [];
+  function ensureFuelVehicle(plate: string | null, provider: string): string {
+    const normalizedPlate = plate ?? `SEM-MAT-${provider.toUpperCase().slice(0, 6)}`;
+    const existing = vehicleIdByPlate.get(normalizedPlate);
+    if (existing) return existing;
+    const vehicleId = id("veh_extra", extraVehicles.length);
+    const vehicle = {
+      id: vehicleId,
+      plate: normalizedPlate,
+      kind: plate ? "real_fuel_unmatched" : "sem_matricula_no_ficheiro",
+      companyId: "co_llt",
+      isInternal: Boolean(plate),
+      frotcomId: null,
+      hasCanbus: false,
+      active: false,
+      createdAt: dt(90),
+    };
+    extraVehicles.push(vehicle);
+    vehicles.push(vehicle);
+    vehicleIdByPlate.set(normalizedPlate, vehicleId);
+    return vehicleId;
+  }
+
   const fuelFillsRows: (typeof schema.fuelFills.$inferInsert)[] = [];
-  const fuelAnomRows: (typeof schema.fuelAnomalies.$inferInsert)[] = [];
+  const consumptionFuelRows = fuelFixtures.filter((row) => row.provider !== "frotcom_fee" && row.liters != null);
+  for (const row of consumptionFuelRows) {
+    const vehicleId = ensureFuelVehicle(row.plate, row.provider);
+    const total = row.totalEur ?? 0;
+    const liters = row.liters ?? 0;
+    fuelFillsRows.push({
+      id: id("fill", fuelFillsRows.length),
+      vehicleId,
+      driverId: null,
+      source: row.provider,
+      filledAt: parseDate(row.occurredAt) ?? dt(30),
+      liters,
+      pricePerLiter: liters > 0 ? Math.round((total / liters) * 1000) / 1000 : null,
+      totalEur: row.totalEur,
+      odometerKm: row.odometerKm,
+      cardNumber: row.cardNumber,
+      location: row.station,
+      externalRef: `${row.provider}:${row.sourceFile}:${row.sourceRow}`,
+      product: row.product,
+      stationCountry: row.country,
+      providerInvoiceNumber: row.invoiceNumber,
+      sourceFile: row.sourceFile,
+      sourceRow: row.sourceRow,
+      driverNameRaw: row.driverRaw,
+    });
+  }
+  if (extraVehicles.length > 0) {
+    for (const c of chunk(extraVehicles, 400)) await db.insert(schema.vehicles).values(c);
+  }
+  for (const c of chunk(fuelFillsRows, 400)) await db.insert(schema.fuelFills).values(c);
+  console.log(`✓ fuel: real provider transactions (${fuelFillsRows.length} fills, frotcom_fee excluded)`);
 
-  vehicles.filter((v) => v.hasCanbus).forEach((v, vi) => {
-    let km = rngInt(100000, 350000);
-    const baselineLper100 = 28 + rng() * 10;
-    for (let d = 0; d < 60; d++) {
-      const readAt = dt(d, 8);
-      const dayKm = rngInt(100, 400);
-      km += dayKm;
-      const expectedL = (dayKm * baselineLper100) / 100;
-      const isAnomaly = d > 20 && rngBool(0.04);
-      const actualL = expectedL * (isAnomaly ? 1.25 + rng() * 0.2 : 0.95 + rng() * 0.1);
-      fuelCanbusRows.push({
-        id: id("canb", fuelCanbusRows.length),
-        vehicleId: v.id!,
-        readAt,
-        odometerKm: km,
-        tankLevelPct: 30 + rng() * 60,
-        litersConsumed: actualL,
+  const freightRows: (typeof schema.freightLoads.$inferInsert)[] = [];
+  const freightTransitions: (typeof schema.freightStateTransitions.$inferInsert)[] = [];
+  const supplierInvoiceRows: (typeof schema.supplierInvoicesFreight.$inferInsert)[] = [];
+  const clientInvoiceRows: (typeof schema.clientInvoicesFreight.$inferInsert)[] = [];
+  const commissionRows: (typeof schema.commissions.$inferInsert)[] = [];
+  freightFixtures.forEach((load, index) => {
+    const loadId = id("load", index);
+    const priceBuy = load.paidTransporterEur ?? 0;
+    const priceSell = load.priceClientEur ?? 0;
+    const margin = load.marginEur ?? 0;
+    const marginPct = priceBuy > 0 ? margin / priceBuy : 0;
+    const state = load.paymentRegularization === "R" ? "paid" : "client_invoiced";
+    const loadedAt = parseDate(load.date);
+    const salespersonId = load.responsible?.toLowerCase().includes("miguel") ? "u_miguel" : "u_eder";
+    freightRows.push({
+      id: loadId,
+      reference: `AITI-${load.sourceRow}`,
+      salespersonId,
+      clientId: clientIdByName.get(load.client)!,
+      supplierId: load.carrierKind === "external_transporter" ? carrierIdByName.get(load.transporter) ?? null : null,
+      carrierName: load.transporter,
+      carrierKind: load.carrierKind,
+      trailerPlate: load.trailerPlate,
+      sourceRow: load.sourceRow,
+      customerInvoiceNumber: load.customerInvoiceNumber,
+      supplierInvoiceNumber: load.supplierInvoiceNumber,
+      cmrNumber: load.cmrNumber,
+      paymentRegularization: load.paymentRegularization,
+      paymentMonth: load.paymentMonth,
+      serviceValueEur: load.serviceValueEur,
+      origin: load.origin,
+      destination: load.destination,
+      loadedAt,
+      deliveredAt: null,
+      plate: load.tractorPlate,
+      priceBuy,
+      priceSell,
+      margin,
+      marginPct,
+      currency: "EUR",
+      state,
+      notes: load.observations,
+      createdAt: loadedAt ?? dt(index % 90),
+      updatedAt: loadedAt ?? dt(index % 90),
+    });
+    freightTransitions.push({
+      id: id("ftrans", freightTransitions.length),
+      loadId,
+      fromState: "scheduled",
+      toState: state,
+      userId: salespersonId,
+      reason: "Seed AITIPRO Excel",
+      createdAt: loadedAt ?? dt(index % 90),
+    });
+    if (load.supplierInvoiceNumber) {
+      supplierInvoiceRows.push({
+        id: id("fsinv", supplierInvoiceRows.length),
+        loadId,
+        invoiceNumber: load.supplierInvoiceNumber,
+        issuedAt: loadedAt ?? dt(index % 90),
+        totalGross: Math.round(priceBuy * 1.23 * 100) / 100,
+        deviation: 0,
+        deviationPct: 0,
+        state: "ok",
+        reviewedBy: null,
+        reviewedAt: null,
       });
-      if (isAnomaly) {
-        fuelAnomRows.push({
-          id: id("anom", fuelAnomRows.length),
-          vehicleId: v.id!,
-          kind: "consumption_spike",
-          severity: actualL > expectedL * 1.3 ? "high" : "medium",
-          detectedAt: readAt,
-          windowFrom: dt(d + 1, 0),
-          windowTo: readAt,
-          expected: expectedL,
-          actual: actualL,
-          deviationPct: (actualL - expectedL) / expectedL,
-          notes: "Consumo acima do baseline da viatura",
-          state: rngBool(0.3) ? "resolved" : "open",
-          resolvedBy: null,
-          resolvedAt: null,
-        });
-      }
-      if (rngBool(0.4)) {
-        const providers = ["sepsa", "repsol", "anamor", "bomba_interna"];
-        const provider = rngPick(providers);
-        const liters = 80 + rng() * 320;
-        const ppl = 1.25 + rng() * 0.15;
-        fuelFillsRows.push({
-          id: id("fill", fuelFillsRows.length),
-          vehicleId: v.id!,
-          driverId: drivers[rngInt(0, drivers.length - 1)].id!,
-          source: provider,
-          filledAt: new Date(readAt.getTime() + rngInt(0, 7200) * 1000),
-          liters,
-          pricePerLiter: ppl,
-          totalEur: liters * ppl,
-          odometerKm: km,
-          cardNumber: `${provider.toUpperCase()}-${(1000 + vi).toString()}`,
-          location: rngPick(["A1 Alverca", "A6 Estremoz", "A8 Torres Vedras", "A2 Grândola", "Bomba Lloretrans"]),
-          externalRef: `ref_${d}_${vi}_${provider}`,
-        });
-      }
+    }
+    if (load.customerInvoiceNumber) {
+      const issuedAt = loadedAt ?? dt(index % 90);
+      clientInvoiceRows.push({
+        id: id("fcinv", clientInvoiceRows.length),
+        loadId,
+        invoiceNumber: load.customerInvoiceNumber,
+        issuedAt,
+        dueAt: new Date(issuedAt.getTime() + 60 * 86400000),
+        totalGross: Math.round(priceSell * 1.23 * 100) / 100,
+        paidAt: state === "paid" ? new Date(issuedAt.getTime() + 30 * 86400000) : null,
+      });
+    }
+    const result = computeCommissionAmount(
+      { margin, marginPct, plate: load.tractorPlate, origin: load.origin, destination: load.destination },
+      commissionRule,
+      internalPlateSet,
+    );
+    if (result.eligible) {
+      commissionRows.push({
+        id: id("comm", commissionRows.length),
+        loadId,
+        salespersonId,
+        period: monthPeriod(load.date),
+        amountEur: result.amountEur,
+        ruleId: "cr_default",
+        state: state === "paid" ? "paid" : "accrued",
+        paidAt: state === "paid" ? dt(10) : null,
+      });
     }
   });
-  for (const c of chunk(fuelCanbusRows, 400)) await db.insert(schema.fuelReadingsCanbus).values(c);
-  for (const c of chunk(fuelFillsRows, 400)) await db.insert(schema.fuelFills).values(c);
-  for (const c of chunk(fuelAnomRows, 400)) await db.insert(schema.fuelAnomalies).values(c);
-  console.log(`✓ fuel: ${fuelCanbusRows.length} canbus · ${fuelFillsRows.length} fills · ${fuelAnomRows.length} anomalias`);
+  for (const c of chunk(freightRows, 400)) await db.insert(schema.freightLoads).values(c);
+  for (const c of chunk(freightTransitions, 400)) await db.insert(schema.freightStateTransitions).values(c);
+  for (const c of chunk(supplierInvoiceRows, 400)) await db.insert(schema.supplierInvoicesFreight).values(c);
+  for (const c of chunk(clientInvoiceRows, 400)) await db.insert(schema.clientInvoicesFreight).values(c);
+  for (const c of chunk(commissionRows, 400)) await db.insert(schema.commissions).values(c);
+  console.log(`✓ freight: ${freightRows.length} cargas reais · ${commissionRows.length} comissões`);
 
-  // ────────── FREIGHT (MVP E) ──────────
-  const freightLoads: (typeof schema.freightLoads.$inferInsert)[] = [];
-  const freightTrans: (typeof schema.freightStateTransitions.$inferInsert)[] = [];
-  const freightSupInv: (typeof schema.supplierInvoicesFreight.$inferInsert)[] = [];
-  const freightCliInv: (typeof schema.clientInvoicesFreight.$inferInsert)[] = [];
-  const commissionsRows: (typeof schema.commissions.$inferInsert)[] = [];
-  const STATES = ["scheduled", "delivered", "supplier_invoiced", "client_invoiced", "paid"];
-  // ISO-ish classification para decidir bónus nacional vs internacional.
-  const NATIONAL_CITIES = new Set(["Lisboa", "Porto", "Braga", "Coimbra", "Faro", "Setúbal", "Torres Vedras", "Alverca", "Leiria", "Aveiro"]);
-  const classifyDestination = (dest: string): "national" | "international" =>
-    NATIONAL_CITIES.has(dest) ? "national" : "international";
-
-  for (let m = 0; m < 3; m++) {
-    for (let i = 0; i < 80; i++) {
-      const salesperson = rngPick(["u_eder", "u_miguel"]);
-      const stateIdx = Math.min(STATES.length - 1, Math.max(0, STATES.length - 1 - rngInt(0, m * 2)));
-      const state = STATES[stateIdx]!;
-      const priceBuy = 800 + rng() * 2500;
-      const marginPct = 0.05 + rng() * 0.25;
-      const priceSell = Math.round(priceBuy * (1 + marginPct) * 100) / 100;
-      const margin = Math.round((priceSell - priceBuy) * 100) / 100;
-      const loadId = id("load", freightLoads.length);
-      const reference = `CGA-${2026 - m}/${(i + 1).toString().padStart(4, "0")}`;
-      const loadedAt = stateIdx >= 1 ? dt(m * 30 + i, 8) : null;
-      const deliveredAt = stateIdx >= 1 ? new Date((loadedAt?.getTime() ?? 0) + 2 * 86400000) : null;
-
-      freightLoads.push({
-        id: loadId,
-        reference,
-        salespersonId: salesperson,
-        clientId: rngPick(clientData).id,
-        supplierId: rngPick(supplierRows).id!,
-        origin: rngPick(["Lisboa", "Porto", "Madrid", "Barcelona", "Paris"]),
-        destination: rngPick(["Valencia", "Lyon", "Warsaw", "Amsterdam", "Rome"]),
-        loadedAt,
-        deliveredAt,
-        plate: rngBool(0.4) ? rngPick(internalPlates) : null,
-        priceBuy: Math.round(priceBuy * 100) / 100,
-        priceSell,
-        margin,
-        marginPct,
-        currency: "EUR",
-        state,
-        notes: null,
-        createdAt: dt(m * 30 + i, 6),
-        updatedAt: dt(m * 30 + i, 6),
-      });
-
-      STATES.slice(1, stateIdx + 1).forEach((to, ti) => {
-        freightTrans.push({
-          id: id("ftrans", freightTrans.length),
-          loadId,
-          fromState: STATES[ti]!,
-          toState: to,
-          userId: salesperson,
-          reason: null,
-          createdAt: dt(m * 30 + i, 8 + ti),
-        });
-      });
-
-      if (stateIdx >= 2) {
-        const supActual = priceBuy * (rngBool(0.8) ? 1 : 1 + (rng() - 0.5) * 0.1);
-        const deviation = Math.round((supActual - priceBuy) * 100) / 100;
-        freightSupInv.push({
-          id: id("fsinv", freightSupInv.length),
-          loadId,
-          invoiceNumber: `SUP-${loadId}`,
-          issuedAt: dt(m * 30 + i + 10, 14),
-          totalGross: Math.round(supActual * 1.23 * 100) / 100,
-          deviation,
-          deviationPct: deviation / priceBuy,
-          state: Math.abs(deviation) > 20 ? "deviation_detected" : "ok",
-          reviewedBy: null,
-          reviewedAt: null,
-        });
-      }
-      if (stateIdx >= 3) {
-        const dueAt = dt(m * 30 + i + 12, 0);
-        freightCliInv.push({
-          id: id("fcinv", freightCliInv.length),
-          loadId,
-          invoiceNumber: `CLI-${loadId}`,
-          issuedAt: dt(m * 30 + i + 12, 16),
-          dueAt,
-          totalGross: Math.round(priceSell * 1.23 * 100) / 100,
-          paidAt: stateIdx >= 4 ? dt(m * 30 + i + 50, 10) : null,
-        });
-
-        // Regra única (Éder): 20% do lucro + bónus fixos se viatura for Lloretrans
-        const usedInternalPlate = freightLoads[freightLoads.length - 1]!.plate !== null;
-        const destinationScope = classifyDestination(freightLoads[freightLoads.length - 1]!.destination);
-        const percentShare = Math.round(margin * 0.2 * 100) / 100;
-        const fixedBonus = usedInternalPlate
-          ? destinationScope === "international"
-            ? 5.0
-            : 2.5
-          : 0;
-        commissionsRows.push({
-          id: id("comm", commissionsRows.length),
-          loadId,
-          salespersonId: salesperson,
-          period: `${2026 - m}-${((new Date().getMonth() + 1) % 12 + 1).toString().padStart(2, "0")}`,
-          amountEur: Math.round((percentShare + fixedBonus) * 100) / 100,
-          ruleId: "cr_default",
-          state: stateIdx >= 4 ? "paid" : "accrued",
-          paidAt: stateIdx >= 4 ? dt(m * 30 + i + 60, 9) : null,
-        });
-      }
-    }
-  }
-  for (const c of chunk(freightLoads, 400)) await db.insert(schema.freightLoads).values(c);
-  for (const c of chunk(freightTrans, 400)) await db.insert(schema.freightStateTransitions).values(c);
-  for (const c of chunk(freightSupInv, 400)) await db.insert(schema.supplierInvoicesFreight).values(c);
-  for (const c of chunk(freightCliInv, 400)) await db.insert(schema.clientInvoicesFreight).values(c);
-  for (const c of chunk(commissionsRows, 400)) await db.insert(schema.commissions).values(c);
-  console.log(`✓ freight: ${freightLoads.length} cargas · ${commissionsRows.length} comissões`);
-
-  // ────────── WORKSHOP (MVP F) ──────────
   const workOrdersRows: (typeof schema.workOrders.$inferInsert)[] = [];
-  const workOrderItems: (typeof schema.workOrderItems.$inferInsert)[] = [];
-  const workOrderPhotos: (typeof schema.workOrderPhotos.$inferInsert)[] = [];
-  const workOrderSignatures: (typeof schema.workOrderSignatures.$inferInsert)[] = [];
-  const MECHANICS = ["u_mec1", "u_mec2"];
-
-  for (let m = 0; m < 3; m++) {
-    for (let i = 0; i < 120; i++) {
-      const vehicle = rngPick(vehicles.filter((v) => v.isInternal));
-      const mechanic = rngPick(MECHANICS);
-      // Work orders são intervenções em viaturas INTERNAS Lloretrans → códigos L*
-      // (S* seriam para veículos de clientes externos, que não estamos a simular no seed das folhas de obra).
-      const serviceCode = rngPick(["L1", "L2", "L3", "L7", "L8"]);
-      const startedAt = dt(m * 30 + i, 8 + rngInt(0, 8), rngInt(0, 59));
-      const duration = rngInt(30, 240);
-      const endedAt = new Date(startedAt.getTime() + duration * 60000);
-      const state = rngPick(["approved", "submitted", "draft"]);
-      const woId = id("wo", workOrdersRows.length);
-
-      workOrdersRows.push({
-        id: woId,
-        reference: `FO-${2026 - m}/${(i + 1).toString().padStart(4, "0")}`,
-        vehicleId: vehicle.id!,
-        mechanicId: mechanic,
-        serviceCode,
-        workCode: "INT-OFI-LLT",
-        startedAt,
-        endedAt,
-        durationMinutes: duration,
-        summary: `Intervenção ${serviceCode} em ${vehicle.plate}`,
-        state,
-        approvedBy: state === "approved" ? "u_adm_of" : null,
-        approvedAt: state === "approved" ? new Date(endedAt.getTime() + 86400000) : null,
-        exportedAt: state === "approved" ? new Date(endedAt.getTime() + 2 * 86400000) : null,
-        syncVersion: 1,
+  const workOrderItemsRows: (typeof schema.workOrderItems.$inferInsert)[] = [];
+  const workOrderChecklistRows: (typeof schema.workOrderChecklistAnswers.$inferInsert)[] = [];
+  const workshopVehicles = vehicles.filter((vehicle) => vehicle.isInternal && vehicle.active).slice(0, 24);
+  workshopVehicles.forEach((vehicle, index) => {
+    const workOrderId = id("wo", index);
+    const startedAt = dt(index % 30, 8 + (index % 6));
+    workOrdersRows.push({
+      id: workOrderId,
+      reference: `FO-REAL/${(index + 1).toString().padStart(4, "0")}`,
+      vehicleId: vehicle.id!,
+      mechanicId: index % 2 === 0 ? "u_mec1" : "u_mec2",
+      serviceCode: index % 3 === 0 ? "L1" : "L7",
+      workCode: "INT-OFI-LLT",
+      startedAt,
+      endedAt: new Date(startedAt.getTime() + 90 * 60000),
+      durationMinutes: 90,
+      activeMinutes: 90,
+      pausedMinutes: 0,
+      summary: `Intervenção ${(index % 3 === 0 ? "L1" : "L7")} em ${vehicle.plate}`,
+      state: index % 5 === 0 ? "draft" : "submitted",
+      approvedBy: null,
+      approvedAt: null,
+      exportedAt: null,
+      syncVersion: 1,
+      createdAt: startedAt,
+      updatedAt: startedAt,
+    });
+    workOrderItemsRows.push({
+      id: id("woi", index),
+      workOrderId,
+      kind: "labour",
+      description: "Mão-de-obra oficina",
+      partCode: null,
+      quantity: 1.5,
+      unitPrice: 45,
+      total: 67.5,
+      sourceInvoiceId: null,
+    });
+    for (const key of ["travoes", "suspensao"]) {
+      workOrderChecklistRows.push({
+        id: id("woc", workOrderChecklistRows.length),
+        workOrderId,
+        itemKey: key,
+        substituted: key === "travoes",
+        verified: true,
+        notes: null,
         createdAt: startedAt,
-        updatedAt: endedAt,
+        updatedAt: startedAt,
       });
-
-      const itemCount = rngInt(1, 5);
-      for (let it = 0; it < itemCount; it++) {
-        const isPart = rngBool(0.5);
-        workOrderItems.push({
-          id: id(`woi_${m}_${i}`, it),
-          workOrderId: woId,
-          kind: isPart ? "part" : "labour",
-          description: isPart ? `Peça ${rngPick(["filtro óleo", "pastilha travão", "óleo motor", "pneu"])}` : "Mão-de-obra",
-          partCode: isPart ? `PT-${rngInt(1000, 9999)}` : null,
-          quantity: isPart ? rngInt(1, 4) : duration / 60,
-          unitPrice: isPart ? 25 + rng() * 200 : 45,
-          total: 0,
-        });
-      }
-
-      if (state !== "draft" && rngBool(0.7)) {
-        ["before", "after"].forEach((stage, si) => {
-          workOrderPhotos.push({
-            id: id(`wop_${m}_${i}`, si),
-            workOrderId: woId,
-            stage,
-            path: `/uploads/wo/${woId}_${stage}.jpg`,
-            capturedAt: new Date(startedAt.getTime() + si * duration * 60000),
-          });
-        });
-        workOrderSignatures.push({
-          id: id(`wos_${m}_${i}`, 0),
-          workOrderId: woId,
-          signerRole: "mechanic",
-          signerName: users.find((u) => u.id === mechanic)!.name,
-          svgPath: `M 10 50 Q 50 20 100 50 T 200 50`,
-          signedAt: endedAt,
-        });
-      }
     }
-  }
-  for (const c of chunk(workOrdersRows, 400)) await db.insert(schema.workOrders).values(c);
-  for (const c of chunk(workOrderItems, 400)) await db.insert(schema.workOrderItems).values(c);
-  for (const c of chunk(workOrderPhotos, 400)) await db.insert(schema.workOrderPhotos).values(c);
-  for (const c of chunk(workOrderSignatures, 400)) await db.insert(schema.workOrderSignatures).values(c);
-  console.log(`✓ workshop: ${workOrdersRows.length} folhas · ${workOrderItems.length} items · ${workOrderPhotos.length} fotos`);
+  });
+  await db.insert(schema.workOrders).values(workOrdersRows);
+  await db.insert(schema.workOrderItems).values(workOrderItemsRows);
+  await db.insert(schema.workOrderChecklistAnswers).values(workOrderChecklistRows);
+  console.log(`✓ workshop: ${workOrdersRows.length} real-fleet work orders`);
 
-  console.log(`\n✓ Seed completo.`);
+  console.log("\n✓ Seed completo.");
   await sql.end();
 }
 
