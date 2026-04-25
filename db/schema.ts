@@ -385,6 +385,12 @@ export const fuelFills = pgTable(
     cardNumber: text("card_number"),
     location: text("location"),
     externalRef: text("external_ref"),
+    product: text("product"),
+    stationCountry: text("station_country"),
+    providerInvoiceNumber: text("provider_invoice_number"),
+    sourceFile: text("source_file"),
+    sourceRow: integer("source_row"),
+    driverNameRaw: text("driver_name_raw"),
   },
   (t) => ({
     vehicleTimeIdx: index("fills_vehicle_time_idx").on(t.vehicleId, t.filledAt),
@@ -426,9 +432,17 @@ export const freightLoads = pgTable(
     clientId: text("client_id")
       .notNull()
       .references(() => clients.id),
-    supplierId: text("supplier_id")
-      .notNull()
-      .references(() => suppliers.id),
+    supplierId: text("supplier_id").references(() => suppliers.id),
+    carrierName: text("carrier_name"),
+    carrierKind: text("carrier_kind").default("external_transporter").notNull(),
+    trailerPlate: text("trailer_plate"),
+    sourceRow: integer("source_row"),
+    customerInvoiceNumber: text("customer_invoice_number"),
+    supplierInvoiceNumber: text("supplier_invoice_number"),
+    cmrNumber: text("cmr_number"),
+    paymentRegularization: text("payment_regularization"),
+    paymentMonth: text("payment_month"),
+    serviceValueEur: doublePrecision("service_value_eur"),
     origin: text("origin").notNull(),
     destination: text("destination").notNull(),
     loadedAt: ts("loaded_at"),
