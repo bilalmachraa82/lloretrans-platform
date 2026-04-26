@@ -50,7 +50,7 @@ export default async function DocsUploadPage() {
       </Card>
       <Card>
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
-          <div><strong>Pipeline:</strong> upload → Azure DI extrai CMR/matrícula/datas → tenta match por CMR exacto → fallback matrícula ±24h → restantes vão para órfãos.</div>
+          <div><strong>Pipeline:</strong> upload → extracção de CMR/matrícula/datas → tenta match por CMR exacto → fallback matrícula ±24h → restantes vão para órfãos.</div>
           <div>Permissões cross-empresa: documentos ficam visíveis às empresas autorizadas (tabela <code>document_permissions</code>).</div>
         </CardContent>
       </Card>

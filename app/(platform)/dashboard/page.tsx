@@ -103,7 +103,7 @@ const MVP_CARDS = [
     slug: "fuel",
     title: "Combustível",
     eyebrow: "MVP D",
-    description: "CANBUS × cartões · anomalias por viatura · baseline adaptativo",
+    description: "Cepsa/Repsol/Radius/bomba · Frotcom leitura pendente · anomalias por viatura",
     href: "/fuel",
     icon: Fuel,
   },

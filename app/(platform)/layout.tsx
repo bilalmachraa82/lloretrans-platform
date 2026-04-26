@@ -34,9 +34,9 @@ interface MvpEntry {
 
 const MVPS: MvpEntry[] = [
   { slug: "km", letter: "A", title: "Validação km", tagline: "Logue Trans × Frotcom", icon: TruckIcon, href: "/km" },
-  { slug: "ocr", letter: "B", title: "OCR Facturas", tagline: "9 reais + 180 sintéticas", icon: ReceiptText, href: "/ocr" },
+  { slug: "ocr", letter: "B", title: "OCR Facturas", tagline: "9 facturas reais", icon: ReceiptText, href: "/ocr" },
   { slug: "docs", letter: "C", title: "Docs Centrais", tagline: "CMR · guias · tickets", icon: FileStack, href: "/docs" },
-  { slug: "fuel", letter: "D", title: "Combustível", tagline: "CANBUS × cartões", icon: Fuel, href: "/fuel" },
+  { slug: "fuel", letter: "D", title: "Combustível", tagline: "Cepsa · Repsol · Radius · bomba", icon: Fuel, href: "/fuel" },
   { slug: "bolsa", letter: "E", title: "Bolsa de Carga", tagline: "5 estados · comissões", icon: PackageSearch, href: "/bolsa" },
   { slug: "oficina", letter: "F", title: "Oficina (PWA)", tagline: "Mecânico · mobile-first", icon: Wrench, href: "/oficina" },
 ];

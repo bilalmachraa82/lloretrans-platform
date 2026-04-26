@@ -33,7 +33,7 @@ No login, escolhe um dos perfis pré-seeded. Cada role vê apenas os módulos qu
 | ocr | B · OCR Facturas | `/ocr` | **9 facturas reais** mapeadas (Würth, Policalço, Selcar, Popapneus, Prevrod, Carby/Dacia, Flexbor, SGP, Blinker) · regras aprendidas por fornecedor · export XML PHC Advanced |
 | docs | C · Digitalização Central | `/docs` | Hub CMR + guias · associação automática à viagem · permissões cross-empresa (volume real: 4 000/mês) |
 | fuel | D · Combustível | `/fuel` | Cepsa, Repsol, Radius Velocity + bomba interna · Frotcom API de leitura por confirmar · ranking L/100km · detecção de anomalias |
-| bolsa | E · Bolsa de Carga | `/bolsa` | State machine 5 estados · **comissões: 20% lucro + €2,50 nac / €5 intl (só carros Lloretrans)** · alertas deviation/atraso |
+| bolsa | E · Bolsa de Carga | `/bolsa` | Fluxo auditado 5 estados · **comissões: 20% lucro + €2,50 nac / €5 intl (só carros Lloretrans)** · alertas deviation/atraso |
 | oficina | F · Folha de Obra PWA | `/oficina` | **Telemóvel · offline** · 17-item checklist + substituição/verificação · assinatura canvas · export PHC Advanced |
 
 `/admin` tem masters (viaturas, fornecedores, códigos), feature flags e audit log completo.
@@ -80,7 +80,7 @@ Cada MVP foi desenhado para vender **controlo**, não tempo. O tempo é consequ�
 
 | Dado / integração | Estado demo | Caminho prod |
 |-------------------|-------------|--------------|
-| **9 facturas reais Lloretrans** | ✓ extraídas em fixture (cache OCR) | Azure Document Intelligence EU region |
+| **9 facturas reais Lloretrans** | ✓ extraídas em fixture (cache OCR) | Extracção controlada + armazenamento EU |
 | 60 viaturas, 50 motoristas | Seed determinista PT (base real: 138 Lloretrans + frota grupo) | PHC Advanced master · integrador PHC por confirmar |
 | Viagens Logue Trans | Seed com jitter realista | API Logue Trans (aguarda Hélio) |
 | GPS Frotcom | Seed aligned com trips | Frotcom API |
@@ -198,7 +198,7 @@ npm run test          # smoke tests vitest
 3. **Stub/Live adapter pattern** em `lib/integrations/*` permite correr offline. Trocar para prod = meter `USE_LIVE_APIS=true` + credenciais.
 4. **PWA isolado a `/oficina`** — outros módulos são desktop-first para administrativa.
 5. **Audit log append-only centralizado** — cada mutação em qualquer MVP passa por `lib/audit/audit()`. Facilita compliance e debugging.
-6. **State machine do MVP E em `lib/freight-state.ts`** — validação de transições antes de DB write. Evita estados inválidos.
+6. **Fluxo auditado do MVP E em `lib/freight-state.ts`** — validação de transições antes de DB write. Evita estados inválidos.
 7. **Fixtures OCR cacheadas** — PDFs reais são scans sem texto; OCR cache simula o comportamento prod (extracção cara · uma vez · cacheada).
 
 ---

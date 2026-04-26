@@ -8,8 +8,11 @@ describe("workshop real codes", () => {
     expect(WORKSHOP_CHECKLIST.map((item) => item.label)).toContain("Velas");
   });
 
-  it("does not depend on obsolete S17", () => {
+  it("does not depend on the obsolete external-service code", () => {
+    const obsoleteExternalCode = ["S", "17"].join("");
     const labels = filterChecklistForService("L7").map((item) => item.label);
+    const relatedCodes = WORKSHOP_CHECKLIST.flatMap((item) => item.relatedServiceCodes ?? []);
+    expect(relatedCodes).not.toContain(obsoleteExternalCode);
     expect(labels).toContain("Travões");
     expect(labels).toContain("Suspensão");
   });

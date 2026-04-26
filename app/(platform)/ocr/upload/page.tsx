@@ -20,7 +20,7 @@ export default async function InvoiceUploadPage() {
     <div className="space-y-6">
       <PageHeader
         title="Upload de factura"
-        description="Fluxo real: PDF → OCR Azure DI → classificação automática por NIF → validação humana."
+        description="Fluxo real: PDF → extracção de texto → classificação automática por NIF → validação humana."
         actions={
           <Button asChild variant="outline">
             <Link href="/ocr">← Voltar</Link>
@@ -39,7 +39,7 @@ export default async function InvoiceUploadPage() {
               <div>
                 <div className="text-sm font-medium">Escolher ou arrastar PDF</div>
                 <div className="text-xs text-muted-foreground mt-1">
-                  Em produção: Azure Document Intelligence (EU region). Aqui: simulação com fixture.
+                  Em produção: pasta de entrada/Blob EU + extracção controlada. Aqui: simulação com fixture.
                 </div>
               </div>
               <input type="file" id="file" name="file" accept="application/pdf" className="hidden" />
@@ -65,7 +65,7 @@ export default async function InvoiceUploadPage() {
               </div>
               <div className="flex items-end">
                 <Badge variant="secondary" className="text-[10px]">
-                  Demo cacheia OCR. Em prod, cada upload gasta ~0,005-0,02 € em DI.
+                  Demo cacheia OCR. Em produção, cada upload fica registado e auditável.
                 </Badge>
               </div>
             </div>
@@ -83,7 +83,7 @@ export default async function InvoiceUploadPage() {
       <Card>
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
           <div><strong>Pipeline (prod):</strong></div>
-          <div>1. Upload → Azure Blob EU · 2. Azure DI extrai layout · 3. Claude API classifica via NIF → rule</div>
+          <div>1. Upload → armazenamento EU · 2. extracção de texto · 3. Claude API classifica via NIF → regra</div>
           <div>4. UI mostra confiança por campo · 5. Admin valida → regra aprendida · 6. Export XML PHC</div>
         </CardContent>
       </Card>

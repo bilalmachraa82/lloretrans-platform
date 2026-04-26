@@ -45,17 +45,16 @@ export default async function BolsaPage({
   if (client) conditions.push(eq(clients.name, client));
   if (q) {
     const needle = `%${q}%`;
-    conditions.push(
-      or(
-        ilike(freightLoads.origin, needle),
-        ilike(freightLoads.destination, needle),
-        ilike(freightLoads.carrierName, needle),
-        ilike(freightLoads.cmrNumber, needle),
-        ilike(freightLoads.customerInvoiceNumber, needle),
-        ilike(freightLoads.supplierInvoiceNumber, needle),
-        ilike(clients.name, needle),
-      ),
+    const searchCondition = or(
+      ilike(freightLoads.origin, needle),
+      ilike(freightLoads.destination, needle),
+      ilike(freightLoads.carrierName, needle),
+      ilike(freightLoads.cmrNumber, needle),
+      ilike(freightLoads.customerInvoiceNumber, needle),
+      ilike(freightLoads.supplierInvoiceNumber, needle),
+      ilike(clients.name, needle),
     );
+    if (searchCondition) conditions.push(searchCondition);
   }
   const whereClause = conditions.length ? and(...conditions) : undefined;
 
@@ -91,7 +90,7 @@ export default async function BolsaPage({
       .leftJoin(users, eq(users.id, freightLoads.salespersonId))
       .where(whereClause)
       .orderBy(desc(freightLoads.createdAt))
-      .limit(300),
+      .limit(350),
     db
       .select({ n: count() })
       .from(supplierInvoicesFreight)

@@ -11,7 +11,6 @@ import { Trash2, Plus, Camera, Check } from "lucide-react";
 import { submitWorkOrder } from "../actions";
 import {
   WORKSHOP_CHECKLIST,
-  filterChecklistForService,
   emptyChecklist,
   type ChecklistAnswer,
   type ChecklistItemKey,
@@ -110,7 +109,7 @@ export function WorkOrderWizard({
     setChecklist((cur) => cur.map((c) => (c.key === key ? { ...c, ...patch } : c)));
   }
 
-  const visibleChecklist = filterChecklistForService(serviceCode);
+  const visibleChecklist = WORKSHOP_CHECKLIST;
   const checklistTouched = checklist.some((c) => c.substituted || c.verified || (c.notes ?? "").trim());
 
   const total = items.reduce((a, i) => a + i.quantity * i.unitPrice, 0);
@@ -220,7 +219,7 @@ export function WorkOrderWizard({
           <CardHeader><CardTitle className="text-base">2. Tipo de serviço</CardTitle></CardHeader>
           <CardContent className="grid gap-2 sm:grid-cols-2">
             {serviceCodes
-              .filter((c) => c.kind === "oficina_interna" || c.kind === "oficina_externa")
+              .filter((c) => c.kind === "oficina_interna" || c.kind === "oficina_externa" || c.kind === "operacao_interna")
               .map((c) => (
                 <button
                   key={c.code}

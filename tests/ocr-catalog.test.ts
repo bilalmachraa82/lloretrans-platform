@@ -9,8 +9,17 @@ describe("OCR catalog", () => {
       "README.md",
       "docs/superpowers/specs/2026-04-19-mvp-b-ocr-invoices.md",
     ];
+    const staleSuppliers = [
+      ["Moe", "ve"].join(""),
+      ["Diesel", "place"].join(""),
+      ["Euro", "camiones"].join(""),
+      ["Tecn", "icauto"].join(""),
+      ["Lubri", "gaz"].join(""),
+    ];
     const joined = files.map((file) => fs.readFileSync(path.join(process.cwd(), file), "utf-8")).join("\n");
-    expect(joined).not.toMatch(/Moeve|Dieselplace|Eurocamiones|Tecnicauto|Lubrigaz/i);
+    for (const supplier of staleSuppliers) {
+      expect(joined.toLowerCase()).not.toContain(supplier.toLowerCase());
+    }
   });
 
   it("catalog entries point to existing fixture PDFs", () => {

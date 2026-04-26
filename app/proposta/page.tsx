@@ -154,10 +154,10 @@ const TIERS = [
 const TIMELINE = [
   { week: "1", phase: "Sprint 0", tasks: "Acesso Neon + Vercel · credenciais Frotcom · dataset shadow", color: "bg-[hsl(220_9%_45%)]" },
   { week: "2–3", phase: "MVP A · Validação km", tasks: "Reconciliação Logue×Frotcom · dashboard · demo interna", color: "bg-[hsl(222_72%_38%)]" },
-  { week: "2–7", phase: "MVP B · OCR", tasks: "Pipeline Azure DI · classificação · 10 fornecedores educados", color: "bg-[hsl(222_72%_38%)]" },
+  { week: "2–7", phase: "MVP B · OCR", tasks: "Extracção PDF · classificação · 9 fornecedores reais", color: "bg-[hsl(222_72%_38%)]" },
   { week: "4–8", phase: "MVP C · Docs", tasks: "Hub centralizado · associação automática · permissões cross", color: "bg-[hsl(222_72%_38%)]" },
   { week: "8–11", phase: "MVP D · Combustível", tasks: "Cruzamento 4 silos · anomalias · relatório mensal", color: "bg-[hsl(32_82%_50%)]" },
-  { week: "10–18", phase: "MVP E · Bolsa", tasks: "State machine · comissões · integração PHC escrita", color: "bg-[hsl(32_82%_50%)]" },
+  { week: "10–18", phase: "MVP E · Bolsa", tasks: "Fluxo auditado · comissões · integração PHC escrita", color: "bg-[hsl(32_82%_50%)]" },
   { week: "13–19", phase: "MVP F · Oficina PWA", tasks: "Piloto com 1 mecânico · alargar · export PHC", color: "bg-[hsl(0_72%_50%)]" },
 ];
 

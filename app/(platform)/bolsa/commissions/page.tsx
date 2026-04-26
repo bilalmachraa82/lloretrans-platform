@@ -33,7 +33,7 @@ export default async function CommissionsPage({
     .from(commissions)
     .leftJoin(users, eq(users.id, commissions.salespersonId))
     .where(eq(commissions.period, period))
-    .groupBy(commissions.salespersonId, commissions.state);
+    .groupBy(commissions.salespersonId, users.name, commissions.state);
 
   const bySales = new Map<string, { name: string; accruedAmount: number; accruedCount: number; paidAmount: number; paidCount: number }>();
   for (const r of rows) {
@@ -54,7 +54,7 @@ export default async function CommissionsPage({
     <div className="space-y-6">
       <PageHeader
         title={`Comissões · ${period}`}
-        description="Agregadas por comercial · accrued = calculadas mas não pagas · paid = já pagas"
+        description="Agregadas por comercial · calculadas mas não pagas / já pagas"
         actions={
           <div className="flex gap-2">
             <form>
@@ -74,13 +74,13 @@ export default async function CommissionsPage({
       <Card>
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
           <div>
-            <strong>Regra confirmada (Éder, 2026-04-20):</strong> comissão = <code>margem × %</code> + bónus fixo por carga.
+            <strong>Regra confirmada (Éder, 2026-04-20):</strong> comissão = <code>20% do lucro total</code> + bónus fixo por carga.
             Só se aplica se a carga usou uma viatura interna Lloretrans.
           </div>
           {rules.map((r) => (
             <div key={r.id}>
               <code>{r.salespersonId ?? "default"}</code>:{" "}
-              {(r.percentOfMargin * 100).toFixed(0)}% margem
+              {(r.percentOfMargin * 100).toFixed(0)}% lucro
               {" + "}
               {formatEur(r.fixedBonusNationalEur)} nacional / {formatEur(r.fixedBonusInternationalEur)} internacional
               {r.requireInternalVehicle ? " · viatura interna obrigatória" : ""}
@@ -97,7 +97,7 @@ export default async function CommissionsPage({
               <tr>
                 <th>Comercial</th>
                 <th className="text-right">Cargas</th>
-                <th className="text-right">Acumulado (accrued)</th>
+                <th className="text-right">Acumulado</th>
                 <th className="text-right">Pago</th>
                 <th className="text-right">Total</th>
                 <th></th>

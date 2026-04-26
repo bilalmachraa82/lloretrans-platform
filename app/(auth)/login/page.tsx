@@ -44,7 +44,7 @@ const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
     label: "Éder",
     summary: "Comercial · bolsa de carga",
     angle:
-      "Só vê o MVP E. 240 cargas, state machine do ciclo completo, comissão automática por linha.",
+      "Só vê o MVP E. 306 cargas reais do Excel, fluxo auditado do ciclo completo e comissão automática por linha.",
   },
   {
     email: "joao.oliveira@lloretrans.pt",
@@ -201,7 +201,7 @@ export default async function LoginPage({
           <summary className="list-none cursor-pointer flex items-center justify-between px-5 py-4 hover:bg-white transition-colors rounded-lg">
             <div>
               <div className="font-display text-sm font-semibold">Outros perfis</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5">9 papéis adicionais para cenários específicos</div>
+              <div className="text-[11px] text-muted-foreground mt-0.5">Perfis adicionais para cenários específicos</div>
             </div>
             <span className="text-[hsl(222_72%_30%)] text-lg font-semibold transition-transform group-open:rotate-45 leading-none">+</span>
           </summary>

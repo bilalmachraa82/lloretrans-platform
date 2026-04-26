@@ -89,9 +89,9 @@ function extractDate(text: string): string | null {
 function extractSupplierName(text: string, filename: string): string | null {
   const firstLines = text.split("\n").slice(0, 10).join(" ");
   const knownSuppliers = [
-    "Moeve Pro", "Policalço", "Selcar", "Create Business", "Prevrod",
-    "Popapneus", "Dieselplace", "Pneuser", "Lubrigaz", "Eurocamiones",
-    "Tecnicauto", "Autocares", "Gasóleos",
+    "Würth", "Wurth", "Policalço", "Policalco", "Selcar", "Prevrod",
+    "Popapneus", "Carby", "Dacia", "Vesauto", "Flexbor",
+    "SGP", "Global Parts", "Blinker",
   ];
   for (const s of knownSuppliers) {
     if (firstLines.toLowerCase().includes(s.toLowerCase())) return s;

@@ -34,7 +34,7 @@ export async function uploadInvoice(formData: FormData): Promise<void> {
   const fixtureFilename = formData.get("fixtureFilename")?.toString();
 
   if (!fixtureFilename) {
-    throw new Error("Seleccionar um fixture para demonstração — upload real requer Azure DI.");
+    throw new Error("Seleccionar um fixture para demonstração — upload real ainda não está ligado neste ambiente.");
   }
 
   const catalogPath = path.join(process.cwd(), "fixtures", "extracted", "_catalog.json");
