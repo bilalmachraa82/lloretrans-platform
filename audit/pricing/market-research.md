@@ -8,6 +8,35 @@ Mercado: PT/ES + Europa, transporte/logística, OCR financeiro, bolsas de carga,
 - Muitos fornecedores enterprise não publicam preço final; a ausência de preço público é uma característica do segmento, não uma lacuna de pesquisa.
 - Não encontrei prova pública de integração directa PHC CS / PHC GO / PHC Advanced nos concorrentes de transporte. Quando há integração, é descrita como API/ERP genérico ou “contact sales”.
 - Para PHC CS/PHC GO/PHC Advanced, há evidência de integradores e APIs/limites, mas não uma garantia de que o integrador PHC Advanced do grupo aceite escrita directa. Fontes: PHC GO API/help center e integradores PHC CS/PHC Advanced públicos.
+- Revisão PME: uma PME portuguesa é, por definição europeia/IAPMEI, <250 trabalhadores e <= EUR 50M volume de negócios ou <= EUR 43M balanço. Fonte: https://eur-lex.europa.eu/PT/legal-content/glossary/small-and-medium-sized-enterprises.html
+
+## Rebase PME portuguesa
+
+Nesta lente, o buyer compara a Lloretrans Ops com software português de gestão/facturação, ERP cloud e fornecedores verticais com preços públicos muito mais baixos. Isto não invalida o valor custom, mas muda a elasticidade de preço.
+
+| Fornecedor | Categoria PME | Pricing público | Leitura para AiTiPro |
+|---|---|---:|---|
+| Cegid PHC GO | ERP cloud PME | Corporate EUR 38,36/mês; Advanced EUR 78,81/mês; Enterprise EUR 180/mês, valores equivalentes mensais em subscrição trienal sem IVA. | Anchor fortíssimo: PME vê ERP completo por <EUR 200/mês, mesmo que implementação/add-ons custem à parte. |
+| Moloni | Faturação PT | Base EUR 6,49/mês anual; Flex EUR 10,90/mês anual; Pro EUR 15,90/mês anual. | Mostra tolerância baixa para software horizontal; não resolve operação Lloretrans. |
+| Cegid Vendus | Faturação/POS PT | Base EUR 6,50/mês + IVA; Flex EUR 12,50/mês; Pro EUR 15/mês. | Mais um anchor psicológico baixo para PME. |
+| InvoiceXpress | Faturação PT | Pricing PDF 2025/2026 com planos desde grátis/baixo custo até volumes altos; Capterra lista preço inicial EUR 6/mês. | Útil para demonstrar que factura/SAF-T é commodity. OCR + classificação + PHC Advanced é outro problema. |
+| PlanningPME | Planeamento PME | Página PT mostra licenças desde EUR 6/mês e orçamento para integrações. | PME espera módulo de planeamento barato; integrações sob orçamento. |
+| EasyFleet | Fleet management | Plano Advanced EUR 160 para small fleet 1-20, inclui API/manutenção/fuel/invoice reading. | Fleet SaaS PME fica em centenas/mês, não milhares, mas é produto standard. |
+| Tachogram | Tacógrafo | EUR 3,99/motorista/mês. | Compliance/tacho é commodity por utilizador. |
+| ManWinWin | CMMS PT | EUR 39/54/75 utilizador/mês; implementação EUR 1.890/2.700/3.590. | Melhor anchor PME para oficina: setup de milhares, não dezenas de milhares, quando é software standard. |
+| Zaask programador | Serviços dev PT | EUR 10-45/hora publicado para programador. | PME conhece preços baixos de freelance; AiTiPro tem de justificar produto, risco e ownership, não horas. |
+
+Fontes PME:
+
+- Cegid PHC GO planos: https://phcsoftware.com/pt/phc-go/phc-go-planos/
+- Moloni planos: https://www.moloni.pt/planos/
+- Cegid Vendus preço: https://www.vendus.pt/ajuda/preco-vendus/
+- InvoiceXpress pricing PDF: https://invoicexpress.com/wp-content/uploads/2025/07/pricing.pdf
+- PlanningPME preços: https://www.planningpme.pt/precos.htm
+- EasyFleet pricing: https://www.easyfleet.org/en-US/pricing
+- Tachogram pricing: https://tachogram.com/en/pricing
+- ManWinWin Professional: https://www.manwinwin.com/pt/manwinwin-professional-software-de-manutencao/
+- Zaask programador: https://www.zaask.pt/quanto-custa/programador
 
 ## Concorrentes e comparáveis
 
@@ -100,8 +129,11 @@ Usei EUR 50/h como custo interno no bottom-up, não como preço cliente. Se a Ai
 
 ## Síntese de mercado
 
+- Para PME portuguesa, pricing de EUR 90k-150k só passa se for claramente transformação operacional multi-empresa, não “software”.
+- A âncora real de PME é baixa: EUR 6-200/mês para software horizontal, centenas/mês para fleet, alguns milhares de implementação para CMMS/ERP standard.
+- O argumento da AiTiPro tem de ser: “não estamos a vender Moloni/PHC GO/Fleetio; estamos a fechar fluxos órfãos entre Excel, papel, Frotcom, Logue Trans e PHC Advanced”.
 - Fleet/telematics puro é barato por veículo, mas não resolve PHC Advanced, OCR fornecedor, comissões e adopção oficina.
 - Bolsas de carga europeias custam dezenas/centenas por mês, mas vendem acesso a mercado, não workflow interno auditável.
 - OCR/AP automation e RPA enterprise quase sempre são “request demo/contact sales”; o preço é dominado por integração ERP, validação e volumes.
 - CMMS/oficina pode ser barato por utilizador se genérico, mas API, implementação e adopção sobem o TCO.
-- Não há fonte pública que justifique vender os 6 MVPs custom por EUR 52k no piso. O mercado suporta EUR 90k-150k quando há integração, multi-role, dados reais e responsabilidade operacional.
+- Conclusão revista: EUR 90k-150k é defensável para médio-grande/enterprise; para PME portuguesa, a zona comercial mais plausível é EUR 12k-18k Core, EUR 32k-48k PRO e EUR 58k-88k Enterprise faseado.

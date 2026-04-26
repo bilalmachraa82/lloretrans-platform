@@ -19,9 +19,11 @@ Data de análise: 26 Abril 2026
 
 - Câmbio de trabalho: 1 USD = EUR 0,93. Estimativa, não taxa de tesouraria.
 - Custo interno fully loaded de 1 senior full-stack/product engineer: EUR 50/h. Justificação: salários PT 2026 para software developer / tech lead / architect em Lisboa e Porto, ajustados a encargos patronais, férias, equipamento e horas produtivas. Fonte salarial base: Adecco Portugal Salary Guide 2026, https://www.adecco.com/pt-pt/-/media/project/adecco/adeccopt/pdfs/guia-salarial-2026-en.pdf
+- Revisão PME portuguesa: para pricing de entrada, usei também EUR 38/h como custo efectivo productizado. Isto só é defensável se a AiTiPro reutilizar a base já construída, limitar scope e aceitar margem inicial inferior para abrir caso de referência.
 - 40h/semana.
 - Buffer de imprevistos: 25%.
 - Margem bruta alvo para custom B2B PT: 45-55%. A recomendação usa este intervalo como critério, não como facto público.
+- Margem PME de entrada: 35-45%. Não deve ser usada para Enterprise com escrita PHC Advanced, SLA superior ou responsabilidade operacional alargada.
 - Não inclui IVA.
 
 ## Em Aberto
@@ -120,4 +122,38 @@ Fórmula: `(infra mensal + suporte mensal × EUR 50/h) ÷ (1 - margem alvo)`.
 | PRO | EUR 28k-48k | Abaixo da margem alvo se incluir A+B+C+F com onboarding e suporte real. |
 | Enterprise | EUR 52k-92k | O tecto actual entra na zona defensável; o piso destrói margem se os 6 MVPs forem reais. |
 
-Conclusão: a proposta actual está subprecificada no piso e aceitável apenas no topo de Enterprise. Para conselho, não vender valores fechados; vender faixas por cenário e deixar PHC Advanced/SLA/volume como pressupostos visíveis.
+## Rebase PME portuguesa
+
+Esta secção responde à objecção comercial: para uma PME portuguesa, os preços enterprise acima parecem altos porque a comparação mental é PHC GO, Moloni, EasyFleet, ManWinWin ou “um integrador local”, não um projecto custom enterprise.
+
+Condições para este rebase ser honesto:
+
+- Scope faseado, não “6 MVPs fechados” desde o primeiro contrato.
+- XML PHC Advanced ou registo intermédio até integrador confirmar escrita.
+- SLA 99% em horário útil; nada de 99.9%.
+- Suporte business-hours, sem managed service 24/7.
+- A AiTiPro aceita margem inicial 35-45% para entrar, com upsell posterior.
+
+Fórmula PME: `horas normalizadas × EUR 38/h × 1,25 buffer ÷ (1 - 35-45% margem)`.
+
+| Tier | Scope usado | Horas | Custo PME com buffer | Setup mínimo sustentável @35-45% margem |
+|---|---|---:|---:|---:|
+| Core | 1 MVP forte ou A+B muito controlado | 130-193h | EUR 6,2k-9,2k | **EUR 10k-17k** |
+| PRO | A+B+C+F faseado, sem escrita PHC Advanced prometida | 360-464h | EUR 17,1k-22,0k | **EUR 27k-40k** |
+| Enterprise faseado | 6 MVPs, mas entregues por fases e com integrações live condicionadas | 600-760h | EUR 28,5k-36,1k | **EUR 44k-66k** |
+
+Leitura:
+
+- A proposta original **EUR 8k-18k / 28k-48k / 52k-92k** faz sentido para PME se for vendida como faseamento controlado, não como promessa enterprise full.
+- A recomendação anterior **EUR 92k-125k Enterprise** fica tecnicamente defensável, mas comercialmente pesada para PME portuguesa.
+- Para PME, o preço deve abrir mais baixo e compensar risco com limites contratuais: volume, PHC Advanced, SLA, suporte e change requests.
+
+## Recorrente PME
+
+| Tier | Suporte assumido | Custo mensal PME | Recorrente PME sustentável |
+|---|---:|---:|---:|
+| Core | 3-6h/mês + infra curta | EUR 250-450 | **EUR 450-850/mês** |
+| PRO | 8-14h/mês + infra + revisão mensal leve | EUR 550-950 | **EUR 1.000-1.900/mês** |
+| Enterprise faseado | 16-28h/mês + coordenação + auditoria mensal | EUR 1.100-1.800 | **EUR 2.000-3.300/mês** |
+
+Conclusão revista: para PME portuguesa, não se deve subir já para EUR 92k-125k como recomendação principal. O preço defensável é uma entrada faseada: Core EUR 12k-18k, PRO EUR 32k-48k, Enterprise faseado EUR 58k-88k, com recorrente EUR 550-3.900/mês conforme scope.
