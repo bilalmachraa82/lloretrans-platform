@@ -22,7 +22,7 @@ Base: bottom-up + market research + CFO review (`audit/pricing/cfo-review.md`).
 
 - Confirmação do integrador PHC Advanced.
 - Acesso e limites reais da Frotcom/Logue Trans.
-- Se “4 000 facturas/mês” são CMR/guias ou facturas-fornecedor.
+- Se “4 000 documentos/mês” são CMR/guias ou facturas-fornecedor.
 - SLA pretendido: 99% business-hours vs 99.9%.
 - Capacidade real AiTiPro para entregar PRO faseado em 3-4 meses.
 
@@ -83,7 +83,7 @@ Frase simples:
 
 ## Sensibilidades
 
-### Se “4 000 facturas/mês” forem facturas-fornecedor
+### Se “4 000 documentos/mês” forem facturas-fornecedor
 
 - PRO sobe +EUR 5k-10k setup.
 - Mensalidade PRO sobe +EUR 300-800/mês.

@@ -8,12 +8,12 @@
 
 ## 1. Objectivo
 
-Entregar os 6 MVPs do PRD 2026-04-19 numa **única aplicação Next.js**, partilhando infraestrutura (DB, auth, masters, audit log, export PHC), mas com módulos isolados por MVP para venda independente. A aplicação deve correr **offline localmente** (sem APIs externas) via stubs realistas, e promover-se para produção trocando adaptadores de integração.
+Entregar os 6 MVPs do PRD 2026-04-19 numa **única aplicação Next.js**, partilhando infraestrutura (DB, auth, masters, audit log, export PHC Advanced), mas com módulos isolados por MVP para venda independente. A aplicação deve correr **offline localmente** (sem APIs externas) via stubs realistas, e promover-se para produção trocando adaptadores de integração.
 
 ## 2. Princípios não-negociáveis
 
-1. **Realidade alinhada.** Dados sintéticos espelham volumes e padrões reais extraídos do PRD (30-100 motoristas, ~180 facturas/mês, ~450 viagens/mês, ~80 cargas bolsa/mês). Stubs têm jitter, erros, e estados ambíguos — não é happy-path.
-2. **Humano no loop.** IA nunca decide sozinha. Cada MVP tem um gate de validação humana antes de acção irreversível (facturar, aprovar, lançar em PHC).
+1. **Realidade alinhada.** Dados demo complementares espelham volumes e padrões reais extraídos do PRD e do evidence pack (9 facturas fornecedor reais, 4.000 documentos/mês em digitalização, 306 cargas reais, abastecimentos reais por fornecedor). Stubs têm jitter, erros, e estados ambíguos — não é happy-path.
+2. **Humano no loop.** IA nunca decide sozinha. Cada MVP tem um gate de validação humana antes de acção irreversível (facturar, aprovar, lançar em PHC Advanced).
 3. **Auditabilidade total.** Cada mutação passa por `audit_log`. Tabela append-only. `who/what/before/after/reason/timestamp` para todas as transições de estado.
 4. **RGPD by default.** Zero analytics terceiros, zero tracking cookies, credenciais só em env, retenção configurável por tipo.
 5. **Reversibilidade.** Qualquer módulo pode ser desligado por feature flag sem partir os outros.
@@ -85,7 +85,7 @@ lloretrans-platform/
 Schema único `db/schema.ts` mas organizado por secções lógicas:
 
 - **Core:** `users`, `roles`, `companies` (Lloretrans + empresas do grupo), `audit_log`, `feature_flags`.
-- **Masters:** `vehicles` (matrícula, tipologia, empresa proprietária), `service_codes` (S1-S9 externos, L1-L8 internos, I0-I9 operações internas + descrições), `work_codes` (interno/externo), `suppliers` (NIF + regras OCR), `clients` (master PHC).
+- **Masters:** `vehicles` (matrícula, tipologia, empresa proprietária), `service_codes` (S1-S9 externos, L1-L8 internos, I0-I9 operações internas + descrições), `work_codes` (interno/externo), `suppliers` (NIF + regras OCR), `clients` (master PHC Advanced).
 - **MVP A:** `trips`, `km_reconciliations`, `km_approvals`.
 - **MVP B:** `invoices`, `invoice_lines`, `supplier_rules`, `ocr_extractions`.
 - **MVP C:** `documents`, `document_associations`, `document_permissions`.
@@ -114,7 +114,7 @@ export function createLogueTransClient(): LogueTransClient {
 }
 ```
 
-Mesma pattern para Frotcom, PHC, Cepsa, Repsol, Radius Velocity e bomba interna.
+Mesma pattern para Frotcom, PHC Advanced, Cepsa, Repsol, Radius Velocity e bomba interna.
 
 ### 3.5 Auth — estratégia
 
@@ -154,9 +154,9 @@ Tabela `audit_log` append-only:
 
 Helper `audit(user, action, entity, before, after, reason)` chamado em toda mutação.
 
-### 3.7 Export PHC standardizado
+### 3.7 Export PHC Advanced standardizado
 
-Formato neutro (JSON intermediário) + serializador XML PHC. MVPs B, E, F produzem JSON; serializador converte no fim. Quando integrador PHC ficar disponível, troca-se serializador por cliente HTTP sem refactor de upstream.
+Formato neutro (JSON intermediário) + serializador XML PHC Advanced. MVPs B, E, F produzem JSON; serializador converte no fim. Quando integrador PHC Advanced ficar disponível, troca-se serializador por cliente HTTP sem refactor de upstream.
 
 ## 4. Feature flags
 
@@ -188,7 +188,7 @@ Seed determinista via seed numérico — `npm run db:reset` dá sempre o mesmo d
 
 ## 7. RGPD & segurança
 
-- Dados em repouso: SQLite local (dev) ou Neon EU + Azure Blob EU (prod). **Não** usar Vercel Blob (sem garantia de região UE).
+- Dados em repouso: SQLite local (dev) ou Neon EU + storage EU por definir (Azure Blob EU ou R2 EU). **Não** prometer Vercel Blob sem confirmação de região/contrato.
 - Dados em trânsito: TLS obrigatório.
 - Retenção configurável por tipo — defaults: facturas 10 anos (obrigação fiscal PT), CMR 5 anos, audit_log 7 anos, uploads oficina 5 anos.
 - Direito ao esquecimento: anonimização (preserva auditoria), não apagamento.
@@ -219,7 +219,7 @@ Para cada MVP:
 |---------|-----------|--------|
 | Provider auth prod | reunião Hélio | Depende do ecossistema do grupo |
 | Neon projecto dedicado ou partilhado com diagnóstico | deploy | Custo vs isolamento |
-| Região Azure Blob UE | NDA final | Processamento dados sensíveis requer NDA fechado |
+| Storage produção EU (Azure Blob EU ou R2 EU) | NDA final | Processamento dados sensíveis requer NDA fechado; repo ainda sem driver final |
 | App mobile nativa MVP F | pós-piloto | Avaliar se PWA chega |
 | Integração bolsas externas (Timocom etc.) MVP E | v2 | Não pedido |
 

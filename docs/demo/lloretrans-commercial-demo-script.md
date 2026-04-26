@@ -8,7 +8,7 @@
 
 1. `/admin` — evidência e masters.
    - Dizer: "Começo pelo que é verificável: ficheiros recebidos, códigos reais S1-S9/L1-L8/I0-I9, viaturas e fornecedores."
-   - Não dizer: "Isto já está ligado ao PHC."
+   - Não dizer: "Isto já está ligado ao PHC Advanced."
 
 2. `/bolsa` — Excel real de cargas.
    - Dizer: "Aqui está o Excel operacional convertido em fluxo auditável: 306 cargas, R/NR, CMR, factura cliente, factura fornecedor e transportador."
@@ -62,5 +62,5 @@
 1. Confirmar sentido de `PREÇO CLIENTE` e `PAGO TRANSPORTADOR`.
 2. Confirmar se bónus €2,50/€5 aplica mesmo quando lucro é zero.
 3. Confirmar tolerância combustível.
-4. Confirmar contacto integrador PHC.
+4. Confirmar contacto integrador PHC Advanced.
 5. Confirmar cobertura digitalização.

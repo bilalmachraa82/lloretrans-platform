@@ -7,11 +7,11 @@
 
 ## Dor
 
-Mecânico preenche folha em papel. Administrativa da oficina relança manualmente em PHC. Duplicação total + zero audit trail na fonte + arquivo físico. Citação Clarice: *"alguma coisa que ajudasse nessa facilitação desse processo"*.
+Mecânico preenche folha em papel. Administrativa da oficina relança manualmente em PHC Advanced. Duplicação total + zero audit trail na fonte + arquivo físico. Citação Clarice: *"alguma coisa que ajudasse nessa facilitação desse processo"*.
 
 ## Solução
 
-**PWA mobile-first offline-first.** Mecânico regista no telemóvel em &lt; 3 min. Admin valida e exporta para PHC. UX tem de ser mais rápido que papel — se não for, morre.
+**PWA mobile-first offline-first.** Mecânico regista no telemóvel em &lt; 3 min. Admin valida e exporta para PHC Advanced. UX tem de ser mais rápido que papel — se não for, morre.
 
 ### Não-negociáveis
 - Botões mínimos 48px, fonts ≥ 16px (evita zoom iOS).

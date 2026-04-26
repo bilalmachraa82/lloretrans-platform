@@ -15,7 +15,7 @@ const STATE_LABELS: Record<string, { label: string; pill: "green" | "yellow" | "
   pending_ocr: { label: "A extrair", pill: "neutral" },
   pending_review: { label: "A validar", pill: "yellow" },
   approved: { label: "Aprovada", pill: "green" },
-  exported: { label: "Exportada PHC", pill: "green" },
+  exported: { label: "Exportada PHC Advanced", pill: "green" },
 };
 
 export default async function OcrListPage({

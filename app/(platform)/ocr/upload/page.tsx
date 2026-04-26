@@ -84,7 +84,7 @@ export default async function InvoiceUploadPage() {
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
           <div><strong>Pipeline (prod):</strong></div>
           <div>1. Upload → armazenamento EU · 2. extracção de texto · 3. Claude API classifica via NIF → regra</div>
-          <div>4. UI mostra confiança por campo · 5. Admin valida → regra aprendida · 6. Export XML PHC</div>
+          <div>4. UI mostra confiança por campo · 5. Admin valida → regra aprendida · 6. Export XML PHC Advanced</div>
         </CardContent>
       </Card>
     </div>

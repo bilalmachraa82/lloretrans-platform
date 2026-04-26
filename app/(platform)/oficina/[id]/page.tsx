@@ -188,7 +188,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
             {canExport && (
               <form action={exportWorkOrder}>
                 <input type="hidden" name="id" value={wo.id} />
-                <Button type="submit" className="w-full">Exportar para PHC</Button>
+                <Button type="submit" className="w-full">Exportar para PHC Advanced</Button>
               </form>
             )}
             {!canStart && !canPause && !canResume && !canAct && !canExport && (

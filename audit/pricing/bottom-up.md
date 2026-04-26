@@ -7,7 +7,7 @@ Data de análise: 26 Abril 2026
 
 - Timeline da proposta: plataforma completa em 18-19 semanas; primeiros benefícios à semana 3. Fonte local: `app/proposta/page.tsx`.
 - Esforço por MVP na proposta: A 2-3 sem, B 4-6 sem, C 3-5 sem, D 3-4 sem, E 6-10 sem, F 5-8 sem. Estas durações são úteis para preço isolado, mas não somam linearmente porque a proposta usa calendário sobreposto.
-- Repo usa `pdf-parse` (`package.json`) e `ANTHROPIC_API_KEY` opcional (`.env.example`) para OCR/classificação. Não existe dependência Azure Document Intelligence no `package.json`.
+- Repo usa `pdf-parse` (`package.json`) e `ANTHROPIC_API_KEY` opcional (`.env.example`) para OCR/classificação. Não existe dependência de OCR gerido da Azure no `package.json`.
 - Existem variáveis `AZURE_BLOB_*` / storage em `.env.example` e README, mas storage produção não está implementado no `package.json`; isto entra como risco, não como custo fechado.
 - Preços infra consultados a 26 Abril 2026:
   - Neon pricing: Launch/Scale usage-based; Launch compute a USD 0.106/CU-hour; Scale a USD 0.222/CU-hour; storage USD 0.35/GB-month; PITR USD 0.20/GB-month de changes. Fonte: https://neon.com/pricing
@@ -28,7 +28,7 @@ Data de análise: 26 Abril 2026
 
 ## Em Aberto
 
-- Volume “4 000 facturas/mês”: a proposta trata como digitalização CMR/guias (MVP C), mas se forem facturas-fornecedor muda o custo/risco do MVP B.
+- Volume “4 000 documentos/mês”: a proposta trata como digitalização CMR/guias (MVP C), porque a resposta do Éder apareceu no Fluxo 1. Se afinal forem facturas-fornecedor, muda o custo/risco do MVP B.
 - Contacto e colaboração do integrador PHC Advanced: sem isto, escrita directa B/E/F não pode ser assumida.
 - SLA 99% vs 99.9%: 99.9% implica redundância, monitorização e suporte de escala diferente.
 - Storage produção para PDFs/imagens: Azure Blob EU ou R2 EU ainda não está fechado no repo.
@@ -37,7 +37,7 @@ Data de análise: 26 Abril 2026
 
 ### Anthropic Claude API
 
-MVP C, hipótese pedida: 4.000 documentos/mês, sem Azure DI, `pdf-parse` para texto e Claude Sonnet 4 para extracção/classificação.
+MVP C, hipótese pedida: 4.000 documentos/mês, sem serviço OCR gerido da Azure, `pdf-parse` para texto e Claude Sonnet 4 para extracção/classificação.
 
 - Estimativa por documento CMR/guia: 2.000 input tokens + 500 output tokens.
 - Volume mensal: 8,0 MTok input + 2,0 MTok output.

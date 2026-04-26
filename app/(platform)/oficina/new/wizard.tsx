@@ -388,7 +388,7 @@ export function WorkOrderWizard({
               </label>
             ))}
             <p className="text-xs text-muted-foreground">
-              No demo as fotos não são persistidas (Vercel Blob / Azure em prod). Segue em frente.
+              No demo as fotos não são persistidas. Em produção, o storage EU fica definido na Sprint 0.
             </p>
           </CardContent>
         </Card>
@@ -426,7 +426,7 @@ export function WorkOrderWizard({
               onChange={(e) => setSummary(e.target.value)}
               rows={2}
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-              placeholder="Sumário opcional para a factura/PHC"
+              placeholder="Sumário opcional para a factura/PHC Advanced"
             />
           </CardContent>
         </Card>

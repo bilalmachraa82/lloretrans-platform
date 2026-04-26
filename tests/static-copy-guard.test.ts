@@ -17,7 +17,9 @@ const files = [
   "docs/superpowers/specs/2026-04-19-mvp-b-ocr-invoices.md",
   "docs/superpowers/specs/2026-04-19-mvp-a-km-validation.md",
   "docs/superpowers/specs/2026-04-19-mvp-e-bolsa.md",
+  "docs/superpowers/specs/2026-04-19-mvp-f-oficina.md",
   "docs/superpowers/specs/2026-04-19-platform-architecture.md",
+  "docs/demo/lloretrans-commercial-demo-script.md",
   "app/(platform)/bolsa/new/page.tsx",
   "app/(platform)/admin/page.tsx",
 ];
@@ -30,6 +32,9 @@ const customerFacingFiles = [
   "app/(platform)/dashboard/page.tsx",
   "app/(platform)/bolsa/commissions/page.tsx",
   "app/(platform)/ocr/page.tsx",
+  "app/(platform)/ocr/upload/page.tsx",
+  "app/(platform)/ocr/[id]/page.tsx",
+  "app/(platform)/oficina/[id]/page.tsx",
   "README.md",
   "docs/demo/lloretrans-commercial-demo-script.md",
 ];
@@ -63,6 +68,11 @@ describe("static copy guard", () => {
     for (const phrase of stalePhrases) {
       expect(text.toLowerCase()).not.toContain(phrase.toLowerCase());
     }
+  });
+
+  it("qualifies PHC references in customer-facing pages", () => {
+    const text = customerFacingFiles.map((file) => fs.readFileSync(path.join(process.cwd(), file), "utf-8")).join("\n");
+    expect(text).not.toMatch(/\bPHC\b(?! (Advanced|CS|GO))/);
   });
 
   it("uses confirmed Eder assumptions", () => {

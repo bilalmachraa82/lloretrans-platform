@@ -7,7 +7,7 @@ Reunião alvo: Clarice → conselho Lloretrans em 10 ou 13 Maio 2026
 
 ## TL;DR
 
-O pricing está **equilibrado para enterprise mid-market**, mas **psicologicamente caro para uma PME familiar portuguesa** que toma decisões com anchor mental em PHC GO Advanced (~€78/mês) e EasyFleet (~€160/mês). A estrutura está certa; o tecto da mensalidade PRO (€2.200) cria fricção desnecessária à leitura inicial e o Enterprise não deve ir à reunião como recomendação. Sprint 0 deve ser obrigatória, não opcional. A âncora narrativa é controlo, custo de uma administrativa, e ROI mensurável — não comparação com SaaS horizontal.
+O pricing está **equilibrado para enterprise mid-market**, mas **psicologicamente caro para uma PME familiar portuguesa** que toma decisões com anchor mental em PHC GO Advanced (~€78/mês) e EasyFleet (~€160/mês). A estrutura está certa; o tecto antigo da mensalidade PRO (€2.200) criava fricção desnecessária à leitura inicial e o Enterprise não deve ir à reunião como recomendação. Sprint 0 deve ser obrigatória. A âncora narrativa é controlo, custo de uma administrativa, e ROI mensurável — não comparação com SaaS horizontal.
 
 ---
 
@@ -36,7 +36,7 @@ O pricing está **equilibrado para enterprise mid-market**, mas **psicologicamen
 
 - Confirmação do integrador PHC Advanced (sem isto, escrita directa em B/E/F **não** entra em scope fechado).
 - Acesso à API Frotcom de leitura (sem isto, MVP D não tem baseline real).
-- Volume real "4.000 facturas/mês": se forem facturas-fornecedor e não CMR/guias, MVP B muda materialmente de custo.
+- Volume real "4.000 documentos/mês": a resposta do Éder escreveu "faturas" dentro do Fluxo 1 (CMR/guias). Se afinal forem facturas-fornecedor, MVP B muda materialmente de custo.
 - SLA pretendido (99% vs 99.9%).
 - Se o conselho aceita o conceito de "Sprint 0 paga" antes de assinar contrato grande.
 
@@ -49,11 +49,11 @@ O pricing está **equilibrado para enterprise mid-market**, mas **psicologicamen
 | Dimensão | Leitura |
 |---|---|
 | Setup Core €12k-18k | **Adequado.** Compatível com setup ManWinWin (€1,89k-3,59k) + customização vertical mínima. Não é commodity. |
-| Setup PRO €32k-48k | **Adequado** se faseado e se a Sprint 0 confirmar PHC Advanced. Comparáveis enterprise SaaS PT começam aqui. Acima do tecto perde-se margem. |
-| Setup Enterprise €58k-88k | **No limite.** Defensável para 6 fluxos com integrações live, **insustentável** se o conselho ler como "software". Não levar como recomendação primária. |
+| Setup PRO €32k-45k | **Adequado** se faseado e se a Sprint 0 confirmar PHC Advanced. Comparáveis enterprise SaaS PT começam aqui. Acima do tecto perde-se margem. |
+| Setup Enterprise €58k-85k | **No limite.** Defensável para 6 fluxos com integrações live, **insustentável** se o conselho ler como "software". Não levar como recomendação primária. |
 | Mensalidade Core €550-900 | **OK** se for 1 MVP estreito. Se for A+B real, fica abaixo do custo loaded. |
-| Mensalidade PRO €1.200-**2.200** | Tecto **alto demais** psicologicamente. €1.800 é o limite de conforto. €2.200 obriga a justificar volume/SLA. |
-| Mensalidade Enterprise €2.400-**3.900** | Defensável para multi-empresa real, **comercialmente imprudente publicar** nesta reunião. Cria memória negativa para negociação futura. |
+| Mensalidade PRO €1.200-1.800 | **Adequada** para conselho PME/familiar. €1.500 é o ponto de venda. |
+| Mensalidade Enterprise €2.200-3.500 | Defensável para multi-empresa real, **comercialmente imprudente publicar como recomendação** nesta reunião. |
 
 **Veredicto.** O pricing recomendado é tecnicamente sustentável mas optimiza margem AiTiPro em vez de optimizar fecho. Para esta reunião específica, há margem para baixar tectos sem perder defensabilidade.
 
@@ -100,7 +100,7 @@ Adicionar **três protecções** que o conselho português valoriza acima da fea
 
 **O que NÃO usar.** Comparações com Moloni / Vendus / InvoiceXpress. São anchors baixos que só te puxam para baixo. A linguagem certa é "isto não é software de facturação, é a plataforma operacional que liga PHC Advanced, Frotcom, Logue Trans, Excel e papel — coisas que hoje vivem desligadas".
 
-## 5. Sprint 0 — obrigatória ou opcional?
+## 5. Sprint 0 — obrigatória
 
 **Obrigatória.**
 
@@ -113,7 +113,7 @@ Razões:
 
 **Estrutura recomendada da Sprint 0:**
 
-- Preço €5k-7k (subir o piso de €4,5k para €5k; é trabalho real de 2 semanas, não diagnóstico de cortesia).
+- Preço €5k-7k; é trabalho real de 2 semanas, não diagnóstico de cortesia.
 - Duração 2 semanas calendário.
 - Outputs fixos e auditáveis:
   1. Workshop com integrador PHC Advanced + parecer escrito sobre escrita/XML.
@@ -153,7 +153,7 @@ Esta é a tabela que recomendo levar à apresentação à Clarice e, depois, ao 
 
 Diferenças vs. Cenário 2 actual de `recommendation.md`:
 
-- Sprint 0 sobe de €4,5k-7,5k para **€5k-7k** e fica **obrigatória**, não opcional.
+- Sprint 0 fica em **€5k-7k** e é **obrigatória**.
 - Core piso sobe de €12k para €14k para reflectir custo real de 1 MVP entregue, não "Sprint 0 ampliada".
 - PRO tecto baixa de €48k para **€45k** e mensalidade tecto baixa de €2.200 para **€1.800** para retirar fricção psicológica.
 - Enterprise tecto baixa de €88k para €85k e mensalidade tecto baixa de €3.900 para €3.500 para evitar memória negativa em negociação futura.

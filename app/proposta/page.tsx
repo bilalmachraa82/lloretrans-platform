@@ -25,7 +25,7 @@ export const metadata = {
 };
 
 const VERSION = "1.0";
-const DATE = "20 de Abril, 2026";
+const DATE = "27 de Abril, 2026";
 const ADDRESSED_TO = "Clarice Santos · Direcção Lloretrans";
 
 const MVPS = [
@@ -36,7 +36,7 @@ const MVPS = [
     title: "Validação de Quilómetros",
     dor: "Administrativas entram em duas aplicações, viagem a viagem, a cruzar Logue Trans com Frotcom. Erros passam para a factura.",
     entrega:
-      "Dashboard diário com semáforo verde/amarelo/vermelho. Threshold confirmado 3 km. Bulk-approve das verdes com um clique. Export CSV para PHC.",
+      "Dashboard diário com semáforo verde/amarelo/vermelho. Threshold confirmado 3 km. Bulk-approve das verdes com um clique. Export CSV para PHC Advanced.",
     semanas: "2–3",
     dependencias: "API Logue Trans (Hélio) · credenciais Frotcom (grupo)",
     tier: "Core · PRO · Enterprise",
@@ -48,7 +48,7 @@ const MVPS = [
     title: "OCR Facturas de Fornecedor",
     dor: "50 fornecedores oficina, 50 layouts. Classificação por conhecimento tácito — sai com a pessoa que sabe.",
     entrega:
-      "Upload → extracção automática → classificação por NIF → validação humana → export XML PHC. Cada correcção cria regra de fornecedor que aplica em próximas facturas. 9 facturas reais já carregadas.",
+      "Upload → extracção automática → classificação por NIF → validação humana → export XML PHC Advanced. Cada correcção cria regra de fornecedor que aplica em próximas facturas. 9 facturas reais já carregadas.",
     semanas: "4–6",
     dependencias: "Tabela completa códigos serviço · lista top 10 fornecedores (80% volume) · formato XML PHC Advanced",
     tier: "Core · PRO · Enterprise",
@@ -86,7 +86,7 @@ const MVPS = [
     entrega:
       "Excel real de 306 cargas em tabela auditada, com R/NR, CMR, facturas fornecedor/cliente e comissões por regra confirmada: 20% do lucro total + €2,50 nacional ou €5 internacional em viatura Lloretrans.",
     semanas: "6–10",
-    dependencias: "Integrador PHC (master clientes/fornecedores + emissão facturas) · confirmar se PREÇO CLIENTE/PAGO TRANSPORTADOR representam venda/custo; Excel mostra margem global -€1.800",
+    dependencias: "Integrador PHC Advanced (master clientes/fornecedores + emissão facturas) · confirmar se PREÇO CLIENTE/PAGO TRANSPORTADOR representam venda/custo; Excel mostra margem global -€1.800",
     tier: "Enterprise",
   },
   {
@@ -94,9 +94,9 @@ const MVPS = [
     slug: "oficina",
     icon: Wrench,
     title: "Folha de Obra Oficina (PWA)",
-    dor: "Mecânico preenche folha em papel. Administrativa relança no PHC manualmente. Duplicação total · zero audit trail na fonte.",
+    dor: "Mecânico preenche folha em papel. Administrativa relança no PHC Advanced manualmente. Duplicação total · zero audit trail na fonte.",
     entrega:
-      "PWA mobile-first offline. Mecânico regista em < 3 min. Estados iniciar / pausar / aguardar peças / retomar / fechar com tempo activo contabilizado. Assinatura canvas. Admin valida, export PHC.",
+      "PWA mobile-first offline. Mecânico regista em < 3 min. Estados iniciar / pausar / aguardar peças / retomar / fechar com tempo activo contabilizado. Assinatura canvas. Admin valida, export PHC Advanced.",
     semanas: "5–8",
     dependencias: "Piloto com 1 mecânico antes de alargar (adopção é risco #1) · template actual em papel · wifi na oficina",
     tier: "Enterprise",
@@ -107,43 +107,43 @@ const TIERS = [
   {
     name: "Core",
     eyebrow: "Arranque · quick win",
-    tagline: "1 ou 2 MVPs à escolha para fechar a ferida mais evidente primeiro.",
-    invest: "€ 8k – 18k",
-    monthly: "€ 450 – 900 / mês",
+    tagline: "Entrada controlada para uma dor principal, sem prometer o portfólio completo.",
+    invest: "€ 14k – 18k",
+    monthly: "€ 600 – 900 / mês",
     includes: [
-      "1–2 MVPs (tipicamente A + B)",
-      "Conectores em modo simulação + export XML PHC",
+      "1 MVP forte (C ou A+B reduzido)",
+      "Conectores em modo simulação + export XML PHC Advanced",
       "Onboarding 2 semanas",
-      "Suporte email · 48h",
-      "1 revisão trimestral de scope",
+      "SLA 99% horário útil",
+      "Suporte email · 48h úteis",
     ],
   },
   {
     name: "PRO",
     eyebrow: "Operacional · 80% do benefício",
-    tagline: "Quatro módulos que cobrem o dia-a-dia administrativo e operacional.",
-    invest: "€ 28k – 48k",
-    monthly: "€ 1 400 – 2 800 / mês",
+    tagline: "Quatro fluxos críticos, faseados, com risco controlado para a primeira decisão.",
+    invest: "€ 32k – 45k",
+    monthly: "€ 1 200 – 1 800 / mês",
     includes: [
-      "MVP A + B + C + F (validação km, OCR, docs, oficina)",
-      "Integração PHC Advanced escrita (via integrador do grupo)",
+      "MVP C + A + B + piloto F",
+      "XML PHC Advanced até integrador validar escrita",
       "Master de fornecedores com aprendizagem contínua",
       "Dashboard direcção com KPIs operacionais",
-      "Suporte prioritário · 4h úteis",
-      "Revisão mensal · 2 sprints de melhoria/ano incluídos",
+      "Suporte business-hours",
+      "Revisão mensal de operação",
     ],
     featured: true,
   },
   {
     name: "Enterprise",
-    eyebrow: "Portfólio completo · escala grupo",
-    tagline: "Os 6 módulos + administração multi-empresa + integrações externas reais.",
-    invest: "€ 52k – 92k",
-    monthly: "€ 2 800 – 4 600 / mês",
+    eyebrow: "Roadmap · escala grupo",
+    tagline: "Portfólio completo por fases, condicionado a integrações e saneamento de dados.",
+    invest: "€ 58k – 85k",
+    monthly: "€ 2 200 – 3 500 / mês",
     includes: [
-      "6 MVPs + módulo Admin completo",
+      "6 MVPs no roadmap + módulo Admin completo",
       "Multi-empresa com permissões cross (Frutas, Tomate, Cerejas)",
-      "APIs Logue Trans + Frotcom leitura + Cepsa/Repsol/Radius/bomba interna",
+      "D e E condicionados a Frotcom API + PHC Advanced",
       "PWA oficina + onboarding personalizado de mecânicos",
       "SLA 99% uptime · DPA formal assinado",
       "Roadmap conjunto · sprint review mensal com direcção",
@@ -157,8 +157,8 @@ const TIMELINE = [
   { week: "2–7", phase: "MVP B · OCR", tasks: "Extracção PDF · classificação · 9 fornecedores reais", color: "bg-[hsl(222_72%_38%)]" },
   { week: "4–8", phase: "MVP C · Docs", tasks: "Hub centralizado · associação automática · permissões cross", color: "bg-[hsl(222_72%_38%)]" },
   { week: "8–11", phase: "MVP D · Combustível", tasks: "Cruzamento 4 silos · anomalias · relatório mensal", color: "bg-[hsl(32_82%_50%)]" },
-  { week: "10–18", phase: "MVP E · Bolsa", tasks: "Fluxo auditado · comissões · integração PHC escrita", color: "bg-[hsl(32_82%_50%)]" },
-  { week: "13–19", phase: "MVP F · Oficina PWA", tasks: "Piloto com 1 mecânico · alargar · export PHC", color: "bg-[hsl(0_72%_50%)]" },
+  { week: "10–18", phase: "MVP E · Bolsa", tasks: "Fluxo auditado · comissões · PHC Advanced condicionado", color: "bg-[hsl(32_82%_50%)]" },
+  { week: "13–19", phase: "MVP F · Oficina PWA", tasks: "Piloto com 1 mecânico · alargar · export PHC Advanced", color: "bg-[hsl(0_72%_50%)]" },
 ];
 
 const DEPENDENCIES = [
@@ -297,10 +297,10 @@ export default function PropostaPage() {
               </p>
             </div>
             <div className="lg:col-span-4 space-y-3 border-l-2 border-[hsl(222_72%_30%)]/15 pl-6 lg:pl-8">
-              <SummaryLine label="Investimento" value="€ 8k – 92k" hint="consoante tier Core / PRO / Enterprise" />
-              <SummaryLine label="Recorrente" value="€ 450 – 4 600 / mês" hint="SaaS + manutenção + suporte" />
-              <SummaryLine label="Timeline" value="18–19 semanas" hint="plataforma completa · primeiros benefícios à 3ª semana" />
-              <SummaryLine label="Próximo passo" value="Assinatura Sprint 0" hint="acesso técnico + shadow session" />
+              <SummaryLine label="Sprint 0" value="€ 5k – 7k" hint="obrigatória · 2 semanas · descontável 50%" />
+              <SummaryLine label="PRO recomendado" value="€ 32k – 45k" hint="C + A + B + piloto F" />
+              <SummaryLine label="Recorrente PRO" value="€ 1 200 – 1 800 / mês" hint="operação, suporte e integrações" />
+              <SummaryLine label="Timeline" value="3–4 meses" hint="PRO faseado · Enterprise fica roadmap" />
             </div>
           </div>
           <div className="mt-8 flex flex-wrap items-center gap-3 pt-6 border-t border-[hsl(220_14%_90%)]">
@@ -449,7 +449,7 @@ export default function PropostaPage() {
         id="investimento"
         eyebrow="Investimento"
         title="Três tiers. Compram-se por escada."
-        intro="Os preços são ranges porque dependem de decisões de scope (número de fornecedores OCR, integração PHC escrita, multi-empresa). O preço final é fixado após Sprint 0 — duas semanas de descoberta técnica que já ficam dentro do investimento."
+        intro="Os preços são ranges porque dependem de decisões de scope, volume documental, integrador PHC Advanced e Frotcom. Antes de qualquer implementação, há Sprint 0 obrigatória de €5k–7k para fechar risco técnico e preço por fase."
       >
         <div className="grid gap-5 md:grid-cols-3">
           {TIERS.map((tier) => (
@@ -503,8 +503,8 @@ export default function PropostaPage() {
           ))}
         </div>
         <div className="mt-8 text-sm text-muted-foreground text-center">
-          Incluído em todos os tiers: alojamento em Neon EU Frankfurt · deploy Vercel fra1 · audit log append-only ·
-          export XML PHC · onboarding stakeholders · revisão trimestral de scope.
+          Recorrente inclui operação contínua: alojamento em Neon EU Frankfurt · deploy Vercel fra1 · audit log append-only ·
+          export XML PHC Advanced · suporte business-hours · manutenção de integrações · pequenas correcções.
         </div>
       </Section>
 
@@ -599,8 +599,8 @@ export default function PropostaPage() {
             tag="G7"
             severity="Binário · alto impacto"
             title="PHC Advanced — confirmado 20/04/2026"
-            body="Éder confirmou: é PHC Advanced (não CS nem GO). A PREVROD, que aparece com «PHC GO», é um fornecedor externo com PHC próprio — não o PHC da Lloretrans. Falta confirmar o contacto do integrador PHC do grupo e os módulos licenciados (MFrota?), para desenhar a integração de escrita no PHC Advanced."
-            responsavel="Éder · contacto integrador PHC pendente"
+            body="Éder confirmou: é PHC Advanced (não CS nem GO). A PREVROD, que aparece com «PHC GO», é um fornecedor externo com software Cegid próprio — não o PHC Advanced da Lloretrans. Falta confirmar o contacto do integrador PHC Advanced do grupo e os módulos licenciados (MFrota?), para desenhar a integração de escrita no PHC Advanced."
+            responsavel="Éder · contacto integrador PHC Advanced pendente"
             prazo="Antes do piloto"
           />
           <OpenQuestion
@@ -656,13 +656,13 @@ export default function PropostaPage() {
           <StepItem
             n="2"
             title="Reunião de assinatura · 45 min"
-            body="Validam o tier escolhido (sugerimos PRO), assinam NDA mútuo + carta de intenção para Sprint 0. Enviamos factura pró-forma no próprio dia."
+            body="Validam Sprint 0 obrigatória e o tier de referência (sugerimos PRO faseado), assinam NDA mútuo + carta de intenção. Enviamos factura pró-forma no próprio dia."
             when="Esta semana"
           />
           <StepItem
             n="3"
             title="Sprint 0 arranca · 2 semanas"
-            body="Acesso à API Logue Trans com o Hélio. Shadow session de 2h com administrativa para medir baselines. Acesso ao integrador PHC. Scope final dos tiers fechado."
+            body="Acesso à API Logue Trans com o Hélio. Shadow session de 2h com administrativa para medir baselines. Workshop com integrador PHC Advanced. Scope final dos tiers fechado."
             when="Dia +5"
           />
           <StepItem

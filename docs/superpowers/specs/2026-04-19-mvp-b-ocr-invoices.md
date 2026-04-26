@@ -6,7 +6,7 @@
 
 ## Dor
 
-Facturas de fornecedor (9 reais amostra: Würth, Policalço, Selcar, Popapneus, Prevrod, Vesauto/Carby, Flexbor, SGP-Global Parts, Blinker) chegam em PDF/papel, lançamento manual em PHC com classificação (S1-S9 externos, L1-L8 internos, I0-I9 operações internas + obra interno/externo) por conhecimento tácito. Risco: pessoa que sabe sair = perda.
+Facturas de fornecedor (9 reais amostra: Würth, Policalço, Selcar, Popapneus, Prevrod, Vesauto/Carby, Flexbor, SGP-Global Parts, Blinker) chegam em PDF/papel, lançamento manual em PHC Advanced com classificação (S1-S9 externos, L1-L8 internos, I0-I9 operações internas + obra interno/externo) por conhecimento tácito. Risco: pessoa que sabe sair = perda.
 
 ## Solução (v1)
 
@@ -16,7 +16,7 @@ Pipeline:
 3. Classificação automática via **regra do fornecedor aprendida** (tabela `supplier_rules` indexada por `taxId`). Se inexistente, modelo default pede humano.
 4. UI side-by-side: PDF à esquerda · campos editáveis à direita + sugestão + confiança.
 5. Admin corrige → sistema aprende (`supplier_rules` cresce).
-6. Admin aprova → export XML PHC (ou JSON se integrador activo).
+6. Admin aprova → export XML PHC Advanced (ou JSON se integrador activo).
 
 ## Fluxo de estados
 
@@ -44,7 +44,7 @@ Cada correcção humana escrita em `audit_log` com `before/after` + factura asso
 
 - Email ingestion (v2).
 - Reconciliação com ordem de compra (não existe no cliente).
-- Lançamento automático no PHC sem validação humana (proibido por regra da Clarice).
+- Lançamento automático no PHC Advanced sem validação humana (proibido por regra da Clarice).
 - Facturas não-oficina (água, luz, etc.).
 
 ## Critérios de aceitação (demo)

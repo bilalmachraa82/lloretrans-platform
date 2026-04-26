@@ -37,7 +37,7 @@ const MODULES = [
     slug: "ocr",
     title: "OCR facturas fornecedor",
     problem: "50 fornecedores, 50 layouts. Conhecimento tácito de quem classifica sai com a pessoa.",
-    solution: "Primeira factura de cada fornecedor: tu ensinas o sistema. A partir daí, automática. Export XML PHC.",
+    solution: "Primeira factura de cada fornecedor: tu ensinas o sistema. A partir daí, automática. Export XML PHC Advanced.",
     icon: ReceiptText,
     metric: "9",
     metricLabel: "facturas reais mapeadas",
@@ -76,8 +76,8 @@ const MODULES = [
     code: "F",
     slug: "oficina",
     title: "Folha de obra oficina",
-    problem: "Mecânico preenche papel. Administrativa relança no PHC. Duplicação total.",
-    solution: "App mobile offline-first. Mecânico em 3 minutos. Admin valida. Export PHC.",
+    problem: "Mecânico preenche papel. Administrativa relança no PHC Advanced. Duplicação total.",
+    solution: "App mobile offline-first. Mecânico em 3 minutos. Admin valida. Export PHC Advanced.",
     icon: Wrench,
     metric: "17",
     metricLabel: "itens checklist papel",
@@ -148,7 +148,7 @@ export default function LandingPage() {
             <p className="text-lg text-foreground/70 leading-relaxed max-w-2xl">
               Plataforma operacional para transportadoras portuguesas. Seis módulos
               integrados que cobrem o ciclo completo — do CMR na portaria ao XML
-              pronto para o PHC. <span className="font-semibold text-foreground">Dados na UE. Audit log imutável em cada acção.
+              pronto para o PHC Advanced. <span className="font-semibold text-foreground">Dados na UE. Audit log imutável em cada acção.
               Humano aprova antes de qualquer passo irreversível.</span>
             </p>
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -178,7 +178,7 @@ export default function LandingPage() {
               />
               <HeroStat
                 big="1×"
-                label="passagem XML para PHC"
+                label="passagem XML para PHC Advanced"
                 sub="Classificação aprende por fornecedor"
               />
               <HeroStat
@@ -330,7 +330,7 @@ export default function LandingPage() {
               <TrustCard icon={Globe} title="Dados na UE" body="Neon Postgres em Frankfurt (aws-eu-central-1). Deploy Vercel fra1. IA externa só com DPA e aprovação por fluxo." />
               <TrustCard icon={ShieldCheck} title="RGPD by default" body="Audit log imutável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
               <TrustCard icon={CheckCircle2} title="Humano no loop" body="IA regista, classifica, sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
-              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores prontos para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do integrador PHC do grupo." />
+              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores preparados para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do integrador PHC Advanced do grupo." />
             </div>
           </div>
         </div>
@@ -351,14 +351,14 @@ export default function LandingPage() {
           <PricingTier
             name="Core"
             tagline="Quick win · fechar a ferida mais evidente"
-            includes={["1–2 MVPs à escolha", "Conectores em modo simulação", "Export PHC via XML", "Onboarding 2 sem", "Suporte email"]}
+            includes={["1–2 MVPs à escolha", "Conectores em modo simulação", "Export XML PHC Advanced", "Onboarding 2 sem", "Suporte email"]}
           />
           <PricingTier
             name="PRO"
             tagline="Operacional diário · 80% do benefício"
             includes={[
               "4 MVPs (validação km + OCR + docs + oficina)",
-              "Integração PHC escrita",
+              "Preparado para integração PHC Advanced após Sprint 0",
               "Master de fornecedores com aprendizagem",
               "Dashboard direcção",
               "Suporte prioritário",
@@ -446,15 +446,15 @@ export default function LandingPage() {
                 a="Dados operacionais em repouso ficam na UE: Neon Postgres em Frankfurt (aws-eu-central-1) e Vercel fra1. Fluxos com Claude/Anthropic só avançam com DPA aprovado; sem isso, ficam desligados ou usam extracção local."
               />
               <FaqItem
-                q="Quem assina os lançamentos no PHC?"
-                a="A vossa administrativa, sempre. A plataforma gera o XML (ou o registo intermédio), mas a entrada no PHC continua sob responsabilidade da pessoa que hoje a faz. O papel da IA é preparar, não decidir."
+                q="Quem assina os lançamentos no PHC Advanced?"
+                a="A vossa administrativa, sempre. A plataforma gera o XML (ou o registo intermédio), mas a entrada no PHC Advanced continua sob responsabilidade da pessoa que hoje a faz. O papel da IA é preparar, não decidir."
               />
               <FaqItem
                 q="E se o Frotcom falhar?"
                 a="Existe fallback para Logue Trans via flag de configuração. A reconciliação continua, com aviso no dashboard. Nenhum MVP depende de um único fornecedor externo para correr."
               />
               <FaqItem
-                q="Integramos com o vosso integrador PHC?"
+                q="Integramos com o vosso integrador PHC Advanced?"
                 a="Só depois de contacto técnico confirmado com o integrador PHC Advanced do grupo. Até lá, a proposta assume XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
               />
               <FaqItem

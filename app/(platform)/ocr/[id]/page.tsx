@@ -113,7 +113,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             {row.state === "approved" && (
               <form action={exportInvoiceAction}>
                 <input type="hidden" name="invoiceId" value={row.id} />
-                <Button type="submit">Exportar XML PHC</Button>
+                <Button type="submit">Exportar XML PHC Advanced</Button>
               </form>
             )}
           </div>

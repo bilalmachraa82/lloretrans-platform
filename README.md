@@ -3,7 +3,7 @@
 **Demo live:** https://lloretrans.aitipro.com (Vercel fra1 · Neon Postgres EU)
 
 Next.js 15 único com 6 módulos operacionais cobrindo os 6 fluxos do PRD 2026-04-19.
-Todas as integrações externas (Logue Trans, Frotcom, PHC, cartões combustível) são stubs
+Todas as integrações externas (Logue Trans, Frotcom, PHC Advanced, cartões combustível) são stubs
 que lêem de fixtures reais AITIPRO + dados demo complementares.
 
 **Demo-mode flag:** `USE_LIVE_APIS=false` por default. Trocar adaptadores stub → live é simples
@@ -64,7 +64,7 @@ No login, escolhe um dos perfis pré-seeded. Cada role vê apenas os módulos qu
 4. **MVP D · combustível.** Abre `/fuel`. Mostra Cepsa 1261 linhas, Repsol 175, Radius 96 e bomba interna 629. Explica que o ficheiro Frotcom recebido é mensalidade/equipamento; leitura API está pendente. **Argumento:** sinalização, não bloqueio.
 5. **MVP B · OCR.** Mostra as 9 facturas reais já classificadas (Würth, Policalço, Selcar, Popapneus, Prevrod, Carby/Dacia, Flexbor, SGP-Global Parts, Blinker). Entra em Policalço ou Selcar — vê a regra aprendida por fornecedor já em memória. **Argumento:** o conhecimento tácito da administrativa passa a ser do sistema.
 6. **MVP F · Oficina.** Abre `/oficina/new` como mecânico. Mostra o checklist de 17 itens da folha em papel e os códigos reais. **Argumento principal:** risco de adopção é real; piloto com 1 mecânico antes de alargar.
-7. **Perguntas abertas.** Fecha com as 5 perguntas ao Éder: sentido de `PREÇO CLIENTE`/`PAGO TRANSPORTADOR`, bónus com lucro zero, tolerância combustível, contacto integrador PHC, cobertura da digitalização.
+7. **Perguntas abertas.** Fecha com as 5 perguntas ao Éder: sentido de `PREÇO CLIENTE`/`PAGO TRANSPORTADOR`, bónus com lucro zero, tolerância combustível, contacto integrador PHC Advanced, cobertura da digitalização.
 
 ---
 
@@ -81,12 +81,12 @@ Cada MVP foi desenhado para vender **controlo**, não tempo. O tempo é consequ�
 | Dado / integração | Estado demo | Caminho prod |
 |-------------------|-------------|--------------|
 | **9 facturas reais Lloretrans** | ✓ extraídas em fixture (cache OCR) | Extracção controlada + armazenamento EU |
-| 60 viaturas, 50 motoristas | Seed determinista PT (base real: 138 Lloretrans + frota grupo) | PHC Advanced master · integrador PHC por confirmar |
+| 60 viaturas, 50 motoristas | Seed determinista PT (base real: 138 Lloretrans + frota grupo) | PHC Advanced master · integrador PHC Advanced por confirmar |
 | Viagens Logue Trans | Seed com jitter realista | API Logue Trans (aguarda Hélio) |
 | GPS Frotcom | Seed aligned com trips | Frotcom API |
 | Abastecimentos Cepsa/Repsol/Radius/bomba interna | ✓ extraídos de ficheiros reais (2161 linhas) | APIs ou CSV mensal por fornecedor |
 | Frotcom leitura operacional | ⏳ pendente — ficheiro recebido é mensalidade/equipamento | Pedir API de leitura à Frotcom |
-| PHC export | XML local download | Integrador PHC do grupo |
+| Export PHC Advanced | XML local download | Integrador PHC Advanced do grupo |
 | Bolsa 306 cargas | ✓ extraídas do Excel real | Novas criadas via UI |
 | Folhas oficina | Checklist real de 17 itens + demo seed | Criadas via PWA |
 
@@ -103,13 +103,13 @@ Actualizado 2026-04-20 com feedback do Éder (resposta ao questionário):
 | 1 | **API Logue Trans** existe e é lida | ✅ **Confirmada** — depende do dept. informática abrir acesso | Éder |
 | 2 | **API Frotcom** (leitura) | ⏳ Éder pode pedir `API de Leitura` à Frotcom; acesso técnico ainda pendente | Éder |
 | 3 | Cobertura Frotcom por viatura e campos disponíveis | ⏳ Por confirmar | pendente |
-| 4 | Integrador PHC colabora (escrita B/E/F) | ⏳ Contacto ainda não enviado; demo opera em modo degradado (XML) | pendente |
+| 4 | Integrador PHC Advanced colabora (escrita B/E/F) | ⏳ Contacto ainda não enviado; demo opera em modo degradado (XML) | pendente |
 | 5 | **Tabela códigos serviço** completa | ✅ **Recebida** — S1–S9 externos (cliente) · L1–L8 + I0–I9 internos | PDF Éder |
 | 6 | **Base viaturas grupo (interna/externa)** | ✅ **Recebida** — Viaturas Grupo.xlsx + Relação Lloretrans.xlsx | Éder |
 | 7 | **Margem km tolerável** | ✅ **3 km máximo** | Éder |
-| 8 | **Volume digitalização** | ✅ **4 000 facturas/mês** | Éder |
+| 8 | **Volume digitalização** | ✅ **4 000 documentos/mês** (Éder escreveu “faturas” dentro do Fluxo 1: CMR/guias) | Éder |
 | 9 | **Regras comissão comerciais** | ✅ **20% do lucro + €2,50 nacional · €5 internacional (só viaturas Lloretrans)** | Éder |
-| 10 | **Versão PHC** | ✅ **PHC Advanced** (não CS) | Éder |
+| 10 | **Versão Cegid confirmada** | ✅ **PHC Advanced** (não CS) | Éder |
 | 11 | **Dispositivo mecânicos** | ✅ **Telemóvel** (confirma PWA mobile-first) | Éder |
 | 12 | Ponto único de digitalização | ⏳ "Ainda por definir" | pendente |
 | 13 | Média aceitável L/100 km e tolerância anomalias | ⏳ Éder não respondeu explicitamente | pendente |
@@ -174,16 +174,16 @@ npm run test          # smoke tests vitest
 
 1. Reunião técnica com Hélio (45 min) para desbloquear MVP A + C.
 2. Shadow session com administrativa (2h) para baseline de tempo.
-3. Contacto directo com integrador PHC (desbloqueia B + E + F · escrita).
+3. Contacto directo com integrador PHC Advanced (desbloqueia B + E + F · escrita).
 4. Piloto MVP F com 1 mecânico (3 semanas) antes de alargar.
-5. Provision Neon EU project + Azure Blob EU + Vercel deploy.
+5. Provision Neon EU project + storage EU por definir (Azure Blob EU ou R2 EU) + Vercel deploy.
 
 ---
 
 ## RGPD · notas
 
 - Dados em repouso: SQLite local (dev) · Neon EU (prod)
-- Blobs: Azure Blob Storage EU (prod) — **não Vercel Blob** (sem região UE garantida)
+- Blobs: storage produção por definir (Azure Blob EU ou R2 EU). O repo ainda não inclui driver final de object storage; **não prometer Vercel Blob** sem confirmação de região/contrato.
 - Credenciais só via `.env`, rotação trimestral documentada
 - Audit log append-only — base para compliance RGPD
 - Retenção configurável por tipo, alinhada com legislação PT (facturas 10 anos, CMR 5, uploads oficina 5)
