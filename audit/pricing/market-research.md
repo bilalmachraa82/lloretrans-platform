@@ -136,4 +136,4 @@ Usei EUR 50/h como custo interno no bottom-up, não como preço cliente. Se a Ai
 - Bolsas de carga europeias custam dezenas/centenas por mês, mas vendem acesso a mercado, não workflow interno auditável.
 - OCR/AP automation e RPA enterprise quase sempre são “request demo/contact sales”; o preço é dominado por integração ERP, validação e volumes.
 - CMMS/oficina pode ser barato por utilizador se genérico, mas API, implementação e adopção sobem o TCO.
-- Conclusão revista: EUR 90k-150k é defensável para médio-grande/enterprise; para PME portuguesa, a zona comercial mais plausível é EUR 12k-18k Core, EUR 32k-48k PRO e EUR 58k-88k Enterprise faseado.
+- Conclusão revista após CFO review: EUR 90k-150k é defensável para médio-grande/enterprise; para PME portuguesa, a zona comercial mais plausível para a reunião é Sprint 0 obrigatória EUR 5k-7k, Core EUR 14k-18k, PRO EUR 32k-45k e Enterprise faseado EUR 58k-85k apenas como roadmap.

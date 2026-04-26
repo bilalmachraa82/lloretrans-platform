@@ -1,127 +1,95 @@
-# Fase 2.3 — Pricing recommendation revista para PME portuguesa
+# Fase 2.3 — Pricing recommendation final para PME portuguesa
 
 Data de revisão: 26 Abril 2026  
-Base: bottom-up + mercado real + rebase para PME portuguesa.
+Base: bottom-up + market research + CFO review (`audit/pricing/cfo-review.md`).
 
 ## Verificado
 
-- Os tiers actuais em `app/proposta/page.tsx` são:
-  - Core: EUR 8k-18k setup + EUR 450-900/mês.
-  - PRO: EUR 28k-48k setup + EUR 1.400-2.800/mês.
-  - Enterprise: EUR 52k-92k setup + EUR 2.800-4.600/mês.
-- A análise anterior era defensável para médio-grande/enterprise, mas agressiva para PME portuguesa.
-- Mercado PME português tem anchors muito baixos:
-  - PHC GO: EUR 38,36-180/mês em subscrição trienal.
-  - Moloni/Vendus/InvoiceXpress: ~EUR 6-26/mês para facturação/POS.
-  - EasyFleet: EUR 160/mês para small fleet 1-20 no plano Advanced.
-  - ManWinWin: EUR 39-75/utilizador/mês + implementação EUR 1.890-3.590.
-  - Programador em Zaask: EUR 10-45/hora.
+- `app/proposta/page.tsx` ainda mostra pricing antigo: Core EUR 8k-18k + EUR 450-900/mês; PRO EUR 28k-48k + EUR 1.400-2.800/mês; Enterprise EUR 52k-92k + EUR 2.800-4.600/mês.
+- A análise enterprise anterior era tecnicamente defensável, mas comercialmente pesada para uma administração portuguesa com mentalidade PME/familiar.
+- Anchors PME verificados em `market-research.md`: PHC GO, Moloni, Vendus, InvoiceXpress, EasyFleet, Tachogram, ManWinWin e serviços dev locais.
+- `cfo-review.md` recomenda PRO faseado + Sprint 0 obrigatória, e não vender Enterprise como compromisso fechado nesta reunião.
 
 ## Assumido
 
-- A venda tem de ser a PME/mid-market português, não a procurement enterprise internacional.
-- A AiTiPro quer entrar com um caso de referência e aceita margem inicial 35-45% se o scope for estritamente controlado.
-- O setup PME usa custo efectivo EUR 38/h porque parte da plataforma já existe e porque há productização/reutilização.
-- O pricing não inclui IVA.
-- PHC Advanced escrito fica sempre condicionado a workshop com integrador.
+- A reunião da Clarice com a administração acontece a 10 ou 13 Maio 2026.
+- A administração entende melhor setup fee do que mensalidade elevada.
+- A AiTiPro aceita margem inicial mais baixa para criar caso de referência, desde que o scope fique limitado.
+- PHC Advanced escrito só entra depois de workshop técnico com o integrador PHC Advanced do grupo.
+- Pricing não inclui IVA.
 
 ## Em Aberto
 
-- Lloretrans pode não ser PME pura se o grupo agregado exceder limites IAPMEI; comercialmente, no entanto, compra como PME familiar/operacional.
-- Volume real “4 000 facturas/mês”.
-- Contacto do integrador PHC Advanced.
-- SLA pretendido.
-- Se querem comprar plataforma completa ou só uma primeira fase.
+- Confirmação do integrador PHC Advanced.
+- Acesso e limites reais da Frotcom/Logue Trans.
+- Se “4 000 facturas/mês” são CMR/guias ou facturas-fornecedor.
+- SLA pretendido: 99% business-hours vs 99.9%.
+- Capacidade real AiTiPro para entregar PRO faseado em 3-4 meses.
 
-## Correcção de julgamento
+## Decisão Final
 
-A minha recomendação anterior, **PRO EUR 54k-72k** e **Enterprise EUR 92k-125k**, estava tecnicamente protegida mas comercialmente pesada para PME portuguesa.
+Recomendação final: **Sprint 0 obrigatória + PRO faseado**.
 
-O erro não estava no custo de engenharia; estava no posicionamento. Para PME, o preço deve ser:
+Não recomendo vender Enterprise fechado nesta reunião. Enterprise deve aparecer apenas como roadmap condicionado.
 
-- Entrada mais baixa.
-- Scope mais estreito.
-- Entrega faseada.
-- Pressupostos visíveis.
-- Upsell depois de provar controlo operacional.
+## Pricing Final Para a Reunião
 
-## Cenários revistos
+| Item | Setup | Recorrente | Scope | Posicionamento |
+|---|---:|---:|---|---|
+| **Sprint 0 — obrigatória** | **EUR 5k-7k** | — | 2 semanas. Workshop integrador PHC Advanced. Validação Frotcom + Logue Trans. Volume real. Plano fixo PRO. | Reduz risco do conselho. Descontável 50% se avançarem para PRO em 30 dias. |
+| **Core — entrada** | EUR 14k-18k | EUR 600-900/mês | 1 MVP forte, tipicamente C ou A+B reduzido. Sem escrita directa PHC Advanced. SLA 99% horário útil. | Para começar pequeno. |
+| **PRO faseado — recomendado** | **EUR 32k-45k** | **EUR 1.200-1.800/mês** | C + A + B + piloto F, faseado em 3-4 meses. XML PHC Advanced até integrador validar escrita. Suporte business-hours. | Recomendação principal. Quatro fluxos críticos, risco controlado. |
+| **Enterprise faseado — roadmap** | EUR 58k-85k | EUR 2.200-3.500/mês | 6 fluxos no roadmap; D e E condicionados a Frotcom API + integrador PHC Advanced + saneamento de dados. Multi-empresa. | Não é compromisso desta reunião. |
 
-### Cenário 1 — PME entrada agressiva
+## Porquê Esta Versão
 
-| Tier | Setup | Recorrente | Scope |
-|---|---:|---:|---|
-| Core | EUR 9k-14k | EUR 450-750/mês | 1 MVP forte ou A+B reduzido; sem escrita PHC Advanced. |
-| PRO | EUR 24k-36k | EUR 950-1.600/mês | A+B+C faseado ou A+B+F; suporte leve; PHC Advanced por XML. |
-| Enterprise faseado | EUR 45k-65k | EUR 1.900-3.000/mês | 6 fluxos no roadmap, mas só 3-4 entregues no primeiro contrato. |
+- Baixa a fricção da mensalidade PRO: EUR 2.200/mês era psicologicamente alto; EUR 1.500/mês é ponto de venda mais simples.
+- Mantém PRO dentro de um setup sério, mas sem rebentar a sala: EUR 32k-45k.
+- Obriga Sprint 0 para não prometer PHC Advanced escrito, Frotcom live ou volumes documentais sem prova.
+- Deixa Core como opção de entrada, mas evita vender Core como se resolvesse o caso completo.
+- Mantém Enterprise no radar, mas sem criar compromisso impossível em D e E.
 
-Risco: comercialmente fácil, mas margem apertada. Só aceito se houver cláusula de change request e limites duros de volume/suporte.
+## Ordem Recomendada Dos MVPs
 
-### Cenário 2 — PME base recomendado
+1. **C · Documentos / CMR / guias** — maior volume e dor transversal; cria base documental.
+2. **A · Validação de quilómetros** — quick win e controlo diário.
+3. **B · OCR facturas fornecedor** — começar pelos fornecedores principais, com validação humana.
+4. **F · Oficina piloto** — só piloto com 1 mecânico antes de rollout.
 
-| Tier | Setup | Recorrente | Scope |
-|---|---:|---:|---|
-| Core | EUR 12k-18k | EUR 550-900/mês | A+B controlado ou 1 MVP complexo com onboarding. |
-| PRO | EUR 32k-48k | EUR 1.200-2.200/mês | A+B+C+F faseado, humano no loop, XML PHC Advanced até validação do integrador. |
-| Enterprise faseado | EUR 58k-88k | EUR 2.400-3.900/mês | 6 MVPs no plano, entregues por fases; D/E dependem de Frotcom/PHC Advanced. |
+Ficam fora do contrato inicial:
 
-Risco: ainda pode parecer alto face a Moloni/PHC GO, mas é defendível se a narrativa for “controlo operacional com dados reais”, não “software”.
+- **D · Combustível** — depende de Frotcom/API e tolerâncias confirmadas.
+- **E · Bolsa/comissões** — depende de PHC Advanced e saneamento de dados; Excel actual mostra margem negativa/estranha, logo vender isto agora é arriscado.
 
-### Cenário 3 — Médio-grande / enterprise
+## Como Justificar a Mensalidade
 
-| Tier | Setup | Recorrente | Scope |
-|---|---:|---:|---|
-| Core | EUR 22k-30k | EUR 900-1.300/mês | A+B completo com onboarding real. |
-| PRO | EUR 54k-72k | EUR 2.200-3.400/mês | A+B+C+F completo, mais integração e suporte próximo. |
-| Enterprise | EUR 92k-125k | EUR 3.800-5.600/mês | 6 MVPs, multi-empresa, DPA formal, suporte mensal, rollout oficina. |
+A mensalidade não deve ser vendida como “subscrição para usar software”. Deve ser vendida como operação contínua.
 
-Risco: tecnicamente sólido, mas pode perder a sala se a Clarice/Bilal quiserem uma proposta PME pragmática.
+Inclui:
 
-## Recomendação clara revista
+- alojamento e base de dados;
+- backups e recuperação;
+- segurança e actualizações;
+- monitorização;
+- suporte business-hours;
+- pequenas correcções;
+- manutenção de integrações;
+- acompanhamento mensal;
+- ajustes quando mudam ficheiros, fornecedores ou regras internas.
 
-Escolho o **Cenário 2 — PME base recomendado**.
+Frase simples:
 
-Preço a usar na próxima iteração da proposta:
-
-| Tier | Setup recomendado | Recorrente recomendado | Nota |
-|---|---:|---:|---|
-| Core | EUR 12k-18k | EUR 550-900/mês | Mantém-se próximo do tier actual, mas com scope explicitamente limitado. |
-| PRO | EUR 32k-48k | EUR 1.200-2.200/mês | Melhor equilíbrio para Clarice: 3-4 fluxos, valor visível, risco controlado. |
-| Enterprise faseado | EUR 58k-88k | EUR 2.400-3.900/mês | Baixa o choque face à versão anterior; preserva margem se for faseado. |
-
-Isto implica mudar a proposta menos do que a recomendação anterior. Em vez de subir tudo, mantemos a estrutura actual mas alteramos a promessa:
-
-- Core deixa de significar “A+B completo garantido”; passa a “primeiro MVP ou A+B reduzido”.
-- PRO é o tier recomendado.
-- Enterprise é roadmap faseado, não compromisso fechado de 6 MVPs live com todas as integrações.
-
-## Sprint 0 recomendado
-
-Para PME portuguesa, eu adicionaria uma porta de entrada:
-
-| Item | Preço | Condição |
-|---|---:|---|
-| Sprint 0 / Diagnóstico técnico-comercial | EUR 4,5k-7,5k | 2 semanas; descontável até 50% se avançarem para PRO/Enterprise em 30 dias. |
-
-Outputs Sprint 0:
-
-- Workshop PHC Advanced com integrador.
-- Confirmação Frotcom/Logue Trans.
-- Volume documental real.
-- Escolha do primeiro MVP.
-- Fecho de preço fixo por fase.
-
-Isto reduz o risco de o conselho ver EUR 58k-88k como “salto no escuro”.
+> A mensalidade garante que a plataforma não fica abandonada depois do setup. Cobre operação, suporte, segurança, integrações e pequenas correcções mensais.
 
 ## Sensibilidades
 
-### Se as “4 000 facturas/mês” forem facturas-fornecedor
+### Se “4 000 facturas/mês” forem facturas-fornecedor
 
-- Não aumenta muito o custo Claude API, mas aumenta validação, regras, excepções e suporte.
-- PRO sobe +EUR 5k-10k setup e +EUR 300-800/mês.
-- Enterprise sobe +EUR 8k-15k setup e +EUR 600-1.200/mês.
+- PRO sobe +EUR 5k-10k setup.
+- Mensalidade PRO sobe +EUR 300-800/mês.
+- Alternativa: limitar volume incluído e cobrar overage por lote documental.
 
-### Se SLA subir de 99% para 99.9%
+### Se SLA subir para 99.9%
 
 - Não oferecer em Core.
 - PRO 99.9% só como add-on: +EUR 700-1.200/mês.
@@ -129,15 +97,21 @@ Isto reduz o risco de o conselho ver EUR 58k-88k como “salto no escuro”.
 
 ### Se o integrador PHC Advanced não colaborar
 
-- Retirar escrita PHC Advanced de scope.
+- Retirar escrita PHC Advanced do scope.
 - Manter XML/registo intermédio.
 - Change request obrigatório para escrita directa futura.
 - Não usar “integração PHC Advanced” como promessa fechada; usar “preparado para integração PHC Advanced”.
 
-## Frase executiva revista
+## Frase Executiva Para a Clarice
 
-> Recomendamos PRO faseado: EUR 32k-48k de implementação e EUR 1.200-2.200/mês, com Sprint 0 opcional de EUR 4,5k-7,5k. Inclui A+B+C+F em rollout controlado, XML PHC Advanced enquanto o integrador não valida escrita directa, SLA 99% e limites explícitos de volume/suporte. Enterprise completo fica como roadmap faseado de EUR 58k-88k + EUR 2.400-3.900/mês.
+> Para esta primeira fase, recomendamos avançar com PRO faseado: EUR 32k-45k de implementação e EUR 1.200-1.800/mês, antecedidos por um Sprint 0 obrigatório de duas semanas a EUR 5k-7k. O Sprint 0 confirma com o integrador PHC Advanced e com a Frotcom o que é viável antes de qualquer compromisso, e é descontável até metade se avançarmos com PRO em 30 dias. PRO entrega quatro fluxos críticos — documentos, quilómetros, OCR fornecedor e piloto de oficina — em três a quatro meses, com controlo operacional auditável. Combustível e bolsa de cargas ficam no roadmap, condicionados a integrações e dados validados.
 
-## Decisão
+## Caso de Não Fazer
 
-Substituo a recomendação anterior. Para este caso, a proposta deve ir para conselho com **pricing PME base**, não pricing enterprise.
+- Se recusarem Sprint 0, não fechar PRO. O risco de re-scope é demasiado alto.
+- Se exigirem Enterprise fechado já, recusar. D e E ainda não estão controlados.
+- Se pedirem mensalidade muito abaixo de EUR 1.200/mês, reduzir scope e suporte, não absorver margem negativa.
+
+## Nota Para a Proposta
+
+Antes da reunião, `app/proposta/page.tsx` tem de ser actualizado para estes valores ou marcado como “pricing em revisão”. O ajuste de UI/proposta fica para a Fase 4, salvo decisão explícita do Bilal para antecipar.

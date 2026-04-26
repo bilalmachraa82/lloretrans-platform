@@ -156,4 +156,4 @@ Leitura:
 | PRO | 8-14h/mês + infra + revisão mensal leve | EUR 550-950 | **EUR 1.000-1.900/mês** |
 | Enterprise faseado | 16-28h/mês + coordenação + auditoria mensal | EUR 1.100-1.800 | **EUR 2.000-3.300/mês** |
 
-Conclusão revista: para PME portuguesa, não se deve subir já para EUR 92k-125k como recomendação principal. O preço defensável é uma entrada faseada: Core EUR 12k-18k, PRO EUR 32k-48k, Enterprise faseado EUR 58k-88k, com recorrente EUR 550-3.900/mês conforme scope.
+Conclusão revista após CFO review: para PME portuguesa, não se deve subir já para EUR 92k-125k como recomendação principal. O preço defensável para a reunião é Sprint 0 obrigatória EUR 5k-7k; Core EUR 14k-18k + EUR 600-900/mês; PRO faseado EUR 32k-45k + EUR 1.200-1.800/mês; Enterprise faseado EUR 58k-85k + EUR 2.200-3.500/mês, apenas como roadmap.
