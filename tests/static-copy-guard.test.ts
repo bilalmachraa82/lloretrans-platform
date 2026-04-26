@@ -9,10 +9,12 @@ const files = [
   "app/(platform)/layout.tsx",
   "app/(platform)/dashboard/page.tsx",
   "app/(platform)/bolsa/commissions/page.tsx",
+  "app/(platform)/ocr/page.tsx",
   "app/(platform)/ocr/upload/page.tsx",
   "app/(platform)/ocr/upload/actions.ts",
   "app/(platform)/docs/upload/page.tsx",
   "README.md",
+  "docs/superpowers/specs/2026-04-19-mvp-b-ocr-invoices.md",
   "docs/superpowers/specs/2026-04-19-mvp-a-km-validation.md",
   "docs/superpowers/specs/2026-04-19-mvp-e-bolsa.md",
   "docs/superpowers/specs/2026-04-19-platform-architecture.md",
@@ -27,6 +29,7 @@ const customerFacingFiles = [
   "app/(platform)/layout.tsx",
   "app/(platform)/dashboard/page.tsx",
   "app/(platform)/bolsa/commissions/page.tsx",
+  "app/(platform)/ocr/page.tsx",
   "README.md",
   "docs/demo/lloretrans-commercial-demo-script.md",
 ];
@@ -54,6 +57,8 @@ describe("static copy guard", () => {
       ["CANBUS", "× cartões"].join(" "),
       ["Azure", "DI"].join(" "),
       ["State", "machine"].join(" "),
+      ["Zero", "dependências US"].join(" "),
+      ["sub-processadores", "nos EUA"].join(" "),
     ];
     for (const phrase of stalePhrases) {
       expect(text.toLowerCase()).not.toContain(phrase.toLowerCase());

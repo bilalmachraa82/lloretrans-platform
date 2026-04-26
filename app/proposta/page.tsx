@@ -198,7 +198,7 @@ const STATS = [
   { n: "6", label: "Módulos independentes" },
   { n: "9", label: "Facturas reais já processadas" },
   { n: "60+", label: "Viaturas por operador suportadas" },
-  { n: "EU", label: "Dados 100% em Frankfurt" },
+  { n: "EU", label: "Dados em repouso na UE" },
 ];
 
 export default function PropostaPage() {
@@ -627,7 +627,7 @@ export default function PropostaPage() {
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           <ComplianceCard
             title="Dados em Frankfurt"
-            body="Neon Postgres + Vercel deploy fra1. Zero data centers US no caminho crítico. Retenção configurável por tipo de documento."
+            body="Neon Postgres + Vercel deploy fra1 para dados operacionais. Claude/Anthropic só entra com DPA aprovado ou fica desligado por fluxo. Retenção configurável por tipo de documento."
           />
           <ComplianceCard
             title="Audit imutável"

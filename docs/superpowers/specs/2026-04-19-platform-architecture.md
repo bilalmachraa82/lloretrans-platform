@@ -172,7 +172,7 @@ Tabela `feature_flags` + helper `isEnabled(flag, user)`. Flags:
 - **~60 viaturas** (matrículas portuguesas válidas, mix ligeiro/pesado).
 - **~50 motoristas** com nomes portugueses realistas.
 - **30 dias de viagens** (~13.500 viagens no período).
-- **9 facturas fornecedor reais** (dos PDFs) + 180 sintéticas/mês por 3 meses.
+- **9 facturas fornecedor reais** (dos PDFs); sem lote sintético nesta versão realinhada.
 - **~80 cargas aluguer/mês** por 3 meses para MVP E.
 - **~120 folhas oficina/mês** por 3 meses para MVP F.
 - **Abastecimentos diários** viatura a viatura para MVP D.

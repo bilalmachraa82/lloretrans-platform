@@ -12,7 +12,7 @@ Facturas de fornecedor (9 reais amostra: Würth, Policalço, Selcar, Popapneus, 
 
 Pipeline:
 1. Admin da oficina faz upload PDF.
-2. Extracção (Azure DI em prod · cache local em dev) produz JSON estruturado + confiança por campo.
+2. Extracção de texto com `pdf-parse` + classificação opcional por Claude API quando activa; cache local em dev/demo produz JSON estruturado + confiança por campo.
 3. Classificação automática via **regra do fornecedor aprendida** (tabela `supplier_rules` indexada por `taxId`). Se inexistente, modelo default pede humano.
 4. UI side-by-side: PDF à esquerda · campos editáveis à direita + sugestão + confiança.
 5. Admin corrige → sistema aprende (`supplier_rules` cresce).
@@ -49,7 +49,7 @@ Cada correcção humana escrita em `audit_log` com `before/after` + factura asso
 
 ## Critérios de aceitação (demo)
 
-- [ ] Lista de facturas mostra 189 registos (9 reais + 180 sintéticas).
+- [ ] Lista de facturas mostra as 9 facturas reais carregadas nas fixtures, sem lote sintético.
 - [ ] 9 facturas reais aparecem em `pending_review` com classificação proposta.
 - [ ] Detalhe de factura permite editar campos.
 - [ ] Aprovar cria `audit_log`.

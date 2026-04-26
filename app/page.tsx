@@ -327,7 +327,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="lg:col-span-7 grid sm:grid-cols-2 gap-6">
-              <TrustCard icon={Globe} title="Dados na UE" body="Neon Postgres em Frankfurt (aws-eu-central-1). Deploy Vercel fra1. Zero dependências US." />
+              <TrustCard icon={Globe} title="Dados na UE" body="Neon Postgres em Frankfurt (aws-eu-central-1). Deploy Vercel fra1. IA externa só com DPA e aprovação por fluxo." />
               <TrustCard icon={ShieldCheck} title="RGPD by default" body="Audit log imutável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
               <TrustCard icon={CheckCircle2} title="Humano no loop" body="IA regista, classifica, sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
               <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores prontos para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do integrador PHC do grupo." />
@@ -443,7 +443,7 @@ export default function LandingPage() {
             <div className="lg:col-span-8 space-y-2">
               <FaqItem
                 q="Que dados saem da empresa?"
-                a="Nenhum dado vai fora da UE. Neon Postgres em Frankfurt (aws-eu-central-1), Vercel fra1. Zero analytics de terceiros. Sem fornecedores sub-processadores nos EUA."
+                a="Dados operacionais em repouso ficam na UE: Neon Postgres em Frankfurt (aws-eu-central-1) e Vercel fra1. Fluxos com Claude/Anthropic só avançam com DPA aprovado; sem isso, ficam desligados ou usam extracção local."
               />
               <FaqItem
                 q="Quem assina os lançamentos no PHC?"
@@ -455,7 +455,7 @@ export default function LandingPage() {
               />
               <FaqItem
                 q="Integramos com o vosso integrador PHC?"
-                a="Sim — é pré-requisito. Confirmamos com o Hélio versão exacta (CS vs GO) e módulos licenciados antes de fechar scope. O custo da integração está descriminado na proposta."
+                a="Só depois de contacto técnico confirmado com o integrador PHC Advanced do grupo. Até lá, a proposta assume XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
               />
               <FaqItem
                 q="O que acontece se o mecânico não usar a app?"
