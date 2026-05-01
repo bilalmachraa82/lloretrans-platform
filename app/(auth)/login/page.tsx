@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/db/client";
 import { users, companies } from "@/db/schema";
@@ -9,6 +10,10 @@ import { setSession } from "@/lib/auth/session";
 import { ROLE_LABELS, canAccessMvp, type Role } from "@/lib/auth/types";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft } from "lucide-react";
+
+function canShowInternalAdminProfiles(): boolean {
+  return process.env.VERCEL_ENV !== "production";
+}
 
 async function loginAs(formData: FormData): Promise<void> {
   "use server";
@@ -25,8 +30,7 @@ async function loginAs(formData: FormData): Promise<void> {
   if (!user) redirect("/login?access=invalid");
 
   const role = user.role as Role;
-  const allowInternalAdminLogin =
-    process.env.ALLOW_PUBLIC_ADMIN_LOGIN === "true" || process.env.NODE_ENV !== "production";
+  const allowInternalAdminLogin = canShowInternalAdminProfiles();
 
   if (role === "admin" && !allowInternalAdminLogin) {
     redirect("/login?access=admin-disabled");
@@ -47,6 +51,14 @@ interface SpotlightPersona {
   angle: string;
 }
 
+const PUBLIC_ROLE_NAMES: Partial<Record<Role, string>> = {
+  admin_oficina: "Administrativa de oficina",
+  admin_faturacao: "Administrativa de facturação",
+  admin_contas: "Administrativa de contas do grupo",
+  digitalizacao: "Operador/a de digitalização",
+  frutas: "Empresa consumidora",
+};
+
 const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
   {
     email: "clarice@lloretrans.pt",
@@ -60,7 +72,7 @@ const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
     label: "Éder",
     summary: "Comercial · bolsa de carga",
     angle:
-      "Só vê o MVP E. 306 cargas reais do Excel, fluxo auditado do ciclo completo e comissão automática por linha.",
+      "Só vê o módulo E. 306 cargas reais do Excel, fluxo auditado do ciclo completo e comissão automática por linha.",
   },
   {
     email: "joao.mec@lloretrans.pt",
@@ -87,8 +99,7 @@ export default async function LoginPage({
   searchParams: Promise<{ target?: string; access?: string }>;
 }) {
   const { target, access } = await searchParams;
-  const allowInternalAdminLogin =
-    process.env.ALLOW_PUBLIC_ADMIN_LOGIN === "true" || process.env.NODE_ENV !== "production";
+  const allowInternalAdminLogin = canShowInternalAdminProfiles();
   const profileGroups = OTHER_GROUPS.filter((group) => allowInternalAdminLogin || !group.roles.includes("admin"));
 
   const rows = await db
@@ -135,11 +146,17 @@ export default async function LoginPage({
             Voltar ao site
           </span>
         </Link>
-        <Link href="/" className="flex min-h-11 items-center gap-2">
-          <div className="h-8 w-8 rounded-md bg-[hsl(222_72%_30%)] text-white grid place-items-center font-display font-bold">
-            A
+        <Link
+          href="/"
+          className="flex min-h-11 items-center gap-3 rounded-2xl border border-[hsl(220_14%_88%)] bg-white px-4 py-3 shadow-elevated-sm"
+        >
+          <Image src="/aitipro-logo.png" alt="AiTiPro" width={154} height={36} className="h-7 w-auto" priority />
+          <div className="hidden sm:block">
+            <div className="text-[10px] text-[hsl(32_82%_35%)] tracking-[0.2em] uppercase font-semibold">
+              Acesso à demonstração
+            </div>
+            <div className="mt-1 text-xs text-muted-foreground">Lloretrans · perfis de validação</div>
           </div>
-          <span className="font-display font-semibold">AiTiPro</span>
         </Link>
       </header>
 
@@ -149,10 +166,10 @@ export default async function LoginPage({
             Acesso à demonstração
           </Badge>
           <h1 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
-            Escolhe a perspectiva com que <span className="italic">queres explorar</span>.
+            Escolhe o perfil com que <span className="italic">queres explorar</span>.
           </h1>
           <p className="mt-5 text-foreground/70 leading-relaxed">
-            Três perfis principais cobrem 90% da demonstração. Cada papel vê apenas os módulos que lhe
+            Três perfis principais cobrem 90% da demonstração. Cada perfil vê apenas os módulos que lhe
             dizem respeito. Dados de avaliação — podes mudar de perfil à vontade.
             {access === "admin-disabled" && (
               <span className="block mt-3 rounded-md border border-[hsl(32_82%_55%)]/35 bg-[hsl(40_40%_96%)] px-3 py-2 text-sm text-[hsl(32_82%_28%)]">
@@ -167,12 +184,12 @@ export default async function LoginPage({
           </p>
         </div>
 
-        {/* 3 personas destacadas */}
+        {/* 3 perfis destacados */}
         {spotlightUsers.length > 0 && (
           <div className="mb-12">
             <div className="flex items-baseline justify-between mb-3">
               <h2 className="font-display text-sm font-semibold tracking-[0.05em] uppercase text-[hsl(32_82%_35%)]">
-                Personas principais
+                Perfis principais
               </h2>
               <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Começa por aqui</span>
             </div>
@@ -225,7 +242,7 @@ export default async function LoginPage({
           <summary className="list-none cursor-pointer flex items-center justify-between px-5 py-4 hover:bg-white transition-colors rounded-lg">
             <div>
               <div className="font-display text-sm font-semibold">Outros perfis</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5">Perfis adicionais para cenários específicos</div>
+              <div className="text-[11px] text-muted-foreground mt-0.5">Perfis de demonstração para validações pontuais</div>
             </div>
             <span className="text-[hsl(222_72%_30%)] text-lg font-semibold transition-transform group-open:rotate-45 leading-none">+</span>
           </summary>
@@ -243,6 +260,7 @@ export default async function LoginPage({
                   </div>
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                     {usersInGroup.map((u) => {
+                      const publicName = PUBLIC_ROLE_NAMES[u.role as Role] ?? u.name;
                       const initials = u.name
                         .split(" ")
                         .map((n) => n[0])
@@ -260,8 +278,11 @@ export default async function LoginPage({
                               {initials}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="text-[13px] font-medium truncate">{u.name}</div>
-                              <div className="text-[10px] text-muted-foreground truncate">{ROLE_LABELS[u.role as Role]}</div>
+                              <div className="text-[13px] font-medium truncate">{publicName}</div>
+                              <div className="text-[10px] text-muted-foreground truncate">{u.companyName}</div>
+                            </div>
+                            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                              Demo
                             </div>
                           </button>
                         </form>

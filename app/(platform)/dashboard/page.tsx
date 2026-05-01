@@ -91,7 +91,7 @@ const MVP_CARDS = [
   {
     slug: "km",
     title: "Validação de km",
-    eyebrow: "MVP A",
+    eyebrow: "Módulo A",
     description: "Reconciliação Logue Trans × Frotcom · semáforo · bulk approve · audit",
     href: "/km",
     icon: TruckIcon,
@@ -99,15 +99,15 @@ const MVP_CARDS = [
   {
     slug: "ocr",
     title: "OCR Facturas",
-    eyebrow: "MVP B",
-    description: "9 facturas reais classificadas · regras aprendidas por fornecedor · XML PHC Advanced",
+    eyebrow: "Módulo B",
+    description: "9 facturas reais usadas para ensinar regras por fornecedor · XML PHC Advanced",
     href: "/ocr",
     icon: ReceiptText,
   },
   {
     slug: "docs",
     title: "Digitalização Central",
-    eyebrow: "MVP C",
+    eyebrow: "Módulo C",
     description: "Hub CMR + guias · associação automática · permissões cross-empresa",
     href: "/docs",
     icon: FileStack,
@@ -115,7 +115,7 @@ const MVP_CARDS = [
   {
     slug: "fuel",
     title: "Combustível",
-    eyebrow: "MVP D",
+    eyebrow: "Módulo D",
     description: "Cepsa/Repsol/Radius/bomba · Frotcom leitura pendente · anomalias por viatura",
     href: "/fuel",
     icon: Fuel,
@@ -123,7 +123,7 @@ const MVP_CARDS = [
   {
     slug: "bolsa",
     title: "Bolsa de Carga",
-    eyebrow: "MVP E",
+    eyebrow: "Módulo E",
     description: "Ciclo agendar → facturar → pagar · comissões automáticas · alertas",
     href: "/bolsa",
     icon: PackageSearch,
@@ -131,7 +131,7 @@ const MVP_CARDS = [
   {
     slug: "oficina",
     title: "Oficina (PWA)",
-    eyebrow: "MVP F",
+    eyebrow: "Módulo F",
     description: "Folha de obra mobile · offline-first · assinatura · export PHC Advanced",
     href: "/oficina",
     icon: Wrench,

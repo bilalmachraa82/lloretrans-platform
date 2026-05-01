@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSession, clearSession } from "@/lib/auth/session";
@@ -34,7 +35,7 @@ interface MvpEntry {
 
 const MVPS: MvpEntry[] = [
   { slug: "km", letter: "A", title: "Validação km", tagline: "Logue Trans × Frotcom", icon: TruckIcon, href: "/km" },
-  { slug: "ocr", letter: "B", title: "OCR Facturas", tagline: "9 facturas reais", icon: ReceiptText, href: "/ocr" },
+  { slug: "ocr", letter: "B", title: "OCR Facturas", tagline: "9 facturas OCR", icon: ReceiptText, href: "/ocr" },
   { slug: "docs", letter: "C", title: "Docs Centrais", tagline: "CMR · guias · tickets", icon: FileStack, href: "/docs" },
   { slug: "fuel", letter: "D", title: "Combustível", tagline: "Cepsa · Repsol · Radius · bomba", icon: Fuel, href: "/fuel" },
   { slug: "bolsa", letter: "E", title: "Bolsa de Carga", tagline: "5 estados · comissões", icon: PackageSearch, href: "/bolsa" },
@@ -57,11 +58,11 @@ export default async function PlatformLayout({ children }: { children: React.Rea
 
   const sidebarContent = (
     <>
-      <Link href="/" className="flex min-h-11 items-center gap-2 px-2">
-        <div className="h-8 w-8 rounded-md bg-primary text-primary-foreground grid place-items-center font-bold">L</div>
+      <Link href="/" className="flex min-h-11 items-center gap-3 px-2">
+        <Image src="/aitipro-logo.png" alt="AiTiPro" width={132} height={30} className="h-6 w-auto" priority />
         <div>
           <div className="text-sm font-semibold">Lloretrans</div>
-          <div className="text-[11px] text-muted-foreground -mt-0.5">AiTiPro Platform</div>
+          <div className="text-[11px] text-muted-foreground -mt-0.5">Plataforma AiTiPro</div>
         </div>
       </Link>
 
@@ -77,7 +78,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
                 Percurso recomendado
               </span>
               <span className="text-[9px] text-[hsl(32_82%_35%)] uppercase tracking-wider font-semibold">
-                6 MVPs
+                6 módulos
               </span>
             </div>
             {MVPS.map((m, i) => (
@@ -99,7 +100,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
               Abrir wizard mecânico
             </SidebarLink>
             <SidebarLink href="/login" icon={Users}>
-              Trocar de persona
+              Trocar de perfil
             </SidebarLink>
             {session.role === "admin" ? (
               <SidebarLink href="/proposta" icon={FileText}>
@@ -118,7 +119,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
             </div>
             {available.map((m) => (
               <SidebarLink key={m.slug} href={m.href} icon={m.icon}>
-                MVP {m.letter} · {m.title}
+                Módulo {m.letter} · {m.title}
               </SidebarLink>
             ))}
           </>
@@ -175,7 +176,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
                 Testar folha mecânico →
               </Link>
               <Link href="/login" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline">
-                Trocar persona
+                Trocar perfil
               </Link>
             </div>
           </div>

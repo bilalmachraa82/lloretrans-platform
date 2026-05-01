@@ -26,7 +26,7 @@ export const metadata = {
 
 const PROOF = [
   { value: "6", label: "fluxos mapeados", note: "km, OCR, documentos, combustível, bolsa, oficina" },
-  { value: "9", label: "facturas reais", note: "já classificadas na demonstração" },
+  { value: "9", label: "facturas OCR", note: "9 facturas reais usadas para ensinar o classificador por fornecedor" },
   { value: "306", label: "cargas reais", note: "convertidas do Excel operacional" },
   { value: "2161", label: "abastecimentos", note: "dados reais carregados na demo" },
 ];
@@ -66,7 +66,7 @@ const MODULES = [
     icon: ReceiptText,
     pain: "O conhecimento de classificação está na pessoa e não no sistema; cada fornecedor tem o seu formato.",
     currentState: "Upload, extracção, classificação por NIF, memória por fornecedor e export orientado a PHC Advanced.",
-    proof: "As 9 facturas reais já estão classificadas na demonstração.",
+    proof: "As 9 facturas reais já foram usadas para ensinar a classificação por fornecedor.",
     validate: "Se a lógica de classificação e o grau de validação humana estão certos.",
     href: "/login?target=ocr",
   },
@@ -97,14 +97,15 @@ const MODULES = [
     pain: "O comercial trabalha sobre Excel longo, memória tardia e comissões calculadas no fim do mês.",
     currentState: "Fluxo auditado por estado, documentos ligados a cada carga e regra de comissão reflectida na plataforma.",
     proof: "O Excel real de 306 cargas já foi convertido para navegação operacional.",
-    validate: "Se a leitura da margem, dos estados e das colunas bate certo com a prática da Lloretrans.",
+    validate:
+      "Se a leitura da margem, dos estados e das colunas bate certo com a prática da Lloretrans, e onde o Excel precisa de saneamento antes de entrar em produção.",
     href: "/login?target=bolsa",
   },
   {
     code: "F",
     title: "Folha de obra da oficina",
     icon: Wrench,
-    pain: "O mecanico regista em papel e a administrativa relanca tudo no PHC Advanced.",
+    pain: "O mecânico regista em papel e a administrativa relança tudo no PHC Advanced.",
     currentState: "PWA mobile-first com checklist, estados, assinatura e validação administrativa.",
     proof: "A folha de obra já pode ser mostrada em telemóvel como experiência real de uso.",
     validate: "Se o mecânico adopta o fluxo e se a administrativa ganha controlo sem duplicação.",
@@ -138,18 +139,22 @@ const DEMO_STEPS = [
   "Sair da reunião com uma resposta clara: corresponde ou não corresponde?",
 ];
 
-const OUTCOMES = [
+const COUNCIL_REASONS = [
   {
-    title: "Validado",
-    body: "A Clarice confirma que a plataforma traduz a operação e pode seguir para faseamento, ROI e proposta.",
+    title: "Já existe plataforma",
+    body: "A reunião parte de fluxos navegáveis com dados reais, e não de uma promessa em PowerPoint.",
   },
   {
-    title: "Ajustar antes do conselho",
-    body: "Aparecem lacunas pontuais de copy, dados ou workflow e corrige-se antes da circulação formal.",
+    title: "Sprint 0 é arranque",
+    body: "A primeira semana fecha acessos, saneamento, integração e piloto. Não é descoberta teórica.",
   },
   {
-    title: "Escalar para mais stakeholders",
-    body: "A demo fica pronta para mostrar a direcção ou outros decisores do Grupo Patrícia Pilar.",
+    title: "Decisão humana preservada",
+    body: "IA prepara, classifica e sinaliza; a aprovação continua do lado Lloretrans em passos irreversíveis.",
+  },
+  {
+    title: "Preparado para crescer no grupo",
+    body: "A arquitectura, permissões e segregação documental já foram pensadas para mais empresas e mais equipas.",
   },
 ];
 
@@ -459,21 +464,21 @@ export default function ApresentacaoPage() {
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
-              O que tem de sair desta reunião
+              Porque esta abordagem é defensável
             </div>
             <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
-              A apresentação só vale se ajudar a Clarice a decidir o próximo movimento.
+              Quatro razões para a Clarice validar antes de levar ao conselho.
             </h2>
           </div>
           <p className="max-w-2xl text-base leading-relaxed text-[#4b5563]">
-            O fecho não é comercial. É operacional. A Clarice tem de conseguir dizer se a plataforma
-            espelha a operação, o que ainda precisa de ajuste e se vale a pena levar a solução ao conselho
-            com confiança.
+            A apresentação ganha força quando mostra por que razão esta solução merece atenção interna:
+            já existe produto, a primeira semana não é teatro comercial, a decisão continua humana e a
+            arquitectura já foi pensada para escalar do Lloretrans para o grupo.
           </p>
         </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
-          {OUTCOMES.map((outcome) => (
+        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {COUNCIL_REASONS.map((outcome) => (
             <article
               key={outcome.title}
               className="rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-elevated-sm"
@@ -518,18 +523,11 @@ export default function ApresentacaoPage() {
               size="lg"
               className="border-0 bg-[#2ae5a0] text-[#1e2d3d] shadow-none hover:bg-[#1bc88a]"
             >
-              <Link href="/login">Entrar como Clarice</Link>
+              <Link href="/login">Abrir a plataforma</Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-white/20 bg-white/8 text-white hover:bg-white/14"
-            >
-              <Link href="mailto:bilal.machraa@aitipro.com?subject=Validacao%20da%20plataforma%20Lloretrans">
-                Enviar convite de validação
-              </Link>
-            </Button>
+            <p className="text-sm text-white/70">
+              Depois da validação, seguem-se faseamento, ROI e proposta formal.
+            </p>
             <div className="ml-auto hidden rounded-xl bg-white px-4 py-3 lg:block">
               <Image src="/aitipro-logo.png" alt="AiTiPro" width={138} height={32} className="h-6 w-auto" />
             </div>

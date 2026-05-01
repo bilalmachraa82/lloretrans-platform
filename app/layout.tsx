@@ -8,7 +8,7 @@ const display = Fraunces({ subsets: ["latin"], variable: "--font-display", displ
 
 export const metadata: Metadata = {
   title: "Lloretrans × AiTiPro — Plataforma",
-  description: "6 MVPs operacionais num único ambiente. Dashboards, OCR, bolsa de carga, oficina PWA.",
+  description: "6 módulos operacionais num único ambiente. Dashboards, OCR, bolsa de carga, oficina PWA.",
   robots: { index: false, follow: false },
   icons: { icon: "/icon.svg" },
 };

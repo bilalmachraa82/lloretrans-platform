@@ -58,7 +58,7 @@ export default async function OcrListPage({
     <div className="space-y-6">
       <PageHeader
         title="OCR Facturas de Fornecedor"
-        description={`${rows.length} facturas mostradas · MVP B · 9 facturas reais classificadas por fornecedor · sem lote sintético`}
+        description={`${rows.length} facturas mostradas · Módulo B · 9 facturas reais usadas para ensinar regras por fornecedor · sem lote sintético`}
         actions={
           <Button asChild>
             <Link href="/ocr/upload">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,7 +41,7 @@ const MODULES = [
     solution: "Primeira factura de cada fornecedor: tu ensinas o sistema. A partir daí, automática. Export XML PHC Advanced.",
     icon: ReceiptText,
     metric: "9",
-    metricLabel: "facturas reais mapeadas",
+    metricLabel: "facturas OCR reais",
   },
   {
     code: "C",
@@ -100,13 +101,11 @@ export default function LandingPage() {
 
       {/* Top bar */}
       <header className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 pt-8 flex items-center justify-between">
-        <Link href="/" className="flex min-h-11 items-center gap-2.5">
-          <div className="h-9 w-9 rounded-md bg-[hsl(222_72%_30%)] text-white grid place-items-center font-display font-bold shadow-elevated-sm">
-            A
-          </div>
+        <Link href="/" className="flex min-h-11 items-center gap-3 rounded-2xl border border-[hsl(220_14%_88%)] bg-white px-4 py-3 shadow-elevated-sm">
+          <Image src="/aitipro-logo.png" alt="AiTiPro" width={154} height={36} className="h-7 w-auto" priority />
           <div>
-            <div className="font-display text-base font-semibold leading-none">AiTiPro</div>
-            <div className="text-[10px] text-muted-foreground mt-0.5 tracking-wider uppercase">Plataforma Lloretrans</div>
+            <div className="text-[10px] text-[hsl(32_82%_35%)] mt-0.5 tracking-[0.2em] uppercase font-semibold">Plataforma Lloretrans</div>
+            <div className="text-xs text-muted-foreground mt-1">Demo operacional sem preços</div>
           </div>
         </Link>
         <nav className="flex items-center gap-3">
@@ -227,7 +226,7 @@ export default function LandingPage() {
               <div className="mt-6 grid grid-cols-3 gap-4 text-center">
                 <Stat n="60" label="viaturas" />
                 <Stat n="4" label="empresas grupo" />
-                <Stat n="9" label="facturas reais" />
+                <Stat n="9" label="facturas OCR" />
               </div>
             </div>
           </div>
@@ -268,7 +267,7 @@ export default function LandingPage() {
                         <Icon className="h-5 w-5 text-[hsl(222_72%_30%)]" />
                       </div>
                       <div className="font-mono text-[10px] text-muted-foreground tracking-wider">
-                        MVP · {m.code}
+                        Módulo · {m.code}
                       </div>
                     </div>
                     <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[hsl(222_72%_30%)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
@@ -354,7 +353,7 @@ export default function LandingPage() {
         <div className="grid gap-5 md:grid-cols-3">
           <ValidationCard
             title="1. Ver a demo"
-            body="Entrar como Clarice, abrir os seis módulos e confirmar se a plataforma reflecte a realidade da operação."
+            body="Entrar com o perfil da Clarice, abrir os seis módulos e confirmar se a plataforma reflecte a realidade da operação."
             points={["Dashboard executivo", "Deep-links por módulo", "Dados reais já carregados"]}
           />
           <ValidationCard
@@ -442,7 +441,7 @@ export default function LandingPage() {
               />
               <FaqItem
                 q="E se o Frotcom falhar?"
-                a="Existe fallback para Logue Trans via flag de configuração. A reconciliação continua, com aviso no dashboard. Nenhum MVP depende de um único fornecedor externo para correr."
+                a="Existe fallback para Logue Trans via flag de configuração. A reconciliação continua, com aviso no dashboard. Nenhum módulo depende de um único fornecedor externo para correr."
               />
               <FaqItem
                 q="Integramos com o vosso expert PHC Advanced interno?"
@@ -474,7 +473,7 @@ export default function LandingPage() {
               </h2>
               <p className="mt-5 text-white/75 text-lg leading-relaxed max-w-2xl">
                 60 segundos chegam para veres os 6 módulos em funcionamento. Dados determinísticos, login
-                sem password; escolhe a persona Clarice. A proposta formal fica para depois da validação.
+                sem password; escolhe o perfil da Clarice. A proposta formal fica para depois da validação.
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
@@ -493,9 +492,7 @@ export default function LandingPage() {
       <footer className="relative z-10 border-t border-[hsl(220_14%_88%)]">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded bg-[hsl(222_72%_30%)] text-white grid place-items-center font-display font-semibold text-[10px]">
-              A
-            </div>
+            <Image src="/aitipro-logo.png" alt="AiTiPro" width={112} height={26} className="h-5 w-auto" />
             <span>AiTiPro · Lisboa · Portugal</span>
           </div>
           <div className="flex items-center gap-6">
