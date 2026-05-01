@@ -101,9 +101,15 @@ export default async function PlatformLayout({ children }: { children: React.Rea
             <SidebarLink href="/login" icon={Users}>
               Trocar de persona
             </SidebarLink>
-            <SidebarLink href="/proposta" icon={FileText}>
-              Ver proposta formal
-            </SidebarLink>
+            {session.role === "admin" ? (
+              <SidebarLink href="/proposta" icon={FileText}>
+                Ver proposta formal
+              </SidebarLink>
+            ) : (
+              <SidebarLink href="/apresentacao" icon={FileText}>
+                Apresentação sem preços
+              </SidebarLink>
+            )}
           </>
         ) : (
           <>

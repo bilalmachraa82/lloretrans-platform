@@ -3,10 +3,10 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { db } from "@/db/client";
 import { users, companies } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { setSession } from "@/lib/auth/session";
-import { ROLE_LABELS, type Role } from "@/lib/auth/types";
+import { ROLE_LABELS, canAccessMvp, type Role } from "@/lib/auth/types";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft } from "lucide-react";
 
@@ -15,9 +15,26 @@ async function loginAs(formData: FormData): Promise<void> {
   const userId = formData.get("userId")?.toString();
   const target = formData.get("target")?.toString();
   if (!userId) throw new Error("userId required");
+
+  const [user] = await db
+    .select({ role: users.role })
+    .from(users)
+    .where(and(eq(users.id, userId), eq(users.active, true)))
+    .limit(1);
+
+  if (!user) redirect("/login?access=invalid");
+
+  const role = user.role as Role;
+  const allowInternalAdminLogin =
+    process.env.ALLOW_PUBLIC_ADMIN_LOGIN === "true" || process.env.NODE_ENV !== "production";
+
+  if (role === "admin" && !allowInternalAdminLogin) {
+    redirect("/login?access=admin-disabled");
+  }
+
   await setSession(userId);
-  const allowedTargets = ["km", "ocr", "docs", "fuel", "bolsa", "oficina", "admin"];
-  if (target && allowedTargets.includes(target)) {
+  const allowedTargets = ["km", "ocr", "docs", "fuel", "bolsa", "oficina", "admin"] as const;
+  if (target && allowedTargets.includes(target as (typeof allowedTargets)[number]) && canAccessMvp(role, target)) {
     redirect(`/${target}`);
   }
   redirect("/dashboard");
@@ -67,9 +84,12 @@ const OTHER_GROUPS: { label: string; roles: Role[]; hint: string }[] = [
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ target?: string }>;
+  searchParams: Promise<{ target?: string; access?: string }>;
 }) {
-  const { target } = await searchParams;
+  const { target, access } = await searchParams;
+  const allowInternalAdminLogin =
+    process.env.ALLOW_PUBLIC_ADMIN_LOGIN === "true" || process.env.NODE_ENV !== "production";
+  const profileGroups = OTHER_GROUPS.filter((group) => allowInternalAdminLogin || !group.roles.includes("admin"));
 
   const rows = await db
     .select({
@@ -134,6 +154,11 @@ export default async function LoginPage({
           <p className="mt-5 text-foreground/70 leading-relaxed">
             Três perfis principais cobrem 90% da demonstração. Cada papel vê apenas os módulos que lhe
             dizem respeito. Dados de avaliação — podes mudar de perfil à vontade.
+            {access === "admin-disabled" && (
+              <span className="block mt-3 rounded-md border border-[hsl(32_82%_55%)]/35 bg-[hsl(40_40%_96%)] px-3 py-2 text-sm text-[hsl(32_82%_28%)]">
+                O perfil interno AiTiPro não está disponível na demonstração pública.
+              </span>
+            )}
             {target && (
               <span className="block mt-3 text-[hsl(222_72%_30%)] text-sm font-medium">
                 Entrarás directamente no módulo <code className="font-mono">{target.toUpperCase()}</code>.
@@ -205,7 +230,7 @@ export default async function LoginPage({
             <span className="text-[hsl(222_72%_30%)] text-lg font-semibold transition-transform group-open:rotate-45 leading-none">+</span>
           </summary>
           <div className="border-t border-[hsl(220_14%_92%)] px-5 py-6 space-y-6">
-            {OTHER_GROUPS.map((group) => {
+            {profileGroups.map((group) => {
               const usersInGroup = group.roles
                 .flatMap((r) => byRole.get(r) ?? [])
                 .filter((u) => !spotlightIds.has(u.id));

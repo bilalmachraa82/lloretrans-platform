@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireSession } from "@/lib/auth/session";
+import { requireRole } from "@/lib/auth/session";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PrintPageAction } from "@/components/print-page-action";
@@ -331,7 +331,7 @@ const ROI_MODULES = [
 ];
 
 export default async function PropostaPage() {
-  await requireSession();
+  await requireRole(["admin"]);
 
   return (
     <main className="relative min-h-screen bg-[hsl(40_24%_98%)] text-[hsl(220_28%_10%)] overflow-hidden print:bg-white">

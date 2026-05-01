@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 const files = [
   "app/proposta/page.tsx",
+  "app/apresentacao/page.tsx",
   "app/page.tsx",
   "app/(auth)/login/page.tsx",
   "app/(platform)/layout.tsx",
@@ -26,6 +27,7 @@ const files = [
 
 const customerFacingFiles = [
   "app/proposta/page.tsx",
+  "app/apresentacao/page.tsx",
   "app/page.tsx",
   "app/(auth)/login/page.tsx",
   "app/(platform)/layout.tsx",

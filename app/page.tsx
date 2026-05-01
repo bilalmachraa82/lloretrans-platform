@@ -116,14 +116,14 @@ export default function LandingPage() {
           <Link href="#trust" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
             Confiança
           </Link>
-          <Link href="#pricing" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
-            Planos
+          <Link href="#validacao" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
+            Validação
           </Link>
           <Link href="#roadmap" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors lg:inline-flex">
             Como começamos
           </Link>
-          <Link href="/proposta" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors lg:inline-flex">
-            Proposta
+          <Link href="/apresentacao" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors lg:inline-flex">
+            Apresentação
           </Link>
           <Button asChild variant="outline" size="sm">
             <Link href="/login">Aceder à demonstração →</Link>
@@ -336,68 +336,43 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* PRICING TIERS */}
-      <section id="pricing" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
+      {/* VALIDAÇÃO ANTES DA PROPOSTA */}
+      <section id="validacao" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
         <div className="max-w-3xl mb-12">
           <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
-            Investimento
+            Validação antes da proposta
           </div>
           <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
-            Um pacote fechado. <span className="italic">Sem ranges no conselho.</span>
+            Primeiro a plataforma. <span className="italic">Depois a decisão.</span>
           </h2>
           <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
-            A proposta final para a Lloretrans é directa: €45.000 de implementação, €900/mês de
-            operação, pagamento 30/40/30 e módulo D combustível fora da cobrança inicial.
+            Antes de qualquer discussão comercial, a Clarice deve validar se a demonstração
+            corresponde à operação real. A proposta com valores só faz sentido depois dessa validação.
           </p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-3">
-          <PricingTier
-            name="Lloretrans 5+1"
-            tagline="Pacote recomendado · cinco fluxos em produção supervisionada"
-            price="€ 45.000"
-            recurring="€ 900/mês"
-            includes={[
-              "Sprint 0 + módulos A, B, C, E e F",
-              "Calendário de 10 semanas",
-              "Pagamento 30 / 40 / 30",
-              "Hosting, suporte, IA e 8h técnicas/mês",
-              "Preço fechado · sem variação · IVA não incluído",
-            ]}
-            featured
+          <ValidationCard
+            title="1. Ver a demo"
+            body="Entrar como Clarice, abrir os seis módulos e confirmar se a plataforma reflecte a realidade da operação."
+            points={["Dashboard executivo", "Deep-links por módulo", "Dados reais já carregados"]}
           />
-          <PricingTier
-            name="Módulo D"
-            tagline="Combustível · só após confirmação Frotcom"
-            price="+€ 7.500"
-            recurring="Sem cobrança hoje"
-            includes={[
-              "Roadmap activo desde a Sprint 0",
-              "Cepsa / Repsol / Radius / bomba interna",
-              "Litros / 100 km quando houver leitura Frotcom",
-              "Anomalias sinalizadas, decisão humana",
-              "Adição contratual posterior",
-            ]}
+          <ValidationCard
+            title="2. Validar expectativa"
+            body="Separar o que já corresponde, o que precisa de ajuste e que stakeholders devem ver a seguir."
+            points={["Dores da reunião", "Dependências PHC Advanced/Frotcom", "Risco de adopção oficina"]}
           />
-          <PricingTier
-            name="Sprint 0"
-            tagline="Protecção caso haja bloqueio técnico crítico"
-            price="€ 3.500"
-            recurring="Incluída nos €45.000"
-            includes={[
-              "Workshop com expert PHC Advanced interno",
-              "Validação Frotcom + Logue Trans",
-              "Volume documental real",
-              "Parecer técnico escrito",
-              "Se parar aqui, só a Sprint 0 é paga",
-            ]}
+          <ValidationCard
+            title="3. Só depois falar de faseamento"
+            body="Com a solução compreendida, discutir prioridades, retorno e caminho de aprovação para administração."
+            points={["Quick wins", "ROI a medir na Sprint 0", "Proposta formal pós-demo"]}
           />
         </div>
 
         <p className="mt-10 text-sm text-muted-foreground text-center">
-          Esta é a mesma oferta do email e da proposta formal: pacote Lloretrans 5+1, com Sprint 0 incluída, D em roadmap separado e sem intervalos comerciais.{" "}
-          <Link href="/proposta" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] underline">
-            Ver proposta formal →
+          Material certo para mostrar antes de falar de valores:{" "}
+          <Link href="/apresentacao" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] underline">
+            abrir apresentação sem preços →
           </Link>
         </p>
       </section>
@@ -499,7 +474,7 @@ export default function LandingPage() {
               </h2>
               <p className="mt-5 text-white/75 text-lg leading-relaxed max-w-2xl">
                 60 segundos chegam para veres os 6 módulos em funcionamento. Dados determinísticos, login
-                sem password; escolhe a persona Clarice. Em paralelo, podes abrir a proposta formal.
+                sem password; escolhe a persona Clarice. A proposta formal fica para depois da validação.
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
@@ -507,7 +482,7 @@ export default function LandingPage() {
                 <Link href="/login">Abrir demonstração →</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10 w-full lg:w-auto">
-                <Link href="/proposta">Ver proposta formal</Link>
+                <Link href="/apresentacao">Abrir apresentação</Link>
               </Button>
             </div>
           </div>
@@ -603,53 +578,24 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-function PricingTier({
-  name,
-  tagline,
-  price,
-  recurring,
-  includes,
-  featured = false,
+function ValidationCard({
+  title,
+  body,
+  points,
 }: {
-  name: string;
-  tagline: string;
-  price: string;
-  recurring: string;
-  includes: string[];
-  featured?: boolean;
+  title: string;
+  body: string;
+  points: string[];
 }) {
   return (
-    <div
-      className={`rounded-xl border p-7 relative ${
-        featured
-          ? "border-[hsl(222_72%_30%)] bg-[hsl(222_72%_30%)] text-white shadow-elevated-lg"
-          : "border-[hsl(220_14%_88%)] bg-white"
-      }`}
-    >
-      {featured && (
-        <Badge className="absolute -top-3 left-6 bg-[hsl(32_82%_55%)] text-[hsl(222_72%_12%)] border-0">
-          Recomendado
-        </Badge>
-      )}
-      <div className="font-display text-2xl font-semibold">{name}</div>
-      <div className={`text-sm mt-2 ${featured ? "text-white/70" : "text-muted-foreground"}`}>{tagline}</div>
-      <div className="mt-6 pt-6 border-t border-dashed border-current/20">
-        <div className={`text-xs uppercase tracking-wider ${featured ? "text-white/60" : "text-muted-foreground"}`}>
-          Implementação
-        </div>
-        <div className="font-display text-3xl font-semibold mt-1 tabular">{price}</div>
-        <div className={`text-xs mt-3 uppercase tracking-wider ${featured ? "text-white/60" : "text-muted-foreground"}`}>
-          Operação
-        </div>
-        <div className="font-mono text-sm font-semibold mt-1">{recurring}</div>
-      </div>
+    <div className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-7">
+      <div className="font-display text-2xl font-semibold">{title}</div>
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
       <ul className="mt-6 space-y-2.5 text-sm">
-        {includes.map((i) => (
+        {points.map((i) => (
           <li key={i} className="flex gap-2.5">
-            <CheckCircle2
-              className={`h-4 w-4 shrink-0 mt-0.5 ${featured ? "text-[hsl(32_82%_65%)]" : "text-[hsl(152_55%_38%)]"}`}
-            />
-            <span className={featured ? "text-white/90" : "text-foreground/80"}>{i}</span>
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(152_55%_38%)]" />
+            <span className="text-foreground/80">{i}</span>
           </li>
         ))}
       </ul>
