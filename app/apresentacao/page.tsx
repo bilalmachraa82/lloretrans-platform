@@ -1,311 +1,538 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
+  CheckCircle2,
+  CircleAlert,
   ClipboardCheck,
   FileStack,
   Fuel,
   PackageSearch,
   ReceiptText,
+  ShieldCheck,
+  TimerReset,
   TruckIcon,
   Wrench,
 } from "lucide-react";
 
 export const metadata = {
-  title: "Apresentação Lloretrans — Demo operacional AiTiPro",
+  title: "Lloretrans | Apresentação executiva da plataforma",
   description:
-    "Apresentação sem preços para validar a plataforma operacional Lloretrans antes da proposta comercial.",
+    "Apresentação executiva sem preços para validar com a Clarice Santos a plataforma operacional Lloretrans antes da proposta comercial.",
   robots: { index: false, follow: false },
 };
+
+const PROOF = [
+  { value: "6", label: "fluxos mapeados", note: "km, OCR, documentos, combustível, bolsa, oficina" },
+  { value: "9", label: "facturas reais", note: "já classificadas na demonstração" },
+  { value: "306", label: "cargas reais", note: "convertidas do Excel operacional" },
+  { value: "2161", label: "abastecimentos", note: "dados reais carregados na demo" },
+];
+
+const EXECUTIVE_MESSAGES = [
+  {
+    title: "Não estamos a mostrar um conceito.",
+    body: "A reunião deve partir de uma plataforma navegável, já alinhada com os fluxos discutidos com a Clarice e o Éder.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Não estamos a pedir fé cega.",
+    body: "A decisão desta reunião é validar se a demonstração espelha a operação real antes de se falar de investimento.",
+    icon: ClipboardCheck,
+  },
+  {
+    title: "Não estamos a esconder dependências.",
+    body: "PHC Advanced, Frotcom e adopção da oficina aparecem nesta apresentação como temas explícitos de validação.",
+    icon: CircleAlert,
+  },
+];
 
 const MODULES = [
   {
     code: "A",
     title: "Validação de quilómetros",
     icon: TruckIcon,
-    pain: "Administrativas cruzam Logue Trans com Frotcom viagem a viagem.",
-    solution: "Semáforo diário, threshold de 3 km, aprovação por excepção e histórico auditado.",
-    validation: "Confirmar threshold, excepções e quem aprova antes de afectar facturação.",
-    demo: "/login?target=km",
+    pain: "A administrativa cruza Logue Trans com Frotcom viagem a viagem e o erro segue para a facturação.",
+    currentState: "Semáforo operacional, threshold de 3 km, histórico auditado e aprovação por excepção.",
+    proof: "A Clarice consegue ver logo o dia em atenção e abrir só o que precisa de validar.",
+    validate: "Se o threshold, os estados e o fluxo de aprovação correspondem ao processo real.",
+    href: "/login?target=km",
   },
   {
     code: "B",
-    title: "OCR facturas fornecedor",
+    title: "OCR de facturas fornecedor",
     icon: ReceiptText,
-    pain: "50 fornecedores, layouts diferentes e classificação dependente de conhecimento tácito.",
-    solution: "Upload, extracção, classificação por NIF, validação humana e memória por fornecedor.",
-    validation: "Confirmar classificação por fornecedor, export PHC Advanced e limites da decisão humana.",
-    demo: "/login?target=ocr",
+    pain: "O conhecimento de classificação está na pessoa e não no sistema; cada fornecedor tem o seu formato.",
+    currentState: "Upload, extracção, classificação por NIF, memória por fornecedor e export orientado a PHC Advanced.",
+    proof: "As 9 facturas reais já estão classificadas na demonstração.",
+    validate: "Se a lógica de classificação e o grau de validação humana estão certos.",
+    href: "/login?target=ocr",
   },
   {
     code: "C",
     title: "Digitalização central",
     icon: FileStack,
-    pain: "CMR, guias e tickets de frio dispersos em papel e WhatsApp.",
-    solution: "Hub documental por viagem, matrícula, data, empresa autorizada e estado.",
-    validation: "Confirmar ponto único de digitalização, permissões por empresa e pesquisa operacional.",
-    demo: "/login?target=docs",
+    pain: "CMR, guias e tickets vivem espalhados entre papel, WhatsApp e pesquisa manual.",
+    currentState: "Hub documental único por viagem, matrícula, data, empresa e estado.",
+    proof: "A apresentação deixa claro quem pesquisa, quem digitaliza e quem confirma.",
+    validate: "Se este deve ser o ponto único de entrada documental da operação.",
+    href: "/login?target=docs",
   },
   {
     code: "D",
     title: "Combustível",
     icon: Fuel,
-    pain: "Cepsa, Repsol, Radius e bomba interna vivem em ficheiros separados.",
-    solution: "Cruzamento por matrícula e fornecedor, anomalias sinalizadas e decisão humana.",
-    validation: "Confirmar dados disponíveis hoje e dependência técnica da API Frotcom.",
-    demo: "/login?target=fuel",
+    pain: "Os dados existem, mas estão separados por fornecedor e sem leitura consolidada por viatura.",
+    currentState: "A demo cruza abastecimentos por matrícula e fornecedor e sinaliza anomalias com decisão humana.",
+    proof: "Já estão carregadas 2161 linhas reais.",
+    validate: "Se a leitura actual serve para gestão e qual o impacto da dependência da API Frotcom.",
+    href: "/login?target=fuel",
   },
   {
     code: "E",
     title: "Bolsa de carga",
     icon: PackageSearch,
-    pain: "Excel com cargas, facturas tardias e comissões calculadas no fim do mês.",
-    solution: "Fluxo auditado por estado, documentos associados e comissões calculadas pela regra confirmada.",
-    validation: "Confirmar sentido das colunas, regra de comissão e tratamento da margem negativa.",
-    demo: "/login?target=bolsa",
+    pain: "O comercial trabalha sobre Excel longo, memória tardia e comissões calculadas no fim do mês.",
+    currentState: "Fluxo auditado por estado, documentos ligados a cada carga e regra de comissão reflectida na plataforma.",
+    proof: "O Excel real de 306 cargas já foi convertido para navegação operacional.",
+    validate: "Se a leitura da margem, dos estados e das colunas bate certo com a prática da Lloretrans.",
+    href: "/login?target=bolsa",
   },
   {
     code: "F",
-    title: "Folha de obra oficina",
+    title: "Folha de obra da oficina",
     icon: Wrench,
-    pain: "Mecânico regista em papel e administrativa relança no PHC Advanced.",
-    solution: "PWA mobile-first, checklist real, estados de trabalho, assinatura e validação administrativa.",
-    validation: "Confirmar adopção pelo mecânico, tempo por folha e validação administrativa.",
-    demo: "/login?target=oficina",
+    pain: "O mecanico regista em papel e a administrativa relanca tudo no PHC Advanced.",
+    currentState: "PWA mobile-first com checklist, estados, assinatura e validação administrativa.",
+    proof: "A folha de obra já pode ser mostrada em telemóvel como experiência real de uso.",
+    validate: "Se o mecânico adopta o fluxo e se a administrativa ganha controlo sem duplicação.",
+    href: "/login?target=oficina",
+  },
+];
+
+const DEPENDENCIES = [
+  {
+    title: "PHC Advanced",
+    owner: "expert interno do grupo",
+    note: "A plataforma prepara e estrutura; a validação com o expert interno decide o grau de integração efectiva.",
+  },
+  {
+    title: "Frotcom",
+    owner: "acesso técnico de leitura",
+    note: "Combustível entra com base real na demo, mas a profundidade final depende da confirmação da leitura disponível.",
+  },
+  {
+    title: "Oficina",
+    owner: "piloto com utilizador real",
+    note: "A qualidade do módulo F depende menos de tecnologia e mais de adopção no terreno.",
   },
 ];
 
 const DEMO_STEPS = [
-  "Começar pelo dashboard da Clarice: visão global e estado dos módulos.",
-  "Abrir km, OCR e documentos para validar as dores administrativas.",
-  "Mostrar bolsa e comissões com o Excel real convertido em fluxo auditado.",
-  "Mostrar oficina no telemóvel para discutir adopção do mecânico.",
-  "Fechar com combustível como módulo dependente de confirmação Frotcom.",
+  "Abrir o dashboard da Clarice e ler a operação em dois minutos.",
+  "Entrar nos módulos A, B e C para validar controlo administrativo.",
+  "Mostrar o módulo E com as cargas reais convertidas do Excel.",
+  "Fechar com oficina em telemóvel e combustível como dependência assumida.",
+  "Sair da reunião com uma resposta clara: corresponde ou não corresponde?",
+];
+
+const OUTCOMES = [
+  {
+    title: "Validado",
+    body: "A Clarice confirma que a plataforma traduz a operação e pode seguir para faseamento, ROI e proposta.",
+  },
+  {
+    title: "Ajustar antes do conselho",
+    body: "Aparecem lacunas pontuais de copy, dados ou workflow e corrige-se antes da circulação formal.",
+  },
+  {
+    title: "Escalar para mais stakeholders",
+    body: "A demo fica pronta para mostrar a direcção ou outros decisores do Grupo Patrícia Pilar.",
+  },
 ];
 
 export default function ApresentacaoPage() {
   return (
-    <main className="min-h-screen bg-[hsl(40_24%_98%)] text-[hsl(220_28%_10%)]">
+    <main className="min-h-screen bg-[#f0f5f4] text-[#1e2d3d] [&_h1]:font-sans [&_h2]:font-sans [&_h3]:font-sans">
       <div
         className="pointer-events-none fixed inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: "radial-gradient(hsl(222 72% 15%) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
+          backgroundImage: "radial-gradient(#2d3a4a 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
         }}
       />
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_top_left,rgba(42,229,160,0.18),transparent_42%),radial-gradient(circle_at_top_right,rgba(202,116,45,0.14),transparent_36%)]" />
 
-      <header className="relative mx-auto flex max-w-[1180px] items-center justify-between px-6 py-8 lg:px-10">
-        <Link href="/" className="flex min-h-11 items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-md bg-[hsl(222_72%_30%)] font-display font-bold text-white">
-            A
-          </div>
-          <div>
-            <div className="font-display text-base font-semibold leading-none">AiTiPro</div>
-            <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-              Apresentação operacional
+      <header className="relative mx-auto flex max-w-[1320px] items-center justify-between px-6 py-8 lg:px-10">
+        <Link
+          href="/"
+          className="flex min-h-11 items-center gap-4 rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3 shadow-elevated-sm"
+        >
+          <Image
+            src="/aitipro-logo.png"
+            alt="AiTiPro"
+            width={154}
+            height={36}
+            className="h-7 w-auto"
+            priority
+          />
+          <div className="hidden h-7 w-px bg-[#e2e8f0] sm:block" />
+          <div className="hidden sm:block">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+              Apresentação de validação
             </div>
+            <div className="mt-1 text-xs text-[#6b7280]">Lloretrans · sem preços · antes do conselho</div>
           </div>
         </Link>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/login">Abrir demo</Link>
-        </Button>
-      </header>
-
-      <section className="relative mx-auto max-w-[1180px] px-6 pb-14 pt-10 lg:px-10 lg:pb-20 lg:pt-16">
-        <Badge variant="outline" className="mb-5 text-[11px] uppercase tracking-wider">
-        Lloretrans · Grupo Patrícia Pilar · sem discussão de preço
-        </Badge>
-        <div className="grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
-          <div>
-            <h1 className="font-display text-5xl font-semibold leading-[0.98] tracking-normal lg:text-7xl">
-              Validar a plataforma antes de falar de investimento.
-            </h1>
-            <p className="mt-7 max-w-3xl text-lg leading-relaxed text-foreground/70">
-              Esta apresentação serve para uma coisa: confirmar com a Clarice se o que foi construído
-              representa a operação real da Lloretrans. Só depois faz sentido discutir faseamento,
-              prioridade e proposta comercial.
-            </p>
-          </div>
-          <div className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-6 shadow-elevated-sm">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[hsl(32_82%_35%)]">
-              Critério da reunião
-            </div>
-            <p className="mt-3 font-display text-2xl font-semibold leading-snug">
-              A plataforma corresponde à expectativa operacional?
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              Se sim, a conversa seguinte é prioridade e retorno. Se não, corrigimos antes de pôr
-              preço em cima da mesa.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative border-y border-[hsl(220_14%_88%)] bg-white">
-        <div className="mx-auto grid max-w-[1180px] gap-8 px-6 py-14 lg:grid-cols-[0.8fr_1.2fr] lg:px-10">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[hsl(32_82%_35%)]">
-              O que ouvimos
-            </div>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-tight">
-              O problema não é só tempo. É controlo.
-            </h2>
-          </div>
-          <div className="rounded-xl bg-[hsl(40_30%_96%)] p-8">
-            <p className="font-display text-3xl leading-snug">
-              &ldquo;Não é só tempo, a nossa preocupação também é o controlo.&rdquo;
-            </p>
-            <p className="mt-5 text-sm text-muted-foreground">
-              Clarice Santos · reunião de 16 de Abril de 2026
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative mx-auto max-w-[1180px] px-6 py-16 lg:px-10 lg:py-20">
-        <div className="mb-10 max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[hsl(32_82%_35%)]">
-            O que já está feito
-          </div>
-          <h2 className="mt-4 font-display text-4xl font-semibold leading-tight">
-            Não é mockup. É uma demo navegável com evidência real.
-          </h2>
-        </div>
-        <div className="grid gap-4 md:grid-cols-4">
-          <Proof n="9" label="facturas reais classificadas" />
-          <Proof n="306" label="cargas do Excel convertidas" />
-          <Proof n="2161" label="abastecimentos reais carregados" />
-          <Proof n="17" label="itens da folha de oficina" />
-        </div>
-      </section>
-
-      <section className="relative mx-auto max-w-[1180px] px-6 pb-16 lg:px-10 lg:pb-20">
-        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[hsl(32_82%_35%)]">
-              Seis dores · seis respostas
-            </div>
-            <h2 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight">
-              Mostrar solução por dor, não vender preço por módulo.
-            </h2>
-          </div>
-          <Button asChild>
-            <Link href="/login">
-              Entrar como Clarice <ArrowRight className="h-4 w-4" />
+        <div className="flex items-center gap-3">
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="border-[#cbd5e1] bg-white text-[#1e2d3d] hover:border-[#1bc88a] hover:bg-white"
+          >
+            <Link href="/login">Abrir demo</Link>
+          </Button>
+          <Button
+            asChild
+            size="sm"
+            className="border-0 bg-[#2ae5a0] text-[#1e2d3d] shadow-none hover:bg-[#1bc88a]"
+          >
+            <Link href="mailto:bilal.machraa@aitipro.com?subject=Reuniao%20Lloretrans%20-%20validacao%20da%20plataforma">
+              Marcar reunião
             </Link>
           </Button>
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {MODULES.map((module) => {
-            const Icon = module.icon;
-            return (
-              <article key={module.code} className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="grid h-11 w-11 place-items-center rounded-lg bg-[hsl(222_72%_30%)]/10">
-                      <Icon className="h-5 w-5 text-[hsl(222_72%_30%)]" />
-                    </div>
-                    <div>
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                        Módulo {module.code}
-                      </div>
-                      <h3 className="font-display text-xl font-semibold">{module.title}</h3>
-                    </div>
-                  </div>
-                  <Link
-                    href={module.demo}
-                    className="inline-flex min-h-11 items-center text-xs font-medium text-[hsl(222_72%_30%)] hover:underline"
-                  >
-                    Ver
-                  </Link>
+      </header>
+
+      <section className="relative mx-auto max-w-[1320px] px-6 pb-18 pt-10 lg:px-10 lg:pb-24 lg:pt-16">
+        <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div className="max-w-4xl">
+            <Badge
+              variant="outline"
+              className="mb-6 border-[#ca742d]/20 bg-[#fef3e8] text-[11px] uppercase tracking-[0.2em] text-[#ca742d]"
+            >
+              Clarice Santos · Lloretrans · reunião de validação antes do conselho
+            </Badge>
+            <h1 className="text-4xl font-semibold leading-[0.96] tracking-tight sm:text-5xl lg:text-[5.3rem]">
+              Validar se esta plataforma já espelha
+              <span className="block text-[#0d3b38]">a operação real da Lloretrans.</span>
+            </h1>
+            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-[#374151] lg:text-[1.15rem]">
+              Nesta reunião não se decide preço. Decide-se se os seis fluxos, os dados reais e os
+              controlos visíveis na demo correspondem ao que a Clarice precisa de levar ao conselho.
+              Se corresponder, a conversa seguinte passa a ser faseamento, ROI e prioridade. Se não
+              corresponder, ajusta-se antes de circular qualquer proposta.
+            </p>
+          </div>
+
+          <aside className="border-l border-[#cbd5e1] pl-0 lg:pl-10">
+            <div className="grid gap-5 rounded-[28px] border border-[#e2e8f0] bg-white p-7 shadow-elevated-lg">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#ca742d]">
+                  Objetivo da reunião
                 </div>
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(0_72%_45%)]">
-                      Dor
-                    </div>
-                    <p className="mt-2 text-sm leading-relaxed text-foreground/70">{module.pain}</p>
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(152_55%_32%)]">
-                      Solução
-                    </div>
-                    <p className="mt-2 text-sm leading-relaxed text-foreground/70">{module.solution}</p>
-                  </div>
-                </div>
-                <div className="mt-5 rounded-lg border border-[hsl(220_14%_90%)] bg-[hsl(40_30%_96%)] p-4">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(32_82%_35%)]">
-                    Validar com Clarice
-                  </div>
-                  <p className="mt-2 text-sm leading-relaxed text-foreground/72">{module.validation}</p>
-                </div>
-              </article>
-            );
-          })}
+                <p className="mt-3 text-3xl font-semibold leading-tight tracking-tight">
+                  Sair da reunião com um validar, ajustar ou avançar.
+                </p>
+              </div>
+              <div className="grid gap-3 text-sm text-[#4b5563]">
+                <p>
+                  <strong className="text-[#1e2d3d]">Hoje:</strong> confirmar se a demo espelha a
+                  operação real.
+                </p>
+                <p>
+                  <strong className="text-[#1e2d3d]">Depois:</strong> decidir o que a Clarice leva ao
+                  conselho.
+                </p>
+                <p>
+                  <strong className="text-[#1e2d3d]">Regra base:</strong> decisão humana em todos os
+                  passos irreversíveis.
+                </p>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section className="relative border-y border-[hsl(220_14%_88%)] bg-[hsl(222_72%_12%)] text-white">
-        <div className="mx-auto grid max-w-[1180px] gap-10 px-6 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-20">
+      <section className="relative border-y border-[#e2e8f0] bg-[#2d3a4a] text-white">
+        <div className="mx-auto grid max-w-[1320px] gap-10 px-6 py-16 lg:grid-cols-[0.92fr_1.08fr] lg:px-10 lg:py-20">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[hsl(32_82%_65%)]">
-              Roteiro da demo
+            <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2ae5a0]">
+              Mensagem central da reunião
             </div>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-tight">
-              30 minutos para validar expectativa.
+            <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+              &ldquo;Não é só tempo. A nossa preocupação também é o controlo.&rdquo;
             </h2>
-            <p className="mt-5 text-white/70">
-              A demo deve acabar com uma lista curta: o que corresponde, o que falta, o que muda a
-              prioridade e quem precisa de ver a seguir.
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/76">
+              A plataforma foi desenhada para responder a essa frase. Menos papel, menos Excel
+              paralelo, mais trilho de decisão e mais capacidade de ler a operação sem depender de memória
+              individual.
+            </p>
+            <p className="mt-8 text-sm uppercase tracking-[0.16em] text-white/46">
+              Clarice Santos · reunião de 16 de Abril de 2026
             </p>
           </div>
-          <ol className="space-y-3">
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {EXECUTIVE_MESSAGES.map((message) => {
+              const Icon = message.icon;
+              return (
+                <article
+                  key={message.title}
+                  className="flex h-full flex-col rounded-2xl border border-white/12 bg-white/8 p-6"
+                >
+                  <Icon className="h-6 w-6 text-[#2ae5a0]" />
+                  <h3 className="mt-5 text-2xl font-semibold leading-snug tracking-tight">{message.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-white/72">{message.body}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-22">
+        <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+              Prova operacional
+            </div>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+              A conversa já pode partir de evidências, não de promessas.
+            </h2>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-[#4b5563]">
+              A demonstração junta dados reais, regras reais e fricções reais. O objectivo da Clarice
+              nesta apresentação não é imaginar uma solução futura. É validar se o que já está montado
+              merece seguir para a fase de decisão.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-4">
+            {PROOF.map((item) => (
+              <article
+                key={item.label}
+                className="rounded-[24px] border border-[#e2e8f0] bg-white px-6 py-7 shadow-elevated-sm"
+              >
+                <div className="font-mono text-4xl font-semibold text-[#0d3b38]">{item.value}</div>
+                <div className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7280]">
+                  {item.label}
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">{item.note}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative bg-white">
+        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-22">
+          <div className="grid gap-6 border-b border-[#e2e8f0] pb-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                O que a Clarice vai validar
+              </div>
+              <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+                Seis dores. Seis respostas. Uma leitura de reunião.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-base leading-relaxed text-[#4b5563]">
+              Esta parte não serve para vender módulos. Serve para comparar dor actual, estado da demo,
+              prova visível e pergunta de validação. É isso que transforma a apresentação num instrumento
+              de decisão em vez de uma página bonita.
+            </p>
+          </div>
+
+          <div className="mt-8 space-y-4">
+            {MODULES.map((module) => {
+              const Icon = module.icon;
+              return (
+                <article
+                  key={module.code}
+                  className="grid gap-6 rounded-[28px] border border-[#e2e8f0] bg-[#f8fffc] px-6 py-7 shadow-elevated-sm lg:grid-cols-[0.18fr_0.28fr_0.28fr_0.26fr] lg:px-8"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#1e2d3d] text-[#2ae5a0]">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#6b7280]">
+                        Módulo {module.code}
+                      </div>
+                      <h3 className="mt-2 text-2xl font-semibold leading-tight tracking-tight">{module.title}</h3>
+                      <Link
+                        href={module.href}
+                        className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-[#0d3b38] hover:underline"
+                      >
+                        Ver na demo <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  <InfoBlock label="Dor actual" body={module.pain} />
+                  <InfoBlock label="O que já está construído" body={module.currentState} />
+
+                  <div className="grid gap-4">
+                    <InfoBlock label="Prova na reunião" body={module.proof} compact />
+                    <InfoBlock label="Validar com Clarice" body={module.validate} compact emphasis />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative border-y border-[#e2e8f0] bg-[#f0f5f4]">
+        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                Dependências assumidas
+              </div>
+              <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight">
+                O que está claro hoje e o que precisa de confirmação.
+              </h2>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-[#4b5563]">
+                A credibilidade da apresentação melhora quando as dependências aparecem de frente.
+                Isto protege a conversa comercial e mostra que a AiTiPro não está a vender o que não
+                controla.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {DEPENDENCIES.map((dependency) => (
+                <article
+                  key={dependency.title}
+                  className="rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-elevated-sm"
+                >
+                  <div className="flex items-center gap-3">
+                    <CircleAlert className="h-5 w-5 text-[#ca742d]" />
+                    <div className="text-2xl font-semibold tracking-tight">{dependency.title}</div>
+                  </div>
+                  <div className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6b7280]">
+                    Dono da validação
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-[#374151]">{dependency.owner}</p>
+                  <p className="mt-4 text-sm leading-relaxed text-[#4b5563]">{dependency.note}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative bg-[#0d3b38] text-white">
+        <div className="mx-auto grid max-w-[1320px] gap-10 px-6 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-22">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2ae5a0]">
+              Roteiro sugerido
+            </div>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+              Trinta minutos. Uma pergunta. Uma resposta útil.
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/72">
+              A reunião deve ser curta, concreta e orientada a validação. O objectivo não é percorrer
+              todas as funcionalidades. É sair com uma leitura segura sobre o encaixe real da solução.
+            </p>
+          </div>
+
+          <ol className="grid gap-4">
             {DEMO_STEPS.map((step, index) => (
-              <li key={step} className="flex gap-4 rounded-lg border border-white/10 bg-white/5 p-4">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[hsl(32_82%_55%)] font-mono text-sm font-semibold text-[hsl(222_72%_12%)]">
+              <li
+                key={step}
+                className="flex gap-4 rounded-2xl border border-white/10 bg-white/8 p-5 backdrop-blur"
+              >
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#2ae5a0] font-mono text-sm font-semibold text-[#1e2d3d]">
                   {index + 1}
                 </span>
-                <span className="text-sm leading-relaxed text-white/82">{step}</span>
+                <span className="pt-1 text-sm leading-relaxed text-white/82">{step}</span>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-[1180px] px-6 py-16 lg:px-10 lg:py-20">
-        <div className="rounded-2xl border border-[hsl(220_14%_88%)] bg-white p-8 lg:p-10">
-          <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr]">
+      <section className="relative mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-22">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+              O que tem de sair desta reunião
+            </div>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+              A apresentação só vale se ajudar a Clarice a decidir o próximo movimento.
+            </h2>
+          </div>
+          <p className="max-w-2xl text-base leading-relaxed text-[#4b5563]">
+            O fecho não é comercial. É operacional. A Clarice tem de conseguir dizer se a plataforma
+            espelha a operação, o que ainda precisa de ajuste e se vale a pena levar a solução ao conselho
+            com confiança.
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-4 md:grid-cols-3">
+          {OUTCOMES.map((outcome) => (
+            <article
+              key={outcome.title}
+              className="rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-elevated-sm"
+            >
+              <CheckCircle2 className="h-6 w-6 text-[#1bc88a]" />
+              <h3 className="mt-5 text-2xl font-semibold leading-snug tracking-tight">{outcome.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">{outcome.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-10 rounded-[32px] border border-[#1e2d3d]/10 bg-[linear-gradient(135deg,#1e2d3d,#0d3b38)] px-8 py-9 text-white shadow-elevated-lg lg:px-10">
+          <div className="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-end">
             <div>
-              <ClipboardCheck className="mb-5 h-8 w-8 text-[hsl(222_72%_30%)]" />
-              <h2 className="font-display text-3xl font-semibold leading-tight">
-                Só depois da validação falamos de proposta.
+              <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-[#2ae5a0]">
+                <TimerReset className="h-4 w-4" />
+                Fecho recomendado
+              </div>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
+                Primeiro validar. Depois fasear. Só depois propor.
               </h2>
             </div>
-            <div className="grid gap-4 text-sm leading-relaxed text-foreground/72 md:grid-cols-3">
+            <div className="grid gap-4 text-sm leading-relaxed text-white/76">
               <p>
-                <strong className="text-foreground">1. Validar expectativa.</strong> A Clarice diz se
-                a demo espelha a operação.
+                <strong className="text-white">Plataforma:</strong> mostrar a demo com a Clarice e
+                recolher validação operacional.
               </p>
               <p>
-                <strong className="text-foreground">2. Corrigir lacunas.</strong> Ajustamos copy,
-                dados ou fluxo antes do conselho.
+                <strong className="text-white">Administração:</strong> levar apenas o que já foi
+                validado e enquadrado.
               </p>
               <p>
-                <strong className="text-foreground">3. Falar de faseamento.</strong> Só nessa altura
-                entram prioridade, ROI e investimento.
+                <strong className="text-white">Proposta:</strong> entra depois, com faseamento, ROI e
+                próximos passos.
               </p>
             </div>
           </div>
-          <div className="mt-8 flex flex-wrap gap-3 border-t border-[hsl(220_14%_90%)] pt-6">
-            <Button asChild size="lg">
-              <Link href="/login">Abrir plataforma</Link>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-white/12 pt-6">
+            <Button
+              asChild
+              size="lg"
+              className="border-0 bg-[#2ae5a0] text-[#1e2d3d] shadow-none hover:bg-[#1bc88a]"
+            >
+              <Link href="/login">Entrar como Clarice</Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="mailto:bilal.machraa@aitipro.com?subject=Demo%20Lloretrans%20-%20validacao">
-                Marcar validação
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/20 bg-white/8 text-white hover:bg-white/14"
+            >
+              <Link href="mailto:bilal.machraa@aitipro.com?subject=Validacao%20da%20plataforma%20Lloretrans">
+                Enviar convite de validação
               </Link>
             </Button>
+            <div className="ml-auto hidden rounded-xl bg-white px-4 py-3 lg:block">
+              <Image src="/aitipro-logo.png" alt="AiTiPro" width={138} height={32} className="h-6 w-auto" />
+            </div>
           </div>
         </div>
       </section>
@@ -313,11 +540,29 @@ export default function ApresentacaoPage() {
   );
 }
 
-function Proof({ n, label }: { n: string; label: string }) {
+function InfoBlock({
+  label,
+  body,
+  compact = false,
+  emphasis = false,
+}: {
+  label: string;
+  body: string;
+  compact?: boolean;
+  emphasis?: boolean;
+}) {
   return (
-    <div className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-6 text-center">
-      <div className="font-mono text-4xl font-semibold text-[hsl(222_72%_30%)]">{n}</div>
-      <div className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+    <div className={compact ? "" : "max-w-xl"}>
+      <div
+        className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
+          emphasis ? "text-[#ca742d]" : "text-[#6b7280]"
+        }`}
+      >
+        {label}
+      </div>
+      <p className={`mt-2 text-sm leading-relaxed ${emphasis ? "text-[#1e2d3d]" : "text-[#4b5563]"}`}>
+        {body}
+      </p>
     </div>
   );
 }
