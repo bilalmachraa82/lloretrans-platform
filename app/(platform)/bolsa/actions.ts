@@ -14,7 +14,7 @@ import {
   vehicles,
   suppliers,
 } from "@/db/schema";
-import { requireRole, getSession } from "@/lib/auth/session";
+import { requireRole } from "@/lib/auth/session";
 import { audit } from "@/lib/audit";
 import { randomId } from "@/lib/utils";
 import { canTransition, type FreightState } from "@/lib/freight-state";
@@ -215,32 +215,44 @@ export async function registerClientInvoice(formData: FormData): Promise<void> {
   const issuedAtStr = formData.get("issuedAt")?.toString();
   const dueAtStr = formData.get("dueAt")?.toString();
   if (!loadId || !invoiceNumber || !issuedAtStr || !dueAtStr) throw new Error("Campos em falta");
+  if (!Number.isFinite(totalGross) || totalGross <= 0) throw new Error("Total inválido");
+  const issuedAt = new Date(issuedAtStr);
+  const dueAt = new Date(dueAtStr);
+  if (Number.isNaN(issuedAt.getTime()) || Number.isNaN(dueAt.getTime())) throw new Error("Datas inválidas");
 
   const [load] = await db.select().from(freightLoads).where(eq(freightLoads.id, loadId)).limit(1);
   if (!load) throw new Error("Carga não encontrada");
+  if (load.state !== "supplier_invoiced") {
+    throw new Error("Carga tem de estar em supplier_invoiced para emitir factura cliente");
+  }
+
+  const existing = await db
+    .select({ id: clientInvoicesFreight.id })
+    .from(clientInvoicesFreight)
+    .where(and(eq(clientInvoicesFreight.loadId, loadId), eq(clientInvoicesFreight.invoiceNumber, invoiceNumber)))
+    .limit(1);
+  if (existing[0]) throw new Error("Factura cliente já registada para esta carga");
 
   await db.insert(clientInvoicesFreight).values({
     id: randomId("fcinv"),
     loadId,
     invoiceNumber,
-    issuedAt: new Date(issuedAtStr),
-    dueAt: new Date(dueAtStr),
+    issuedAt,
+    dueAt,
     totalGross,
     paidAt: null,
   });
 
-  if (load.state === "supplier_invoiced") {
-    await db.update(freightLoads).set({ state: "client_invoiced", updatedAt: new Date() }).where(eq(freightLoads.id, loadId));
-    await db.insert(freightStateTransitions).values({
-      id: randomId("ftr"),
-      loadId,
-      fromState: "supplier_invoiced",
-      toState: "client_invoiced",
-      userId: session.userId,
-      reason: `Factura cliente ${invoiceNumber}`,
-      createdAt: new Date(),
-    });
-  }
+  await db.update(freightLoads).set({ state: "client_invoiced", updatedAt: new Date() }).where(eq(freightLoads.id, loadId));
+  await db.insert(freightStateTransitions).values({
+    id: randomId("ftr"),
+    loadId,
+    fromState: "supplier_invoiced",
+    toState: "client_invoiced",
+    userId: session.userId,
+    reason: `Factura cliente ${invoiceNumber}`,
+    createdAt: new Date(),
+  });
 
   await audit({
     userId: session.userId,

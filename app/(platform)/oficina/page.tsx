@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { db } from "@/db/client";
-import { workOrders, vehicles, users, workOrderItems } from "@/db/schema";
-import { and, desc, eq, count } from "drizzle-orm";
-import { getSession, requireRole } from "@/lib/auth/session";
+import { workOrders, vehicles, users } from "@/db/schema";
+import { desc, eq, count } from "drizzle-orm";
+import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StatusPill } from "@/components/ui/status-pill";
@@ -81,10 +81,8 @@ export default async function OficinaPage() {
 
       {!isMechanic && (
         <div className="rounded-md border border-[hsl(222_72%_30%)]/20 bg-[hsl(222_72%_30%)]/5 px-4 py-3 text-sm">
-          <strong>Vista admin:</strong> abaixo estão as folhas submetidas para validação. Para veres
-          a experiência do mecânico (wizard mobile-first com assinatura), clica{" "}
-          <strong>&quot;Experimentar como mecânico&quot;</strong> em cima, ou faz logout e entra como{" "}
-          <strong>João Oliveira</strong> / <strong>Pedro Reis</strong>.
+          <strong>Validação administrativa:</strong> abaixo estão as folhas submetidas. Para ver a experiência
+          mobile do mecânico, clica em <strong>&quot;Experimentar como mecânico&quot;</strong>.
         </div>
       )}
 

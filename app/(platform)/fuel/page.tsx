@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db/client";
 import { fuelReadingsCanbus, fuelFills, fuelAnomalies, vehicles } from "@/db/schema";
-import { and, desc, eq, gte, sum, count } from "drizzle-orm";
+import { desc, eq, gte, sum, count } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { getVehicleFuelRanking } from "@/lib/fuel/ranking";
 import { PageHeader } from "@/components/ui/page-header";
@@ -107,11 +107,11 @@ export default async function FuelPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Sinalização demo por dia</CardTitle>
+          <CardTitle className="text-base">Sinalização diária</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="mb-3 text-xs text-muted-foreground">
-            Sinalização demo baseada em abastecimentos + odómetro disponível. Validação final depende da API Frotcom de leitura.
+            Sinalização baseada em abastecimentos + odómetro disponível. Validação final depende da API Frotcom de leitura.
           </p>
           <SimpleLineChart data={chartData} yLabel="L/dia médio" />
         </CardContent>
@@ -140,9 +140,9 @@ export default async function FuelPage() {
                 ) : topAnomalies.map((a) => (
                   <tr key={a.id}>
                     <td className="font-mono">{a.plate}</td>
-                    <td className="text-xs">{a.kind}</td>
+                    <td className="text-xs">{anomalyKindLabel(a.kind)}</td>
                     <td>
-                      <StatusPill status={a.severity === "high" ? "red" : "yellow"}>{a.severity}</StatusPill>
+                      <StatusPill status={a.severity === "high" ? "red" : "yellow"}>{severityLabel(a.severity)}</StatusPill>
                     </td>
                     <td className="text-right font-mono">
                       {a.deviationPct ? `+${(a.deviationPct * 100).toFixed(1)}%` : "—"}
@@ -210,4 +210,20 @@ function Kpi({ label, value, accent = "muted" }: { label: string; value: string;
       </CardContent>
     </Card>
   );
+}
+
+function anomalyKindLabel(kind: string): string {
+  const labels: Record<string, string> = {
+    high_consumption: "Consumo elevado",
+    impossible_fill: "Abastecimento incoerente",
+    missing_odometer: "Odómetro em falta",
+  };
+  return labels[kind] ?? kind.replaceAll("_", " ");
+}
+
+function severityLabel(severity: string): string {
+  if (severity === "high") return "Alta";
+  if (severity === "medium") return "Média";
+  if (severity === "low") return "Baixa";
+  return severity;
 }

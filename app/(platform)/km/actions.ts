@@ -36,6 +36,9 @@ export async function applyApproval(params: {
     .where(eq(kmReconciliations.id, reconciliationId))
     .limit(1);
   if (!before) throw new Error("reconciliation not found");
+  if (before.decidedBy || before.decidedAt) {
+    throw new Error("Reconciliação já decidida; reabrir manualmente antes de alterar.");
+  }
 
   const decidedAt = new Date();
   await db
@@ -226,7 +229,7 @@ function stateLabel(state: string): string {
 }
 
 export async function exportCsv(formData: FormData): Promise<void> {
-  await requireRole([...ALLOWED_ROLES]);
+  const session = await requireRole([...ALLOWED_ROLES]);
   const fromStr = formData.get("dateFrom")?.toString();
   const toStr = formData.get("dateTo")?.toString();
   if (!fromStr || !toStr) throw new Error("dateFrom / dateTo obrigatórios");
@@ -311,7 +314,7 @@ export async function exportCsv(formData: FormData): Promise<void> {
   const dataUrl = `data:text/csv;charset=utf-8;base64,${base64}`;
 
   await audit({
-    userId: null,
+    userId: session.userId,
     action: "km.export_csv",
     entityType: "km_reconciliation",
     entityId: "bulk",

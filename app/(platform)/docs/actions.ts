@@ -89,7 +89,7 @@ export async function dissociateDocument(formData: FormData): Promise<void> {
  * por matrícula + data (últimas 24h de viagens existentes), e regista audit.
  */
 export async function bulkIngest(formData: FormData): Promise<void> {
-  const session = await requireRole(["admin", "digitalizacao"]);
+  const session = await requireRole(["admin", "clarice", "digitalizacao"]);
   const rawCount = Number(formData.get("count") ?? "0");
   const names = formData.getAll("filename").map((v) => v.toString()).filter(Boolean);
   const total = Math.max(rawCount, names.length);
@@ -179,8 +179,8 @@ interface ExportFilters {
 }
 
 /**
- * Export zip placeholder. Em v1 devolve um corpo simples mas content-type correcto
- * + filename dinâmico baseado no filtro. Audit regista o recorte.
+ * Manifesto de export em avaliação. O ZIP real depende do armazenamento UE definitivo; até lá
+ * não devolvemos `application/zip` falso para não simular um artefacto inválido.
  */
 export async function exportZip(filters: ExportFilters): Promise<Response> {
   const session = await requireRole(READ_ROLES);
@@ -217,13 +217,18 @@ export async function exportZip(filters: ExportFilters): Promise<Response> {
   });
 
   const stamp = new Date().toISOString().slice(0, 10);
-  const filename = `documentos-${filters.tab ?? "todos"}-${stamp}.zip`;
-  const body = `placeholder-zip · ${rows.length} documentos · filtros=${JSON.stringify(filters)}`;
+  const filename = `manifesto-documentos-${filters.tab ?? "todos"}-${stamp}.txt`;
+  const body = [
+    "Export avaliação - manifesto de documentos",
+    `Documentos: ${rows.length}`,
+    `Filtros: ${JSON.stringify(filters)}`,
+    "Nota: ZIP real depende do armazenamento UE definitivo na Sprint 0.",
+  ].join("\n");
 
   return new Response(body, {
     status: 200,
     headers: {
-      "content-type": "application/zip",
+      "content-type": "text/plain; charset=utf-8",
       "content-disposition": `attachment; filename="${filename}"`,
     },
   });

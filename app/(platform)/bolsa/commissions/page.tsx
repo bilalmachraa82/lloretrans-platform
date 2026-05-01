@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db/client";
 import { commissions, users, commissionRules } from "@/db/schema";
-import { and, count, eq, sum } from "drizzle-orm";
+import { count, eq, sum } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -129,7 +129,7 @@ export default async function CommissionsPage({
               {bySales.size === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center text-muted-foreground py-6">
-                    Sem comissões no período. Clica "Recalcular" para processar cargas em estado <code>paid</code>.
+                    Sem comissões no período. Clica &quot;Recalcular&quot; para processar cargas em estado <code>paid</code>.
                   </td>
                 </tr>
               )}

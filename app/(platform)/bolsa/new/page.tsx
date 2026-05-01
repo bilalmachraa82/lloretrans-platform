@@ -81,10 +81,10 @@ export default async function NewLoadPage() {
               </Field>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Nº fatura cliente">
+              <Field label="Nº factura cliente">
                 <Input name="customerInvoiceNumber" placeholder="ex: 534/2026" />
               </Field>
-              <Field label="Nº fatura fornecedor">
+              <Field label="Nº factura fornecedor">
                 <Input name="supplierInvoiceNumber" placeholder="ex: FT 252854" />
               </Field>
             </div>

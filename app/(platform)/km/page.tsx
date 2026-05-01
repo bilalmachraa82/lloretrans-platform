@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db/client";
 import { kmReconciliations, trips, vehicles, drivers } from "@/db/schema";
-import { and, desc, eq, gte, lte, isNull, count } from "drizzle-orm";
+import { and, desc, eq, gte, lte, count } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -119,9 +119,12 @@ export default async function KmPage({
         title={`Validação km · ${formatDate(targetDate)}`}
         description={`${rows.length} reconciliações ${state ? `(filtro: ${state})` : ""} · fonte GPS: Frotcom · declarado: Logue Trans`}
         actions={
-          <div className="flex items-center gap-2">
-            <form>
+          <div className="flex flex-wrap items-center gap-2">
+            <form className="flex items-center gap-2">
               <Input type="date" name="date" defaultValue={dateIso} className="h-9" />
+              <Button type="submit" variant="outline">
+                Aplicar
+              </Button>
             </form>
             <form action={exportCsv}>
               <input type="hidden" name="dateFrom" value={dateIso} />

@@ -104,7 +104,7 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
         </CardHeader>
         <CardContent>
           <p className="mb-3 text-xs text-muted-foreground">
-            Sinalização demo baseada em abastecimentos + odómetro disponível. Validação final depende da API Frotcom de leitura.
+            Sinalização baseada em abastecimentos + odómetro disponível. Validação final depende da API Frotcom de leitura.
           </p>
           <FuelComboChart data={chartData} />
         </CardContent>
@@ -121,8 +121,8 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
                 <li key={a.id} className="border-b border-border pb-3 last:border-0">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <StatusPill status={a.state === "open" ? "red" : "green"}>{a.state}</StatusPill>
-                      <Badge variant={a.severity === "high" ? "destructive" : "warning"}>{a.severity}</Badge>
+                      <StatusPill status={a.state === "open" ? "red" : "green"}>{a.state === "open" ? "Aberta" : "Resolvida"}</StatusPill>
+                      <Badge variant={a.severity === "high" ? "destructive" : "warning"}>{severityLabel(a.severity)}</Badge>
                       <span className="text-xs text-muted-foreground">{formatDate(a.detectedAt)}</span>
                     </div>
                     {a.state === "open" ? (
@@ -139,7 +139,7 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
                     )}
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    {a.kind} · esperado {a.expected?.toFixed(1)} L · actual {a.actual?.toFixed(1)} L · desvio {a.deviationPct ? `+${(a.deviationPct * 100).toFixed(1)}%` : "—"}
+                    {anomalyKindLabel(a.kind)} · esperado {a.expected?.toFixed(1)} L · actual {a.actual?.toFixed(1)} L · desvio {a.deviationPct ? `+${(a.deviationPct * 100).toFixed(1)}%` : "—"}
                   </div>
                   {a.notes && <div className="text-xs mt-1 italic">{a.notes}</div>}
                 </li>
@@ -163,7 +163,7 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
                   <th>Local</th>
                   <th>Motorista</th>
                   <th>Cartão</th>
-                  <th>Fatura fornecedor</th>
+                  <th>Factura fornecedor</th>
                   <th>Ficheiro origem</th>
                   <th className="text-right">Litros</th>
                   <th className="text-right">€/L</th>
@@ -198,6 +198,22 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
 
 function providerLabel(source: string): string {
   return FUEL_PROVIDER_LABELS[source as FuelProvider] ?? source;
+}
+
+function anomalyKindLabel(kind: string): string {
+  const labels: Record<string, string> = {
+    high_consumption: "Consumo elevado",
+    impossible_fill: "Abastecimento incoerente",
+    missing_odometer: "Odómetro em falta",
+  };
+  return labels[kind] ?? kind.replaceAll("_", " ");
+}
+
+function severityLabel(severity: string): string {
+  if (severity === "high") return "Alta";
+  if (severity === "medium") return "Média";
+  if (severity === "low") return "Baixa";
+  return severity;
 }
 
 function Kpi({ label, value }: { label: string; value: string }) {

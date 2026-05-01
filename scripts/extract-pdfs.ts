@@ -86,7 +86,7 @@ function extractDate(text: string): string | null {
   return null;
 }
 
-function extractSupplierName(text: string, filename: string): string | null {
+function extractSupplierName(text: string, _filename: string): string | null {
   const firstLines = text.split("\n").slice(0, 10).join(" ");
   const knownSuppliers = [
     "Würth", "Wurth", "Policalço", "Policalco", "Selcar", "Prevrod",

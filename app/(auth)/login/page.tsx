@@ -7,7 +7,6 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { setSession } from "@/lib/auth/session";
 import { ROLE_LABELS, type Role } from "@/lib/auth/types";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft } from "lucide-react";
 
@@ -47,11 +46,11 @@ const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
       "Só vê o MVP E. 306 cargas reais do Excel, fluxo auditado do ciclo completo e comissão automática por linha.",
   },
   {
-    email: "joao.oliveira@lloretrans.pt",
+    email: "joao.mec@lloretrans.pt",
     label: "João Oliveira",
     summary: "Mecânico · PWA oficina",
     angle:
-      "PWA mobile com wizard em 6 passos. Assinatura canvas. Offline-first. Demora < 3 min.",
+      "PWA mobile com assistente em 6 passos. Assinatura no ecrã. Funciona mesmo sem rede. Demora < 3 min.",
   },
 ];
 
@@ -110,13 +109,13 @@ export default async function LoginPage({
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[400px] bg-[radial-gradient(ellipse_50%_60%_at_50%_0%,hsl(32_82%_55%/0.1),transparent_70%)]" />
 
       <header className="relative z-10 mx-auto max-w-[1100px] px-6 py-8 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link href="/" className="flex min-h-11 items-center gap-2.5 group">
           <ArrowLeft className="h-4 w-4 text-muted-foreground group-hover:-translate-x-0.5 transition-transform" />
           <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
             Voltar ao site
           </span>
         </Link>
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex min-h-11 items-center gap-2">
           <div className="h-8 w-8 rounded-md bg-[hsl(222_72%_30%)] text-white grid place-items-center font-display font-bold">
             A
           </div>
@@ -129,12 +128,12 @@ export default async function LoginPage({
           <Badge variant="outline" className="mb-4 text-[11px] tracking-wider uppercase">
             Acesso à demonstração
           </Badge>
-          <h1 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-[-0.02em]">
+          <h1 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
             Escolhe a perspectiva com que <span className="italic">queres explorar</span>.
           </h1>
           <p className="mt-5 text-foreground/70 leading-relaxed">
-            Três personas principais cobrem 90% da demo. Cada papel vê apenas os módulos que lhe
-            dizem respeito. Dados determinísticos — podes mudar de persona à vontade.
+            Três perfis principais cobrem 90% da demonstração. Cada papel vê apenas os módulos que lhe
+            dizem respeito. Dados de avaliação — podes mudar de perfil à vontade.
             {target && (
               <span className="block mt-3 text-[hsl(222_72%_30%)] text-sm font-medium">
                 Entrarás directamente no módulo <code className="font-mono">{target.toUpperCase()}</code>.
@@ -147,7 +146,7 @@ export default async function LoginPage({
         {spotlightUsers.length > 0 && (
           <div className="mb-12">
             <div className="flex items-baseline justify-between mb-3">
-              <h2 className="font-display text-sm font-semibold tracking-[0.05em] uppercase text-[hsl(32_82%_45%)]">
+              <h2 className="font-display text-sm font-semibold tracking-[0.05em] uppercase text-[hsl(32_82%_35%)]">
                 Personas principais
               </h2>
               <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Começa por aqui</span>
@@ -214,7 +213,7 @@ export default async function LoginPage({
               return (
                 <div key={group.label}>
                   <div className="flex items-baseline justify-between mb-2 border-b border-[hsl(220_14%_88%)] pb-1.5">
-                    <h3 className="font-display text-[13px] font-semibold tracking-tight">{group.label}</h3>
+                    <h3 className="font-display text-[13px] font-semibold tracking-normal">{group.label}</h3>
                     <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{group.hint}</span>
                   </div>
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

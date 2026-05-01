@@ -6,6 +6,7 @@ import {
   kmReconciliations,
   invoices,
   documents,
+  documentPermissions,
   fuelAnomalies,
   freightLoads,
   workOrders,
@@ -14,10 +15,11 @@ import {
 } from "@/db/schema";
 import { eq, count, and, gte, desc } from "drizzle-orm";
 import { canAccessMvp } from "@/lib/auth/types";
+import type { AuthSession } from "@/lib/auth/types";
+import { resolvePermissionScope } from "../docs/helpers";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Sparkline } from "@/components/ui/sparkline";
 import { formatRelative } from "@/lib/dates";
 import {
@@ -31,9 +33,20 @@ import {
 } from "lucide-react";
 import { formatNumber } from "@/lib/money";
 
-async function loadKpis() {
+async function loadKpis(session: AuthSession) {
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const docScope = resolvePermissionScope(session);
+  const docsOrphanQuery = docScope
+    ? db
+        .select({ n: count() })
+        .from(documents)
+        .innerJoin(
+          documentPermissions,
+          and(eq(documentPermissions.documentId, documents.id), eq(documentPermissions.companyId, docScope)),
+        )
+        .where(eq(documents.state, "orphan"))
+    : db.select({ n: count() }).from(documents).where(eq(documents.state, "orphan"));
 
   const [kmYellow, kmRed, invPending, invApproved, docsOrphan, fuelOpen, freightOpen, woDraft] = await Promise.all([
     db.select({ n: count() }).from(kmReconciliations).where(eq(kmReconciliations.state, "yellow")),
@@ -43,7 +56,7 @@ async function loadKpis() {
       .select({ n: count() })
       .from(invoices)
       .where(and(eq(invoices.state, "approved"), gte(invoices.approvedAt, monthStart))),
-    db.select({ n: count() }).from(documents).where(eq(documents.state, "orphan")),
+    docsOrphanQuery,
     db.select({ n: count() }).from(fuelAnomalies).where(eq(fuelAnomalies.state, "open")),
     db
       .select({ n: count() })
@@ -130,7 +143,7 @@ export default async function DashboardPage() {
   if (!session) redirect("/login");
 
   const [kpis, recent] = await Promise.all([
-    loadKpis(),
+    loadKpis(session),
     db
       .select({
         id: auditLog.id,
@@ -182,7 +195,7 @@ export default async function DashboardPage() {
         <PageHeader
           eyebrow={`Sessão activa · ${session.companyName}`}
           title={`Olá, ${session.userName.split(" ")[0]}`}
-          description="Visão única sobre os 6 módulos operacionais. Os KPIs actualizam em tempo real conforme usas o sistema."
+          description="Visão única sobre os 6 módulos operacionais. Os KPIs actualizam à medida que a equipa usa o sistema."
           actions={
             <Badge variant="secondary" className="tabular">
               {new Date().toLocaleDateString("pt-PT", { weekday: "long", day: "2-digit", month: "long" })}

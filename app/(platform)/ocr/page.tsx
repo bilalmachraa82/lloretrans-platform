@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db/client";
 import { invoices, suppliers } from "@/db/schema";
-import { desc, eq, or, count } from "drizzle-orm";
+import { desc, eq, count } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent } from "@/components/ui/card";

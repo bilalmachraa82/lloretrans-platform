@@ -4,6 +4,7 @@ import { db } from "@/db/client";
 import {
   documents,
   documentAssociations,
+  documentPermissions,
   trips,
   vehicles,
   clients,
@@ -15,15 +16,27 @@ import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { formatDate, formatDateTime } from "@/lib/dates";
 import { associateDocument, dissociateDocument } from "../actions";
+import { resolvePermissionScope } from "../helpers";
 
 export default async function DocDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireRole(["admin", "digitalizacao", "clarice", "admin_faturacao", "frutas"]);
+  const session = await requireRole(["admin", "digitalizacao", "clarice", "admin_faturacao", "frutas"]);
   const { id } = await params;
+  const scope = resolvePermissionScope(session);
 
-  const [doc] = await db.select().from(documents).where(eq(documents.id, id)).limit(1);
+  const docRows = scope
+    ? await db
+        .select({ doc: documents })
+        .from(documents)
+        .innerJoin(
+          documentPermissions,
+          and(eq(documentPermissions.documentId, documents.id), eq(documentPermissions.companyId, scope)),
+        )
+        .where(eq(documents.id, id))
+        .limit(1)
+    : await db.select({ doc: documents }).from(documents).where(eq(documents.id, id)).limit(1);
+  const doc = docRows[0]?.doc;
   if (!doc) notFound();
 
   const existing = await db

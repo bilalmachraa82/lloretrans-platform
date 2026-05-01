@@ -7,6 +7,7 @@ dist
 .env.*.local
 *.log
 .DS_Store
+.playwright-cli
 
 # DB files (local SQLite)
 *.db

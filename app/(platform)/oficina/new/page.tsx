@@ -1,5 +1,5 @@
 import { db } from "@/db/client";
-import { vehicles, serviceCodes, users } from "@/db/schema";
+import { vehicles, serviceCodes } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { WorkOrderWizard } from "./wizard";

@@ -137,12 +137,6 @@ interface CatalogEntry {
   lines: Array<{ description: string; quantity: number; unitPrice: number; vatRate: number; total: number; serviceCode: string }>;
 }
 
-let rngSeed = 42;
-function rng(): number {
-  rngSeed = (rngSeed * 1103515245 + 12345) % 2147483647;
-  return rngSeed / 2147483647;
-}
-
 function id(prefix: string, n: number): string {
   return `${prefix}_${n.toString().padStart(5, "0")}`;
 }
@@ -219,7 +213,7 @@ async function main(): Promise<void> {
   console.log(`✓ ${companies.length} companies`);
 
   const users = [
-    { id: "u_bilal", email: "bilal@aitipro.com", name: "Bilal Machraa", role: "admin", companyId: null },
+    { id: "u_bilal", email: "bilal.machraa@aitipro.com", name: "Bilal Machraa", role: "admin", companyId: null },
     { id: "u_clarice", email: "clarice@lloretrans.pt", name: "Clarice Santos", role: "clarice", companyId: "co_llt" },
     { id: "u_eder", email: "eder@lloretrans.pt", name: "Éder Monteiro", role: "comercial", companyId: "co_llt" },
     { id: "u_miguel", email: "miguel@lloretrans.pt", name: "Miguel Ferreira", role: "comercial", companyId: "co_llt" },

@@ -6,20 +6,18 @@ import {
   freightStateTransitions,
   supplierInvoicesFreight,
   clientInvoicesFreight,
-  commissions,
   commissionRules,
   clients,
   suppliers,
   users,
   vehicles,
 } from "@/db/schema";
-import { and, desc, eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StatusPill } from "@/components/ui/status-pill";
 import { Input } from "@/components/ui/input";
 import { formatEur, formatPercent } from "@/lib/money";
 import { formatDate, formatDateTime } from "@/lib/dates";
@@ -76,8 +74,9 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
     .where(eq(freightLoads.id, id))
     .limit(1);
   if (!row) notFound();
+  if (session.role === "comercial" && row.salespersonId !== session.userId) notFound();
 
-  const [transitions, supInv, cliInv, comm, rules, internalVehicles] = await Promise.all([
+  const [transitions, supInv, cliInv, rules, internalVehicles] = await Promise.all([
     db
       .select()
       .from(freightStateTransitions)
@@ -85,7 +84,6 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
       .orderBy(desc(freightStateTransitions.createdAt)),
     db.select().from(supplierInvoicesFreight).where(eq(supplierInvoicesFreight.loadId, id)),
     db.select().from(clientInvoicesFreight).where(eq(clientInvoicesFreight.loadId, id)),
-    db.select().from(commissions).where(eq(commissions.loadId, id)),
     db.select().from(commissionRules),
     db.select({ plate: vehicles.plate }).from(vehicles).where(eq(vehicles.isInternal, true)),
   ]);
@@ -142,8 +140,8 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
             <Kv label="Pago Transportador" value={formatEur(row.priceBuy)} />
             <Kv label="Margem" value={`${formatEur(row.margin)} · ${formatPercent(row.marginPct)}`} strong />
             <Kv label="Nº CMR" value={row.cmrNumber ?? "—"} />
-            <Kv label="Fatura cliente" value={row.customerInvoiceNumber ?? "—"} />
-            <Kv label="Fatura fornecedor" value={row.supplierInvoiceNumber ?? "—"} />
+            <Kv label="Factura cliente" value={row.customerInvoiceNumber ?? "—"} />
+            <Kv label="Factura fornecedor" value={row.supplierInvoiceNumber ?? "—"} />
             <Kv label="R/NR" value={row.paymentRegularization ?? "—"} />
             <Kv label="Mês pagamento" value={row.paymentMonth ?? "—"} />
             {row.serviceValueEur != null && <Kv label="Valor serviço" value={formatEur(row.serviceValueEur)} />}

@@ -52,8 +52,18 @@
 
   h1, h2, h3 {
     font-family: var(--font-display), Fraunces, Georgia, serif;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     font-feature-settings: "ss01";
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
   }
 
   table {
@@ -72,6 +82,17 @@
   ::selection {
     background: hsl(var(--accent) / 0.25);
     color: inherit;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
@@ -117,5 +138,11 @@
     );
     background-size: 400px 100%;
     @apply animate-shimmer rounded-md;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton {
+      animation: none;
+    }
   }
 }

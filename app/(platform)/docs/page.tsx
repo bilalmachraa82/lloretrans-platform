@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { db } from "@/db/client";
-import { documents, documentAssociations, documentPermissions, trips, vehicles } from "@/db/schema";
+import { documents, documentAssociations, documentPermissions } from "@/db/schema";
 import { and, desc, eq, like, or, count, gte, lte } from "drizzle-orm";
-import { getSession, requireRole } from "@/lib/auth/session";
+import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -67,15 +67,42 @@ export default async function DocsPage({
         .orderBy(desc(documents.createdAt))
         .limit(150);
 
-  const kpis = await Promise.all([
-    db.select({ n: count() }).from(documents),
-    db.select({ n: count() }).from(documents).where(eq(documents.state, "orphan")),
-    db.select({ n: count() }).from(documentAssociations),
-  ]);
+  const scopedDocs = db
+    .select({ n: count() })
+    .from(documents)
+    .innerJoin(
+      documentPermissions,
+      and(eq(documentPermissions.documentId, documents.id), eq(documentPermissions.companyId, scope ?? "")),
+    );
+  const scopedOrphans = db
+    .select({ n: count() })
+    .from(documents)
+    .innerJoin(
+      documentPermissions,
+      and(eq(documentPermissions.documentId, documents.id), eq(documentPermissions.companyId, scope ?? "")),
+    )
+    .where(eq(documents.state, "orphan"));
+  const scopedAssociations = db
+    .select({ n: count() })
+    .from(documentAssociations)
+    .innerJoin(documents, eq(documents.id, documentAssociations.documentId))
+    .innerJoin(
+      documentPermissions,
+      and(eq(documentPermissions.documentId, documents.id), eq(documentPermissions.companyId, scope ?? "")),
+    );
+
+  const kpis = scope
+    ? await Promise.all([scopedDocs, scopedOrphans, scopedAssociations])
+    : await Promise.all([
+        db.select({ n: count() }).from(documents),
+        db.select({ n: count() }).from(documents).where(eq(documents.state, "orphan")),
+        db.select({ n: count() }).from(documentAssociations),
+      ]);
 
   const total = kpis[0][0]?.n ?? 0;
   const orphans = kpis[1][0]?.n ?? 0;
   const assocs = kpis[2][0]?.n ?? 0;
+  const canIngest = session.role === "admin" || session.role === "clarice" || session.role === "digitalizacao";
 
   const kindLabels: Record<string, string> = {
     cmr: "CMR",
@@ -89,15 +116,15 @@ export default async function DocsPage({
     <div className="space-y-6">
       <PageHeader
         title="Digitalização Central"
-        description={`Hub cross-empresa · ${rows.length} documentos mostrados${scope ? ` · âmbito ${scope}` : ""}`}
-        actions={
+        description={`Hub cross-empresa · ${rows.length} documentos mostrados${scope ? ` · âmbito ${session.companyName ?? "empresa atribuída"}` : ""}`}
+        actions={canIngest ? (
           <Button asChild>
             <Link href="/docs/upload">
               <Upload className="h-4 w-4" />
               Ingerir documentos
             </Link>
           </Button>
-        }
+        ) : null}
       />
 
       <div className="grid grid-cols-3 gap-4">
@@ -115,7 +142,7 @@ export default async function DocsPage({
           <Link
             key={t.key}
             href={`/docs?tab=${t.key}`}
-            className={`px-3 py-2 text-sm border-b-2 -mb-px ${
+            className={`inline-flex min-h-11 items-center px-3 py-2 text-sm border-b-2 -mb-px ${
               tab === t.key ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -127,20 +154,37 @@ export default async function DocsPage({
       <form className="flex flex-wrap gap-2 items-center">
         <input type="hidden" name="tab" value={tab} />
         <div className="relative flex-1 min-w-[220px] max-w-xl">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input name="q" placeholder="CMR, matrícula, texto OCR…" defaultValue={q} className="pl-9" />
+          <Search className="absolute left-2.5 top-3.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            name="q"
+            placeholder="CMR, matrícula, texto OCR…"
+            defaultValue={q}
+            inputMode="search"
+            aria-label="Pesquisar por CMR, matrícula ou texto OCR"
+            className="pl-9"
+          />
         </div>
-        <select name="direction" defaultValue={direction ?? ""} className="h-9 rounded-md border border-border bg-background px-3 text-sm">
+        <select
+          name="direction"
+          defaultValue={direction ?? ""}
+          aria-label="Filtrar por direcção do documento"
+          className="h-11 rounded-md border border-border bg-background px-3 text-sm"
+        >
           <option value="">Entrada + Saída</option>
           <option value="entrada">↓ Entrada (compra/recepção)</option>
           <option value="saida">↑ Saída (transporte/entrega)</option>
         </select>
-        <select name="kind" defaultValue={kind ?? ""} className="h-9 rounded-md border border-border bg-background px-3 text-sm">
+        <select
+          name="kind"
+          defaultValue={kind ?? ""}
+          aria-label="Filtrar por tipo de documento"
+          className="h-11 rounded-md border border-border bg-background px-3 text-sm"
+        >
           <option value="">Todos os tipos</option>
           {Object.entries(kindLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
-        <Input type="date" name="from" defaultValue={from} className="w-auto" />
-        <Input type="date" name="to" defaultValue={to} className="w-auto" />
+        <Input type="date" name="from" defaultValue={from} aria-label="Data inicial" className="w-auto" />
+        <Input type="date" name="to" defaultValue={to} aria-label="Data final" className="w-auto" />
         <Button type="submit" variant="outline">Filtrar</Button>
       </form>
 
@@ -155,7 +199,7 @@ export default async function DocsPage({
                 <th>Matrícula</th>
                 <th>Data carga</th>
                 <th>Estado</th>
-                <th></th>
+                <th>Acção</th>
               </tr>
             </thead>
             <tbody>

@@ -100,7 +100,7 @@ export default function LandingPage() {
 
       {/* Top bar */}
       <header className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 pt-8 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex min-h-11 items-center gap-2.5">
           <div className="h-9 w-9 rounded-md bg-[hsl(222_72%_30%)] text-white grid place-items-center font-display font-bold shadow-elevated-sm">
             A
           </div>
@@ -110,23 +110,23 @@ export default function LandingPage() {
           </div>
         </Link>
         <nav className="flex items-center gap-3">
-          <Link href="#modules" className="hidden md:inline text-sm text-foreground/70 hover:text-foreground transition-colors">
+          <Link href="#modules" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
             Os 6 módulos
           </Link>
-          <Link href="#trust" className="hidden md:inline text-sm text-foreground/70 hover:text-foreground transition-colors">
+          <Link href="#trust" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
             Confiança
           </Link>
-          <Link href="#pricing" className="hidden md:inline text-sm text-foreground/70 hover:text-foreground transition-colors">
+          <Link href="#pricing" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
             Planos
           </Link>
-          <Link href="#roadmap" className="hidden lg:inline text-sm text-foreground/70 hover:text-foreground transition-colors">
+          <Link href="#roadmap" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors lg:inline-flex">
             Como começamos
           </Link>
-          <Link href="/proposta" className="hidden lg:inline text-sm text-foreground/70 hover:text-foreground transition-colors">
+          <Link href="/proposta" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors lg:inline-flex">
             Proposta
           </Link>
           <Button asChild variant="outline" size="sm">
-            <Link href="/login">Aceder à demo →</Link>
+            <Link href="/login">Aceder à demonstração →</Link>
           </Button>
         </nav>
       </header>
@@ -138,7 +138,7 @@ export default function LandingPage() {
             <Badge variant="outline" className="text-[11px] tracking-wider uppercase">
               Desenhado com a operação Lloretrans · Grupo Patrícia Pilar
             </Badge>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[0.98] tracking-[-0.03em]">
+            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[0.98] tracking-normal">
               Operações de frota.
               <br />
               <span className="italic text-[hsl(222_72%_30%)]">Sem papel.</span>
@@ -153,10 +153,10 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Button asChild size="lg" className="shadow-elevated">
-                <Link href="/login">Ver demo em 60 segundos →</Link>
+                <Link href="/login">Ver demonstração em 60 segundos →</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="mailto:bilal@aitipro.com?subject=Agendar%20apresentação%20Lloretrans">
+                <Link href="mailto:bilal.machraa@aitipro.com?subject=Agendar%20apresentação%20Lloretrans">
                   Agendar apresentação
                 </Link>
               </Button>
@@ -200,12 +200,12 @@ export default function LandingPage() {
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-16 lg:py-20">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             <div className="lg:col-span-8">
-              <div className="text-[hsl(32_82%_45%)] text-6xl lg:text-7xl font-display leading-none mb-4 select-none">
+              <div className="text-[hsl(32_82%_35%)] text-6xl lg:text-7xl font-display leading-none mb-4 select-none">
                 &ldquo;
               </div>
-              <p className="font-display text-3xl lg:text-4xl leading-snug tracking-[-0.02em]">
+              <p className="font-display text-3xl lg:text-4xl leading-snug tracking-normal">
                 Não é só tempo. A nossa preocupação também é o{" "}
-                <span className="italic text-[hsl(222_72%_30%)]">controle</span>.
+                <span className="italic text-[hsl(222_72%_30%)]">controlo</span>.
               </p>
               <p className="mt-6 text-foreground/70 leading-relaxed max-w-2xl">
                 A IA regista. O humano valida. Cada acção, mesmo um clique, escreve entrada imutável
@@ -237,17 +237,17 @@ export default function LandingPage() {
       {/* 6 MODULES */}
       <section id="modules" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
         <div className="max-w-3xl mb-12 lg:mb-16">
-          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_45%)] font-semibold mb-4">
+          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
             Seis módulos · um só sistema
           </div>
-          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-[-0.02em]">
+          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
             Cada módulo resolve <span className="italic">uma dor concreta</span>.
-            Compras um, três ou os seis.
+            Cinco entram no pacote; combustível fica em roadmap.
           </h2>
           <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
             Construídos a partir da transcrição literal da reunião com a Clarice. Cada um tem a sua
-            própria spec, plano de implementação e critérios de aceitação. Nenhum depende dos outros
-            para arrancar.
+            própria spec, plano de implementação e critérios de aceitação. O pacote final entrega A,
+            B, C, E e F em 10 semanas; D só entra quando a Frotcom confirmar acesso técnico.
           </p>
         </div>
 
@@ -296,7 +296,7 @@ export default function LandingPage() {
                       <span className="ml-2 text-xs text-muted-foreground">{m.metricLabel}</span>
                     </div>
                     <span className="text-xs text-[hsl(222_72%_30%)] font-medium group-hover:underline">
-                      Ver demo →
+                      Ver demonstração →
                     </span>
                   </div>
                 </article>
@@ -306,7 +306,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* TRUST / EU-FIRST */}
+      {/* TRUST / UE-FIRST */}
       <section
         id="trust"
         className="relative z-10 border-y border-[hsl(220_14%_88%)] bg-[hsl(222_72%_12%)] text-white"
@@ -317,7 +317,7 @@ export default function LandingPage() {
               <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_65%)] font-semibold mb-4">
                 Confiança por defeito
               </div>
-              <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-[-0.02em]">
+              <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
                 Infra europeia. <br />
                 Auditoria <span className="italic text-[hsl(32_82%_65%)]">append-only</span>.
               </h2>
@@ -330,7 +330,7 @@ export default function LandingPage() {
               <TrustCard icon={Globe} title="Dados na UE" body="Neon Postgres em Frankfurt (aws-eu-central-1). Deploy Vercel fra1. IA externa só com DPA e aprovação por fluxo." />
               <TrustCard icon={ShieldCheck} title="RGPD by default" body="Audit log imutável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
               <TrustCard icon={CheckCircle2} title="Humano no loop" body="IA regista, classifica, sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
-              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores preparados para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do integrador PHC Advanced do grupo." />
+              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores preparados para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do expert PHC Advanced interno do grupo." />
             </div>
           </div>
         </div>
@@ -339,49 +339,65 @@ export default function LandingPage() {
       {/* PRICING TIERS */}
       <section id="pricing" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
         <div className="max-w-3xl mb-12">
-          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_45%)] font-semibold mb-4">
-            Planos
+          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
+            Investimento
           </div>
-          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-[-0.02em]">
-            Três patamares. <span className="italic">Arranca onde faz sentido.</span>
+          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
+            Um pacote fechado. <span className="italic">Sem ranges no conselho.</span>
           </h2>
+          <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
+            A proposta final para a Lloretrans é directa: €45.000 de implementação, €900/mês de
+            operação, pagamento 30/40/30 e módulo D combustível fora da cobrança inicial.
+          </p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-3">
           <PricingTier
-            name="Core"
-            tagline="Quick win · fechar a ferida mais evidente"
-            includes={["1–2 MVPs à escolha", "Conectores em modo simulação", "Export XML PHC Advanced", "Onboarding 2 sem", "Suporte email"]}
-          />
-          <PricingTier
-            name="PRO"
-            tagline="Operacional diário · 80% do benefício"
+            name="Lloretrans 5+1"
+            tagline="Pacote recomendado · cinco fluxos em produção supervisionada"
+            price="€ 45.000"
+            recurring="€ 900/mês"
             includes={[
-              "4 MVPs (validação km + OCR + docs + oficina)",
-              "Preparado para integração PHC Advanced após Sprint 0",
-              "Master de fornecedores com aprendizagem",
-              "Dashboard direcção",
-              "Suporte prioritário",
+              "Sprint 0 + módulos A, B, C, E e F",
+              "Calendário de 10 semanas",
+              "Pagamento 30 / 40 / 30",
+              "Hosting, suporte, IA e 8h técnicas/mês",
+              "Preço fechado · sem variação · IVA não incluído",
             ]}
             featured
           />
           <PricingTier
-            name="Enterprise"
-            tagline="Portfólio completo · escala grupo"
+            name="Módulo D"
+            tagline="Combustível · só após confirmação Frotcom"
+            price="+€ 7.500"
+            recurring="Sem cobrança hoje"
             includes={[
-              "6 MVPs + Admin",
-              "Multi-empresa com permissões cross",
-              "APIs Logue Trans + Frotcom + cartões combustível",
-              "PWA oficina + onboarding mecânicos",
-              "SLA 99% · DPA formal",
+              "Roadmap activo desde a Sprint 0",
+              "Cepsa / Repsol / Radius / bomba interna",
+              "Litros / 100 km quando houver leitura Frotcom",
+              "Anomalias sinalizadas, decisão humana",
+              "Adição contratual posterior",
+            ]}
+          />
+          <PricingTier
+            name="Sprint 0"
+            tagline="Protecção caso haja bloqueio técnico crítico"
+            price="€ 3.500"
+            recurring="Incluída nos €45.000"
+            includes={[
+              "Workshop com expert PHC Advanced interno",
+              "Validação Frotcom + Logue Trans",
+              "Volume documental real",
+              "Parecer técnico escrito",
+              "Se parar aqui, só a Sprint 0 é paga",
             ]}
           />
         </div>
 
         <p className="mt-10 text-sm text-muted-foreground text-center">
-          Pricing por proposta directa — cada caso tem volumes e integrações específicas.{" "}
-          <Link href="mailto:bilal@aitipro.com?subject=Pedido%20de%20proposta%20Lloretrans" className="text-[hsl(222_72%_30%)] underline">
-            Pede orçamento →
+          Esta é a mesma oferta do email e da proposta formal: pacote Lloretrans 5+1, com Sprint 0 incluída, D em roadmap separado e sem intervalos comerciais.{" "}
+          <Link href="/proposta" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] underline">
+            Ver proposta formal →
           </Link>
         </p>
       </section>
@@ -389,37 +405,37 @@ export default function LandingPage() {
       {/* COMO COMEÇAMOS · roadmap */}
       <section id="roadmap" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
         <div className="max-w-3xl mb-12">
-          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_45%)] font-semibold mb-4">
+          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
             Como começamos
           </div>
-          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-[-0.02em]">
-            Calendário <span className="italic">realista</span>. Ritmo curto, entregas visíveis.
+          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
+            Calendário <span className="italic">realista</span>. 10 semanas, entregas visíveis.
           </h2>
           <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
-            Cada MVP entra em produção supervisionada antes de avançarmos. Sem big-bang, sem esperas
-            longas. Começamos com um quick-win para calibrar confiança e ritmo.
+            Cada módulo entra em produção supervisionada antes de avançarmos. Sem big-bang, sem
+            ranges em aberto. Começamos com Sprint 0 para validar PHC Advanced, Frotcom e Logue Trans.
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           <RoadmapCard
             week="Semana 1"
-            title="Acessos & baseline"
-            body="Kick-off com a Clarice + DPO. Credenciais Logue Trans e Frotcom. Medimos o ponto de partida — horas gastas hoje."
+            title="Sprint 0"
+            body="Workshop com expert PHC Advanced interno. Credenciais Logue Trans e Frotcom. Volume documental real e plano fechado."
           />
           <RoadmapCard
             week="Semanas 2–3"
-            title="MVP 1 com dados reais"
-            body="Validação km vai a ar contra 60 viaturas reais. Administrativa usa em paralelo ao processo actual durante 1 semana."
+            title="Módulo A"
+            body="Validação km vai a ar contra dados reais. Administrativa usa em paralelo ao processo actual durante 1 semana."
           />
           <RoadmapCard
-            week="Semana 4"
-            title="Go-live supervisionado"
-            body="Corte do processo antigo. Bilal presente em sala durante 3 dias. Ajustes finos de threshold e alertas."
+            week="Semanas 3–8"
+            title="Módulos C, B e E"
+            body="Documentos, OCR fornecedor e bolsa/comissões avançam por dependência, com export PHC Advanced / Excel validado pela equipa interna."
           />
           <RoadmapCard
-            week="Mês 2+"
-            title="Iteração"
-            body="Próximo MVP entra no mesmo ritmo. Revisão mensal do audit log. Scope ajustado a achados reais."
+            week="Semanas 8–10"
+            title="Módulo F + roadmap D"
+            body="Oficina mobile com piloto de 1 mecânico. Combustível fica preparado para entrar quando a Frotcom confirmar a API."
           />
         </div>
       </section>
@@ -429,10 +445,10 @@ export default function LandingPage() {
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-24">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
-              <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_45%)] font-semibold mb-4">
+              <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
                 Pressupostos
               </div>
-              <h2 className="font-display text-3xl lg:text-4xl font-semibold leading-tight tracking-[-0.02em]">
+              <h2 className="font-display text-3xl lg:text-4xl font-semibold leading-tight tracking-normal">
                 Perguntas que fazemos antes de assinar.
               </h2>
               <p className="mt-5 text-foreground/70 leading-relaxed">
@@ -454,8 +470,8 @@ export default function LandingPage() {
                 a="Existe fallback para Logue Trans via flag de configuração. A reconciliação continua, com aviso no dashboard. Nenhum MVP depende de um único fornecedor externo para correr."
               />
               <FaqItem
-                q="Integramos com o vosso integrador PHC Advanced?"
-                a="Só depois de contacto técnico confirmado com o integrador PHC Advanced do grupo. Até lá, a proposta assume XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
+                q="Integramos com o vosso expert PHC Advanced interno?"
+                a="Sim, mas só depois de validação técnica com o expert PHC Advanced interno do grupo. Até lá, a proposta assume XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
               />
               <FaqItem
                 q="O que acontece se o mecânico não usar a app?"
@@ -478,19 +494,19 @@ export default function LandingPage() {
           />
           <div className="relative z-10 grid lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8">
-              <h2 className="font-display text-4xl lg:text-5xl font-semibold tracking-[-0.02em] leading-tight">
+              <h2 className="font-display text-4xl lg:text-5xl font-semibold tracking-normal leading-tight">
                 Pronto para deixar o papel para trás?
               </h2>
               <p className="mt-5 text-white/75 text-lg leading-relaxed max-w-2xl">
                 60 segundos chegam para veres os 6 módulos em funcionamento. Dados determinísticos, login
-                directo sem formulário. Em paralelo, podes descarregar a proposta formal.
+                sem password; escolhe a persona Clarice. Em paralelo, podes abrir a proposta formal.
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
               <Button asChild size="lg" className="bg-white text-[hsl(222_72%_22%)] hover:bg-white/90 border-0 shadow-elevated-lg w-full lg:w-auto">
-                <Link href="/login">Abrir demo →</Link>
+                <Link href="/login">Abrir demonstração →</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 w-full lg:w-auto">
+              <Button asChild size="lg" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10 w-full lg:w-auto">
                 <Link href="/proposta">Ver proposta formal</Link>
               </Button>
             </div>
@@ -508,11 +524,11 @@ export default function LandingPage() {
             <span>AiTiPro · Lisboa · Portugal</span>
           </div>
           <div className="flex items-center gap-6">
-            <Link href="mailto:bilal@aitipro.com" className="hover:text-foreground transition-colors">
-              bilal@aitipro.com
+            <Link href="mailto:bilal.machraa@aitipro.com" className="inline-flex min-h-11 items-center hover:text-foreground transition-colors">
+              bilal.machraa@aitipro.com
             </Link>
-            <Link href="/login" className="hover:text-foreground transition-colors">
-              Demo
+            <Link href="/login" className="inline-flex min-h-11 items-center px-2 hover:text-foreground transition-colors">
+              Demonstração
             </Link>
             <span className="hidden sm:inline">RGPD · dados UE · build {new Date().getFullYear()}</span>
           </div>
@@ -564,7 +580,7 @@ function TrustCard({
 function RoadmapCard({ week, title, body }: { week: string; title: string; body: string }) {
   return (
     <div className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-6 relative">
-      <div className="text-[10px] uppercase tracking-[0.15em] text-[hsl(32_82%_45%)] font-semibold mb-2">
+      <div className="text-[10px] uppercase tracking-[0.15em] text-[hsl(32_82%_35%)] font-semibold mb-2">
         {week}
       </div>
       <h3 className="font-display text-lg font-semibold mb-2 leading-tight">{title}</h3>
@@ -590,11 +606,15 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 function PricingTier({
   name,
   tagline,
+  price,
+  recurring,
   includes,
   featured = false,
 }: {
   name: string;
   tagline: string;
+  price: string;
+  recurring: string;
   includes: string[];
   featured?: boolean;
 }) {
@@ -613,6 +633,16 @@ function PricingTier({
       )}
       <div className="font-display text-2xl font-semibold">{name}</div>
       <div className={`text-sm mt-2 ${featured ? "text-white/70" : "text-muted-foreground"}`}>{tagline}</div>
+      <div className="mt-6 pt-6 border-t border-dashed border-current/20">
+        <div className={`text-xs uppercase tracking-wider ${featured ? "text-white/60" : "text-muted-foreground"}`}>
+          Implementação
+        </div>
+        <div className="font-display text-3xl font-semibold mt-1 tabular">{price}</div>
+        <div className={`text-xs mt-3 uppercase tracking-wider ${featured ? "text-white/60" : "text-muted-foreground"}`}>
+          Operação
+        </div>
+        <div className="font-mono text-sm font-semibold mt-1">{recurring}</div>
+      </div>
       <ul className="mt-6 space-y-2.5 text-sm">
         {includes.map((i) => (
           <li key={i} className="flex gap-2.5">

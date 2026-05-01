@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusPill } from "@/components/ui/status-pill";
 import { Input } from "@/components/ui/input";
 import { formatEur } from "@/lib/money";
-import { formatDate, formatDateTime } from "@/lib/dates";
+import { formatDateTime } from "@/lib/dates";
 import {
   approveWorkOrder,
   rejectWorkOrder,
@@ -228,7 +228,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
       )}
 
       <Card>
-        <CardHeader><CardTitle className="text-base">Items ({items.length})</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base">Itens ({items.length})</CardTitle></CardHeader>
         <CardContent>
           <table className="data-table">
             <thead>

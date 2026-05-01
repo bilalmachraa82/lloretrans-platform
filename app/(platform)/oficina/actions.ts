@@ -3,39 +3,49 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { db } from "@/db/client";
 import {
   workOrders,
   workOrderItems,
   workOrderSignatures,
-  workOrderPhotos,
   workOrderChecklistAnswers,
   vehicles,
 } from "@/db/schema";
 import { requireRole } from "@/lib/auth/session";
 import { audit } from "@/lib/audit";
 import { randomId } from "@/lib/utils";
-import { createPhcClient } from "@/lib/integrations/phc";
 
 function minutesBetween(a: Date, b: Date): number {
   return Math.max(0, Math.round((b.getTime() - a.getTime()) / 60000));
 }
 
-interface SubmitPayload {
-  plate: string;
-  serviceCode: string;
-  summary: string;
-  items: Array<{ kind: "part" | "labour"; description: string; partCode?: string; quantity: number; unitPrice: number }>;
-  checklist?: Array<{ key: string; substituted: boolean; verified: boolean; notes?: string }>;
-  signatureSvgPath: string;
-  signerName: string;
-}
+const submitPayloadSchema = z.object({
+  plate: z.string().trim().min(1),
+  serviceCode: z.string().trim().min(1),
+  summary: z.string().trim().min(1),
+  items: z.array(z.object({
+    kind: z.enum(["part", "labour"]),
+    description: z.string().trim().min(1),
+    partCode: z.string().trim().optional(),
+    quantity: z.number().positive(),
+    unitPrice: z.number().min(0),
+  })).min(1),
+  checklist: z.array(z.object({
+    key: z.string().trim().min(1),
+    substituted: z.boolean(),
+    verified: z.boolean(),
+    notes: z.string().trim().optional(),
+  })).optional(),
+  signatureSvgPath: z.string().trim().min(1),
+  signerName: z.string().trim().min(1),
+});
 
 export async function submitWorkOrder(formData: FormData): Promise<void> {
   const session = await requireRole(["admin", "clarice", "mecanico", "admin_oficina"]);
   const payloadRaw = formData.get("payload")?.toString();
   if (!payloadRaw) throw new Error("payload required");
-  const payload = JSON.parse(payloadRaw) as SubmitPayload;
+  const payload = submitPayloadSchema.parse(JSON.parse(payloadRaw));
 
   const [vehicle] = await db.select().from(vehicles).where(eq(vehicles.plate, payload.plate)).limit(1);
   if (!vehicle) throw new Error(`Matrícula ${payload.plate} não encontrada`);
@@ -220,6 +230,9 @@ export async function approveWorkOrder(formData: FormData): Promise<void> {
   if (!id) throw new Error("id required");
   const [before] = await db.select().from(workOrders).where(eq(workOrders.id, id)).limit(1);
   if (!before) throw new Error("not found");
+  if (before.state !== "submitted") {
+    throw new Error(`Só folhas submetidas podem ser aprovadas (estado actual: ${before.state})`);
+  }
   const now = new Date();
   await db.update(workOrders).set({ state: "approved", approvedBy: session.userId, approvedAt: now, updatedAt: now }).where(eq(workOrders.id, id));
   await audit({
@@ -259,6 +272,11 @@ export async function exportWorkOrder(formData: FormData): Promise<void> {
   const session = await requireRole(["admin", "admin_oficina"]);
   const id = formData.get("id")?.toString();
   if (!id) throw new Error("id required");
+  const [before] = await db.select().from(workOrders).where(eq(workOrders.id, id)).limit(1);
+  if (!before) throw new Error("not found");
+  if (before.state !== "approved") {
+    throw new Error(`Só folhas aprovadas podem ser exportadas (estado actual: ${before.state})`);
+  }
   const now = new Date();
   await db.update(workOrders).set({ exportedAt: now }).where(eq(workOrders.id, id));
   await audit({
@@ -266,6 +284,7 @@ export async function exportWorkOrder(formData: FormData): Promise<void> {
     action: "workorder.export",
     entityType: "work_order",
     entityId: id,
+    before: { state: before.state, exportedAt: before.exportedAt },
     after: { exportedAt: now.toISOString(), format: "json-phc" },
   });
   revalidatePath(`/oficina/${id}`);

@@ -1,6 +1,6 @@
 import { db } from "@/db/client";
 import { suppliers, supplierRules } from "@/db/schema";
-import { eq, count } from "drizzle-orm";
+import { count } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card } from "@/components/ui/card";

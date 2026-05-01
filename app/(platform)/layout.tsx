@@ -57,7 +57,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
 
   const sidebarContent = (
     <>
-      <Link href="/" className="flex items-center gap-2 px-2">
+      <Link href="/" className="flex min-h-11 items-center gap-2 px-2">
         <div className="h-8 w-8 rounded-md bg-primary text-primary-foreground grid place-items-center font-bold">L</div>
         <div>
           <div className="text-sm font-semibold">Lloretrans</div>
@@ -74,9 +74,9 @@ export default async function PlatformLayout({ children }: { children: React.Rea
           <>
             <div className="mt-5 mb-2 flex items-baseline justify-between px-2">
               <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Jornada demo
+                Percurso recomendado
               </span>
-              <span className="text-[9px] text-[hsl(32_82%_45%)] uppercase tracking-wider font-semibold">
+              <span className="text-[9px] text-[hsl(32_82%_35%)] uppercase tracking-wider font-semibold">
                 6 MVPs
               </span>
             </div>
@@ -93,7 +93,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
             ))}
 
             <div className="mt-5 mb-2 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Atalhos demo
+              Atalhos
             </div>
             <SidebarLink href="/oficina/new" icon={Smartphone}>
               Abrir wizard mecânico
@@ -157,20 +157,18 @@ export default async function PlatformLayout({ children }: { children: React.Rea
           <div className="border-b border-[hsl(32_82%_55%)]/30 bg-[hsl(40_40%_96%)]">
             <div className="px-4 sm:px-8 py-2 flex items-center gap-3 text-[11px] flex-wrap">
               <Badge className="bg-[hsl(32_82%_55%)] text-[hsl(222_72%_12%)] border-0 text-[10px]">
-                Modo demo
+                Avaliação
               </Badge>
               <span className="text-foreground/70">
-                Vista de supervisão · todos os MVPs acessíveis · dados determinísticos.
+                Vista de supervisão · percurso completo · dados de avaliação.
               </span>
-              <span className="mx-1 text-muted-foreground">·</span>
               <Link
                 href="/oficina/new"
-                className="text-[hsl(222_72%_30%)] font-medium hover:underline"
+                className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline"
               >
                 Testar folha mecânico →
               </Link>
-              <span className="mx-1 text-muted-foreground">·</span>
-              <Link href="/login" className="text-[hsl(222_72%_30%)] font-medium hover:underline">
+              <Link href="/login" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline">
                 Trocar persona
               </Link>
             </div>
@@ -180,17 +178,20 @@ export default async function PlatformLayout({ children }: { children: React.Rea
         <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-background/85 backdrop-blur px-4 sm:px-8 py-3 gap-3">
           <div className="flex items-center gap-3">
             <details className="lg:hidden relative">
-              <summary className="list-none cursor-pointer rounded-md border border-border bg-background p-2 hover:bg-secondary">
+              <summary
+                className="list-none cursor-pointer rounded-md border border-border bg-background p-2 hover:bg-secondary"
+                aria-label="Abrir menu de navegação"
+              >
                 <Menu className="h-4 w-4" />
               </summary>
-              <div className="absolute left-0 top-full mt-2 w-80 rounded-lg border border-border bg-card shadow-elevated-lg p-4 flex flex-col max-h-[calc(100vh-80px)] overflow-auto">
+              <div className="absolute left-0 top-full mt-2 w-[calc(100vw-2rem)] max-w-80 rounded-lg border border-border bg-card shadow-elevated-lg p-4 flex flex-col max-h-[calc(100vh-80px)] overflow-auto">
                 {sidebarContent}
               </div>
             </details>
             <Badge variant="outline" className="text-[10px] whitespace-nowrap">
-              {process.env.USE_LIVE_APIS === "true" ? "APIs Live" : "Conectores · modo simulação"}
+              {process.env.USE_LIVE_APIS === "true" ? "APIs activas" : "Conectores · avaliação"}
             </Badge>
-            <span className="hidden md:inline text-xs text-muted-foreground">Ambiente de demonstração</span>
+            <span className="hidden md:inline text-xs text-muted-foreground">Ambiente de avaliação</span>
           </div>
           <div className="hidden sm:block text-xs text-muted-foreground">
             RGPD · dados UE · audit log imutável
@@ -215,7 +216,7 @@ function SidebarLink({
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground/80 hover:bg-secondary hover:text-foreground transition-colors",
+        "flex min-h-11 items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground/80 hover:bg-secondary hover:text-foreground transition-colors",
       )}
     >
       <Icon className="h-4 w-4" />
@@ -242,7 +243,7 @@ function SidebarJourneyLink({
   return (
     <Link
       href={href}
-      className="group flex items-start gap-2.5 rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-secondary transition-colors"
+      className="group flex min-h-11 items-start gap-2.5 rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-secondary transition-colors"
     >
       <div className="relative shrink-0">
         <div className="h-7 w-7 rounded-md bg-[hsl(222_72%_30%)]/8 text-[hsl(222_72%_30%)] grid place-items-center group-hover:bg-[hsl(222_72%_30%)]/15 transition-colors">

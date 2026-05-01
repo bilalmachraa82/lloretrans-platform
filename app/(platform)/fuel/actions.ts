@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, between, eq } from "drizzle-orm";
+import { between, eq } from "drizzle-orm";
 import { db } from "@/db/client";
-import { fuelAnomalies, fuelFills, fuelReadingsCanbus, vehicles } from "@/db/schema";
+import { fuelAnomalies, fuelFills, vehicles } from "@/db/schema";
 import { requireRole } from "@/lib/auth/session";
 import { audit } from "@/lib/audit";
 import { formatDate } from "@/lib/dates";
@@ -74,7 +74,7 @@ function csvEscape(v: string | number | null | undefined): string {
 }
 
 export async function exportMonthlyReport(formData: FormData): Promise<void> {
-  await requireRole([...ROLES]);
+  const session = await requireRole([...ROLES]);
   const yearStr = formData.get("year")?.toString();
   const monthStr = formData.get("month")?.toString();
   const year = yearStr ? Number(yearStr) : new Date().getFullYear();
@@ -110,7 +110,7 @@ export async function exportMonthlyReport(formData: FormData): Promise<void> {
   const dataUrl = `data:text/csv;charset=utf-8;base64,${Buffer.from(csv, "utf-8").toString("base64")}`;
 
   await audit({
-    userId: null,
+    userId: session.userId,
     action: "fuel.export_monthly",
     entityType: "fuel_report",
     entityId: `${year}-${String(month).padStart(2, "0")}`,

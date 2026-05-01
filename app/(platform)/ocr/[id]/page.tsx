@@ -83,6 +83,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
 
   const isPendingReview = row.state === "pending_review";
   const isApproved = row.state === "approved" || row.state === "exported";
+  const canApproveOrClassify = session.role === "admin" || session.role === "admin_oficina";
+  const canExport = session.role === "admin" || session.role === "admin_oficina" || session.role === "admin_contas";
 
   return (
     <div className="space-y-6">
@@ -94,7 +96,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             <Button variant="outline" asChild>
               <Link href="/ocr">← Voltar</Link>
             </Button>
-            {isPendingReview && (
+            {isPendingReview && canApproveOrClassify && (
               <form action={approveInvoice}>
                 <input type="hidden" name="invoiceId" value={row.id} />
                 <Button type="submit" variant="success">
@@ -102,7 +104,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 </Button>
               </form>
             )}
-            {isApproved && (
+            {isApproved && canApproveOrClassify && (
               <form action={reopenInvoice}>
                 <input type="hidden" name="invoiceId" value={row.id} />
                 <Button type="submit" variant="outline">
@@ -110,7 +112,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 </Button>
               </form>
             )}
-            {row.state === "approved" && (
+            {row.state === "approved" && canExport && (
               <form action={exportInvoiceAction}>
                 <input type="hidden" name="invoiceId" value={row.id} />
                 <Button type="submit">Exportar XML PHC Advanced</Button>
@@ -134,7 +136,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 <div className="font-mono text-xs mb-2 break-all">{row.sourcePath}</div>
                 <div className="max-w-xs">
                   Em produção: PDF embed com overlay dos campos extraídos + caixas bounding box por engine OCR.
-                  Aqui: fixture de scan Lloretrans.
+                  Aqui: amostra de digitalização Lloretrans.
                 </div>
               </div>
             </div>
@@ -167,7 +169,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                   <Input
                     name="plate"
                     defaultValue={row.plate ?? ""}
-                    disabled={isApproved}
+                    disabled={isApproved || !canApproveOrClassify}
                     className="font-mono text-sm"
                   />
                 </Field>
@@ -175,7 +177,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                   <select
                     name="serviceCode"
                     defaultValue={row.serviceCode ?? ""}
-                    disabled={isApproved}
+                    disabled={isApproved || !canApproveOrClassify}
                     className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm"
                   >
                     <option value="">— escolher —</option>
@@ -190,7 +192,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                   <select
                     name="workCode"
                     defaultValue={row.workCode ?? ""}
-                    disabled={isApproved}
+                    disabled={isApproved || !canApproveOrClassify}
                     className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm"
                   >
                     <option value="">— escolher —</option>
@@ -202,9 +204,9 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                   </select>
                 </Field>
                 <Field label="Motivo (se correção)">
-                  <Input name="reason" placeholder="ex: Selcar só trabalha sistemas de frio" disabled={isApproved} />
+                  <Input name="reason" placeholder="ex: Selcar só trabalha sistemas de frio" disabled={isApproved || !canApproveOrClassify} />
                 </Field>
-                {!isApproved && (
+                {!isApproved && canApproveOrClassify && (
                   <Button type="submit" variant="outline" className="w-full">
                     Guardar + aprender regra
                   </Button>

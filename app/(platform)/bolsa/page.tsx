@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { db } from "@/db/client";
 import { freightLoads, clients, users, supplierInvoicesFreight, clientInvoicesFreight, commissions } from "@/db/schema";
-import { and, desc, eq, gte, lt, isNull, count, sum, ilike, or, type SQL } from "drizzle-orm";
+import { and, desc, eq, lt, isNull, count, sum, ilike, or, type SQL } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatEur, formatPercent } from "@/lib/money";
@@ -104,6 +104,8 @@ export default async function BolsaPage({
 
   const totalMonth = rows.filter((r) => r.createdAt >= monthStart).length;
   const totalMargin = rows.reduce((a, r) => a + (r.margin ?? 0), 0);
+  const canViewCommissions = session.role === "admin" || session.role === "clarice";
+  const canCreateLoad = session.role === "admin" || session.role === "clarice" || session.role === "comercial";
 
   const accruedAgg = await db
     .select({ amount: sum(commissions.amountEur) })
@@ -129,7 +131,7 @@ export default async function BolsaPage({
         title="Bolsa de Carga"
         description={`${rows.length} cargas · ${showMineOnly ? "minhas" : "todas"}`}
         actions={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {session.role !== "comercial" && (
               <Button variant="outline" asChild>
                 <Link href={`/bolsa?view=${view}${mine ? "" : "&mine=1"}`}>
@@ -142,9 +144,11 @@ export default async function BolsaPage({
                 {view === "kanban" ? "Tabela Excel" : "Kanban"}
               </Link>
             </Button>
-            <Button variant="outline" asChild>
-              <Link href="/bolsa/commissions">Comissões</Link>
-            </Button>
+            {canViewCommissions && (
+              <Button variant="outline" asChild>
+                <Link href="/bolsa/commissions">Comissões</Link>
+              </Button>
+            )}
             <form action={exportLoadsCsv}>
               {(mine || session.role === "comercial") && <input type="hidden" name="mineOnly" value="1" />}
               <Button type="submit" variant="outline">
@@ -152,12 +156,14 @@ export default async function BolsaPage({
                 Excel
               </Button>
             </form>
-            <Button asChild>
-              <Link href="/bolsa/new">
-                <Plus className="h-4 w-4" />
-                Nova carga
-              </Link>
-            </Button>
+            {canCreateLoad && (
+              <Button asChild>
+                <Link href="/bolsa/new">
+                  <Plus className="h-4 w-4" />
+                  Nova carga
+                </Link>
+              </Button>
+            )}
           </div>
         }
       />
@@ -264,8 +270,8 @@ export default async function BolsaPage({
                   <th className="text-right">Pago Transportador</th>
                   <th className="text-right">Margem</th>
                   <th>Nº CMR</th>
-                  <th>Nº Fatura Cliente</th>
-                  <th>Nº Fatura Fornecedor</th>
+                  <th>Nº Factura Cliente</th>
+                  <th>Nº Factura Fornecedor</th>
                   <th>R/NR</th>
                   <th>Mês Pagamento</th>
                   <th></th>

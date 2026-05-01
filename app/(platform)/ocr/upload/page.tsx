@@ -11,7 +11,7 @@ import path from "node:path";
 import { uploadInvoice } from "./actions";
 
 export default async function InvoiceUploadPage() {
-  await requireRole(["admin", "admin_oficina"]);
+  await requireRole(["admin", "clarice", "admin_oficina"]);
   const catalog = JSON.parse(
     await fs.promises.readFile(path.join(process.cwd(), "fixtures", "extracted", "_catalog.json"), "utf-8"),
   ) as { entries: Array<{ fixtureFilename: string; supplier: { name: string }; invoice: { totalGross: number } }> };
@@ -36,12 +36,10 @@ export default async function InvoiceUploadPage() {
               className="flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border bg-secondary/30 p-12 text-center cursor-pointer hover:bg-secondary/50 transition-colors"
             >
               <Upload className="h-10 w-10 text-muted-foreground" />
-              <div>
-                <div className="text-sm font-medium">Escolher ou arrastar PDF</div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  Em produção: pasta de entrada/Blob EU + extracção controlada. Aqui: simulação com fixture.
-                </div>
-              </div>
+              <span className="text-sm font-medium">Escolher ou arrastar PDF</span>
+              <span className="text-xs text-muted-foreground mt-1">
+                Em produção: pasta de entrada/Blob UE + extracção controlada. Aqui: simulação com amostra.
+              </span>
               <input type="file" id="file" name="file" accept="application/pdf" className="hidden" />
             </label>
 
@@ -55,7 +53,7 @@ export default async function InvoiceUploadPage() {
                   className="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm"
                   defaultValue=""
                 >
-                  <option value="">— escolher fixture —</option>
+                  <option value="">— escolher amostra —</option>
                   {catalog.entries.map((entry) => (
                     <option key={entry.fixtureFilename} value={entry.fixtureFilename}>
                       {entry.supplier.name} · {formatEur(entry.invoice.totalGross)}
@@ -65,7 +63,7 @@ export default async function InvoiceUploadPage() {
               </div>
               <div className="flex items-end">
                 <Badge variant="secondary" className="text-[10px]">
-                  Demo cacheia OCR. Em produção, cada upload fica registado e auditável.
+                  A avaliação guarda o OCR em cache. Em produção, cada upload fica registado e auditável.
                 </Badge>
               </div>
             </div>
@@ -82,8 +80,8 @@ export default async function InvoiceUploadPage() {
 
       <Card>
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
-          <div><strong>Pipeline (prod):</strong></div>
-          <div>1. Upload → armazenamento EU · 2. extracção de texto · 3. Claude API classifica via NIF → regra</div>
+          <div><strong>Pipeline em produção:</strong></div>
+          <div>1. Upload → armazenamento UE · 2. extracção de texto · 3. Claude API classifica via NIF → regra</div>
           <div>4. UI mostra confiança por campo · 5. Admin valida → regra aprendida · 6. Export XML PHC Advanced</div>
         </CardContent>
       </Card>

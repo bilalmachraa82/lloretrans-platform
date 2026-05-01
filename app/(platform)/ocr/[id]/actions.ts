@@ -7,7 +7,6 @@ import { and, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { audit } from "@/lib/audit";
 import { randomId } from "@/lib/utils";
-import { createPhcClient } from "@/lib/integrations/phc";
 
 export async function approveInvoice(formData: FormData): Promise<void> {
   const session = await requireRole(["admin", "admin_oficina"]);
@@ -16,6 +15,9 @@ export async function approveInvoice(formData: FormData): Promise<void> {
 
   const [before] = await db.select().from(invoices).where(eq(invoices.id, invoiceId)).limit(1);
   if (!before) throw new Error("not found");
+  if (before.state !== "pending_review") {
+    throw new Error(`Estado actual (${before.state}) não permite aprovação`);
+  }
 
   await db
     .update(invoices)
@@ -45,7 +47,7 @@ export async function reopenInvoice(formData: FormData): Promise<void> {
 
   await db
     .update(invoices)
-    .set({ state: "pending_review", approvedAt: null, updatedAt: new Date() })
+    .set({ state: "pending_review", approvedBy: null, approvedAt: null, exportedAt: null, updatedAt: new Date() })
     .where(eq(invoices.id, invoiceId));
 
   await audit({
@@ -64,6 +66,12 @@ export async function exportInvoiceAction(formData: FormData): Promise<void> {
   const invoiceId = formData.get("invoiceId")?.toString();
   if (!invoiceId) throw new Error("invoiceId required");
 
+  const [before] = await db.select().from(invoices).where(eq(invoices.id, invoiceId)).limit(1);
+  if (!before) throw new Error("not found");
+  if (before.state !== "approved") {
+    throw new Error(`Factura tem de estar aprovada antes de exportar (estado actual: ${before.state})`);
+  }
+
   await db
     .update(invoices)
     .set({ state: "exported", exportedAt: new Date(), updatedAt: new Date() })
@@ -74,6 +82,7 @@ export async function exportInvoiceAction(formData: FormData): Promise<void> {
     action: "invoice.export",
     entityType: "invoice",
     entityId: invoiceId,
+    before: { state: before.state },
     after: { format: "xml-phc" },
   });
   revalidatePath(`/ocr/${invoiceId}`);

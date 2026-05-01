@@ -25,7 +25,7 @@ export const ROLE_LABELS: Record<Role, string> = {
   admin: "AiTiPro · Admin",
   clarice: "Direcção · Clarice",
   admin_oficina: "Oficina · Administrativa",
-  admin_faturacao: "Faturação · Administrativa",
+  admin_faturacao: "Facturação · Administrativa",
   admin_contas: "Contas Grupo · Administrativa",
   comercial: "Comercial · Bolsa",
   mecanico: "Oficina · Mecânico",

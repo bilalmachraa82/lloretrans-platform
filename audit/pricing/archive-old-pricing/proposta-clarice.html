@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<title>Proposta · Plataforma Operacional Lloretrans × AiTiPro · v1.1 · 27 Abril 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  :root{
+    --ink:#0a1628;
+    --muted:#5b6675;
+    --line:#e2e6ec;
+    --paper:#fbfaf6;
+    --paper-2:#f4f1ea;
+    --accent:#b9530c;
+    --accent-bg:#f8eee2;
+    --primary:#0e2a55;
+    --primary-soft:#e7ecf6;
+    --green:#1f6c43;
+    --red:#9a2424;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:48px 56px 80px;background:var(--paper)}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif;font-weight:600;color:var(--primary);margin:0}
+  h1{font-size:34px;line-height:1.15;letter-spacing:-.01em;margin-bottom:14px}
+  h2{font-size:22px;line-height:1.25;margin:36px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  h3{font-size:17px;line-height:1.3;margin:22px 0 8px}
+  h4{font-size:14px;line-height:1.3;margin:0 0 6px;color:var(--ink)}
+  p{margin:0 0 12px}
+  em{font-style:italic;color:var(--primary)}
+  strong{font-weight:600}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;background:var(--paper-2);padding:1px 6px;border-radius:3px}
+  ul,ol{margin:6px 0 14px 20px;padding:0}
+  li{margin-bottom:4px}
+  a{color:var(--primary);text-decoration:underline}
+  hr{border:0;border-top:1px solid var(--line);margin:32px 0}
+  .eyebrow{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .meta{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:13px;color:var(--muted)}
+  .header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:32px}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo .badge{width:34px;height:34px;border-radius:6px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:-apple-system,sans-serif;font-size:18px}
+  .logo .name{font-weight:600;font-family:-apple-system,sans-serif;font-size:14px}
+  .logo .sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:-apple-system,sans-serif}
+  .titleblock{margin:24px 0 36px}
+  .titleblock .pill{display:inline-block;font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:999px;margin-bottom:18px}
+  .recipient{font-family:-apple-system,sans-serif;font-size:13px;color:var(--muted);margin-top:14px}
+  .recipient strong{color:var(--ink)}
+  .summary{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;margin:24px 0 32px;box-shadow:0 2px 12px rgba(14,42,85,.04)}
+  .summary .head{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;font-family:-apple-system,sans-serif;margin-bottom:14px}
+  .summary-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:28px}
+  @media (max-width:680px){.summary-grid{grid-template-columns:1fr}}
+  .lines{border-left:2px solid var(--primary-soft);padding-left:18px}
+  .line{display:flex;justify-content:space-between;gap:12px;font-family:-apple-system,sans-serif;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .line:last-child{border:0}
+  .line .lbl{color:var(--muted)}
+  .line .val{font-weight:600;color:var(--primary);text-align:right}
+  .line .hint{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:2px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;margin:24px 0 36px}
+  @media (max-width:680px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{padding:18px 14px;text-align:center;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat .n{font-size:26px;font-weight:600;color:var(--primary);font-family:Georgia,serif}
+  .stat .l{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-family:-apple-system,sans-serif;margin-top:4px}
+  .quote{background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:24px;margin:24px 0;font-style:italic;font-size:18px;line-height:1.4;color:var(--ink)}
+  .quote .src{display:block;font-style:normal;font-size:11px;color:var(--muted);margin-top:14px;letter-spacing:.06em;font-family:-apple-system,sans-serif}
+  .mvp{border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin:14px 0;background:#fff}
+  .mvp-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}
+  .mvp-code{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .mvp-title{font-size:18px;font-weight:600;color:var(--primary);margin-top:2px}
+  .mvp-tags{display:flex;gap:8px;flex-wrap:wrap;font-family:-apple-system,sans-serif;font-size:11px}
+  .tag{padding:3px 10px;border-radius:999px;background:var(--paper-2);color:var(--muted);border:1px solid var(--line)}
+  .tag.featured{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+  .tag.warn{background:#fdf3e6;color:#a35a0c;border-color:#f0c98a}
+  .mvp-body{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media (max-width:680px){.mvp-body{grid-template-columns:1fr}}
+  .lbl-mini{font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:4px}
+  .lbl-mini.dor{color:var(--red)}
+  .lbl-mini.entrega{color:var(--green)}
+  .lbl-mini.dep{color:var(--muted)}
+  .lbl-mini.preco{color:var(--accent)}
+  .mvp-fields p{font-size:14px;margin:0 0 10px}
+  .price-inline{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-family:-apple-system,sans-serif;font-size:13px}
+  .price-inline .v{font-weight:600;color:var(--primary);font-size:15px}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+  @media (max-width:780px){.tiers{grid-template-columns:1fr}}
+  .tier{border:1px solid var(--line);border-radius:12px;padding:22px;background:#fff;display:flex;flex-direction:column}
+  .tier.featured{border-color:var(--accent);background:#fffdf9;box-shadow:0 4px 18px rgba(185,83,12,.08)}
+  .tier-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .tier-name{font-size:18px;font-weight:600;color:var(--primary)}
+  .tier-badge{font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:var(--accent);color:#fff;padding:3px 8px;border-radius:999px}
+  .tier-eyebrow{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .tier-tagline{font-size:13px;color:var(--muted);margin-bottom:18px;font-style:italic;min-height:34px}
+  .tier-price{font-family:-apple-system,sans-serif;font-size:22px;font-weight:600;color:var(--primary)}
+  .tier-monthly{font-family:-apple-system,sans-serif;font-size:13px;color:var(--muted);margin-bottom:14px}
+  .tier ul{font-family:-apple-system,sans-serif;font-size:13px;list-style:none;margin:0;padding:0}
+  .tier li{padding:6px 0;border-bottom:1px dashed var(--line);position:relative;padding-left:18px}
+  .tier li:last-child{border:0}
+  .tier li::before{content:"·";position:absolute;left:6px;top:6px;color:var(--accent);font-weight:700}
+  .table-wrap{overflow-x:auto;margin:14px 0}
+  table{width:100%;border-collapse:collapse;font-family:-apple-system,sans-serif;font-size:13px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-weight:600;background:var(--paper-2);color:var(--primary);font-size:11px;text-transform:uppercase;letter-spacing:.1em}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .timeline{margin:14px 0;font-family:-apple-system,sans-serif;font-size:13px}
+  .tl-row{display:grid;grid-template-columns:80px 220px 1fr;gap:14px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}
+  .tl-row:last-child{border:0}
+  .tl-w{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+  .tl-p{font-weight:600;color:var(--primary)}
+  .tl-d{color:var(--muted);font-size:12px}
+  .callout{border:1px solid var(--line);border-left:4px solid var(--accent);background:#fff;padding:18px 20px;border-radius:6px;margin:16px 0}
+  .callout.warn{border-left-color:var(--red);background:#fff7f7}
+  .callout.ok{border-left-color:var(--green);background:#f5fbf7}
+  .callout h4{margin:0 0 6px;font-family:-apple-system,sans-serif;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+  .callout p{font-size:14px;margin:0}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media (max-width:680px){.twocol{grid-template-columns:1fr}}
+  .footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-family:-apple-system,sans-serif;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .signature{margin-top:32px;padding:22px;border:1px solid var(--line);border-radius:10px;background:#fff;font-family:-apple-system,sans-serif;font-size:13px}
+  .signature .role{color:var(--muted);font-size:12px}
+  .verif-block{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+  @media (max-width:680px){.verif-block{grid-template-columns:1fr}}
+  .verif{border:1px solid var(--line);border-radius:8px;padding:14px;background:#fff;font-family:-apple-system,sans-serif;font-size:12px}
+  .verif h4{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .verif ul{margin:0;padding-left:16px}
+  .verif li{font-size:12px;color:var(--ink);margin-bottom:4px}
+  .nowrap{white-space:nowrap}
+  @media print{
+    .wrap{padding:24px;max-width:none}
+    .summary,.tier,.mvp,.callout,.signature{break-inside:avoid}
+    h2{break-after:avoid}
+    a{color:var(--ink)}
+    .no-print{display:none}
+  }
+  .print-btn{position:fixed;top:20px;right:20px;background:var(--primary);color:#fff;border:0;padding:10px 18px;border-radius:6px;font-family:-apple-system,sans-serif;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(14,42,85,.18)}
+  .print-btn:hover{background:#0a1f3f}
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">Imprimir / Guardar como PDF</button>
+
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo">
+      <div class="badge">A</div>
+      <div>
+        <div class="name">AiTiPro</div>
+        <div class="sub">Proposta confidencial</div>
+      </div>
+    </div>
+    <div class="meta">v1.1 · 27 Abril 2026</div>
+  </div>
+
+  <div class="titleblock">
+    <span class="pill">Proposta comercial · Lloretrans · Grupo Patrícia Pilar</span>
+    <h1>Plataforma operacional <em>Lloretrans</em>.<br/>Seis fluxos. Uma resposta. Em fases.</h1>
+    <div class="recipient">
+      Para: <strong>Clarice Santos</strong> · Direcção Lloretrans · Grupo Patrícia Pilar<br/>
+      De: <strong>Bilal Machraa</strong> · AiTiPro · <a href="mailto:bilal.machraa@aitipro.com">bilal.machraa@aitipro.com</a><br/>
+      Reunião alvo: Conselho de Administração do Grupo Patrícia Pilar · 11 de Maio de 2026
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="head">Sumário executivo · 60 segundos</div>
+    <div class="summary-grid">
+      <div>
+        <p>A reunião de 16 de Abril identificou <strong>seis fluxos operacionais</strong> com dor mensurável: validação de quilómetros, OCR de facturas-fornecedor, digitalização central de documentos, médias de combustível, bolsa de carga com comissões, e folhas de obra da oficina. O denominador comum não é tempo perdido — é <em>controlo que escapa</em>: papéis perdidos, classificações dependentes de conhecimento tácito, cargas cuja factura chega um mês depois sem memória.</p>
+        <p>Propomos uma <strong>plataforma integrada</strong> em que a IA regista e classifica, o humano valida antes de qualquer acção irreversível, e cada mutação fica em auditoria append-only. Os seis módulos vendem-se independentemente — comecem por um, chegam aos seis quando fizer sentido para o grupo.</p>
+        <p>O estado actual é uma <strong>demonstração a funcionar</strong> em <code>lloretrans.aitipro.com</code> com dados sintéticos deterministas e as <strong>9 facturas reais</strong> de fornecedores Lloretrans já classificadas. Está pronta para mostrar ao conselho na reunião de 11 de Maio.</p>
+      </div>
+      <div class="lines">
+        <div class="line"><span class="lbl">Sprint 0</span><span class="val">€ 5k – 7k<span class="hint">obrigatória · 1–2 sem · descontável 50%</span></span></div>
+        <div class="line"><span class="lbl">PRO recomendado</span><span class="val">€ 32k – 45k<span class="hint">A + B + C + piloto F</span></span></div>
+        <div class="line"><span class="lbl">Recorrente PRO</span><span class="val">€ 1.200 – 1.800/mês<span class="hint">operação, suporte, integrações</span></span></div>
+        <div class="line"><span class="lbl">Calendário</span><span class="val">10–12 semanas<span class="hint">velocidade AI-native demonstrada</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">6</div><div class="l">Módulos independentes</div></div>
+    <div class="stat"><div class="n">9</div><div class="l">Facturas reais processadas</div></div>
+    <div class="stat"><div class="n">60+</div><div class="l">Viaturas suportadas</div></div>
+    <div class="stat"><div class="n">UE</div><div class="l">Dados em repouso na UE</div></div>
+  </div>
+
+  <h2>Contexto · Seis fluxos. Uma frase-âncora.</h2>
+  <div class="twocol">
+    <div>
+      <p>Na reunião de 16 de Abril de 2026, a Clarice Santos e o Éder Monteiro percorreram o portfólio operacional da Lloretrans — da portaria à facturação. O briefing foi directo: há dores em cada etapa, mas o foco não é velocidade.</p>
+      <p>Mapeámos os seis fluxos discutidos, atribuímos um MVP a cada, e construímos uma demo ao vivo onde a Clarice e qualquer stakeholder do grupo podem entrar e ver em prática — sem formulários, sem onboarding, apenas um URL público e 12 perfis pré-criados.</p>
+      <p>Esta proposta formaliza âmbito, investimento e calendário. Cada MVP corresponde a uma dor concreta transcrita da reunião — nada inventado.</p>
+    </div>
+    <div>
+      <div class="quote">
+        Não é só tempo. A nossa preocupação também é o <em>controlo</em>.<br/>
+        <span style="font-size:14px;color:var(--muted)">A IA regista. O humano valida.</span>
+        <span class="src">Clarice Santos · Lloretrans · 16/04/2026</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>Âmbito · Os seis módulos, um a um</h2>
+
+  <article class="mvp">
+    <div class="mvp-head">
+      <div>
+        <div class="mvp-code">MVP A · validação km</div>
+        <div class="mvp-title">Validação de Quilómetros</div>
+      </div>
+      <div class="mvp-tags">
+        <span class="tag featured">Quick win</span>
+        <span class="tag">2 semanas</span>
+      </div>
+    </div>
+    <div class="mvp-body">
+      <div class="mvp-fields">
+        <div class="lbl-mini dor">Dor</div>
+        <p>Administrativas entram em duas aplicações, viagem a viagem, a cruzar Logue Trans com Frotcom. Os erros passam para a factura.</p>
+        <div class="lbl-mini entrega">Entrega</div>
+        <p>Dashboard diário com semáforo verde / amarelo / vermelho. Threshold confirmado a 3 km. Bulk-approve das verdes com um clique. Export CSV para PHC Advanced.</p>
+      </div>
+      <div class="mvp-fields">
+        <div class="lbl-mini dep">Dependências</div>
+        <p>API Logue Trans (Hélio) · credenciais Frotcom (grupo).</p>
+        <div class="lbl-mini preco">Preço por unidade</div>
+        <p><strong>€ 8k – 10k</strong> de implementação · prazo de entrega 2 semanas calendário.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="mvp">
+    <div class="mvp-head">
+      <div>
+        <div class="mvp-code">MVP B · OCR fornecedor</div>
+        <div class="mvp-title">OCR Facturas de Fornecedor</div>
+      </div>
+      <div class="mvp-tags">
+        <span class="tag">Driver de ROI</span>
+        <span class="tag">4 semanas</span>
+      </div>
+    </div>
+    <div class="mvp-body">
+      <div class="mvp-fields">
+        <div class="lbl-mini dor">Dor</div>
+        <p>50 fornecedores de oficina, 50 layouts. Classificação por conhecimento tácito — sai com a pessoa que sabe.</p>
+        <div class="lbl-mini entrega">Entrega</div>
+        <p>Upload → extracção automática → classificação por NIF → validação humana → export XML PHC Advanced. Cada correcção cria regra de fornecedor que aplica em próximas facturas. 9 facturas reais já carregadas.</p>
+      </div>
+      <div class="mvp-fields">
+        <div class="lbl-mini dep">Dependências</div>
+        <p>Tabela completa de códigos de serviço · lista top 10 fornecedores (80% do volume) · formato XML PHC Advanced.</p>
+        <div class="lbl-mini preco">Preço por unidade</div>
+        <p><strong>€ 18k – 22k</strong> de implementação · prazo de entrega 4 semanas calendário.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="mvp">
+    <div class="mvp-head">
+      <div>
+        <div class="mvp-code">MVP C · documentos</div>
+        <div class="mvp-title">Digitalização Central de Documentos</div>
+      </div>
+      <div class="mvp-tags">
+        <span class="tag">Pré-requisito B/F</span>
+        <span class="tag">3 semanas</span>
+      </div>
+    </div>
+    <div class="mvp-body">
+      <div class="mvp-fields">
+        <div class="lbl-mini dor">Dor</div>
+        <p>CMR, guias de remessa, guias de recepção, tickets frio em papel disperso. WhatsApp caótico. Colegas das Frutas precisam dos documentos antes da Lloretrans.</p>
+        <div class="lbl-mini entrega">Entrega</div>
+        <p>Hub único. Um operador centralizado digitaliza. Associação automática à viagem por matrícula + data + nº CMR. Tag entrada / saída. Permissões cross-empresa.</p>
+      </div>
+      <div class="mvp-fields">
+        <div class="lbl-mini dep">Dependências</div>
+        <p>Volume diário de documentos · scanner ou MFP em portaria · matriz de permissões entre empresas do grupo.</p>
+        <div class="lbl-mini preco">Preço por unidade</div>
+        <p><strong>€ 12k – 15k</strong> de implementação · prazo de entrega 3 semanas calendário.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="mvp">
+    <div class="mvp-head">
+      <div>
+        <div class="mvp-code">MVP D · combustível</div>
+        <div class="mvp-title">Médias de Combustível</div>
+      </div>
+      <div class="mvp-tags">
+        <span class="tag warn">Condicionado · Frotcom API</span>
+        <span class="tag">3 semanas</span>
+      </div>
+    </div>
+    <div class="mvp-body">
+      <div class="mvp-fields">
+        <div class="lbl-mini dor">Dor</div>
+        <p>Cepsa / Repsol / Radius / bomba interna + Frotcom API pendente. O cruzamento manual deixa fuga ou erro passar despercebido durante semanas.</p>
+        <div class="lbl-mini entrega">Entrega</div>
+        <p>Cruzamento dos abastecimentos reais por fornecedor. Litros / 100 km por viatura com baseline adaptativo quando a leitura Frotcom estiver disponível. Anomalias sinalizadas, não bloqueadas — regra da Clarice.</p>
+      </div>
+      <div class="mvp-fields">
+        <div class="lbl-mini dep">Dependências</div>
+        <p>API Frotcom de leitura por confirmar · ingestão periódica Cepsa / Repsol / Radius / bomba interna.</p>
+        <div class="lbl-mini preco">Preço por unidade</div>
+        <p><strong>€ 12k – 15k</strong> de implementação (condicionado à Sprint 0) · prazo 3 semanas calendário.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="mvp">
+    <div class="mvp-head">
+      <div>
+        <div class="mvp-code">MVP E · bolsa + comissões</div>
+        <div class="mvp-title">Bolsa de Carga + Comissões</div>
+      </div>
+      <div class="mvp-tags">
+        <span class="tag warn">Condicionado · saneamento dados</span>
+        <span class="tag">6 semanas</span>
+      </div>
+    </div>
+    <div class="mvp-body">
+      <div class="mvp-fields">
+        <div class="lbl-mini dor">Dor</div>
+        <p>Excel com 1.000+ linhas por ano. Factura polaca demora um mês — comercial já não se lembra. Comissões calculadas à mão no fim do mês.</p>
+        <div class="lbl-mini entrega">Entrega</div>
+        <p>Excel real de 306 cargas em tabela auditada, com R / NR, CMR, facturas fornecedor / cliente e comissões por regra confirmada: 20% do lucro total + €2,50 nacional ou €5 internacional em viatura Lloretrans.</p>
+      </div>
+      <div class="mvp-fields">
+        <div class="lbl-mini dep">Dependências</div>
+        <p>Integrador PHC Advanced (master de clientes/fornecedores + emissão de facturas) · confirmar se PREÇO CLIENTE / PAGO TRANSPORTADOR representam venda / custo (Excel mostra margem global ≈ €0 e EUROREBELO -€6.100 a investigar).</p>
+        <div class="lbl-mini preco">Preço por unidade</div>
+        <p><strong>€ 22k – 28k</strong> (condicionado à Sprint 0 + saneamento de dados prévio) · prazo 6 semanas calendário.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="mvp">
+    <div class="mvp-head">
+      <div>
+        <div class="mvp-code">MVP F · oficina</div>
+        <div class="mvp-title">Folha de Obra Oficina (PWA)</div>
+      </div>
+      <div class="mvp-tags">
+        <span class="tag">Piloto recomendado</span>
+        <span class="tag">4 semanas</span>
+      </div>
+    </div>
+    <div class="mvp-body">
+      <div class="mvp-fields">
+        <div class="lbl-mini dor">Dor</div>
+        <p>O mecânico preenche folha em papel. A administrativa relança no PHC Advanced manualmente. Duplicação total · zero audit trail na fonte.</p>
+        <div class="lbl-mini entrega">Entrega</div>
+        <p>PWA mobile-first com modo offline. Mecânico regista em menos de 3 minutos. Estados iniciar / pausar / aguardar peças / retomar / fechar com tempo activo contabilizado. Assinatura em canvas. Admin valida e faz export para PHC Advanced.</p>
+      </div>
+      <div class="mvp-fields">
+        <div class="lbl-mini dep">Dependências</div>
+        <p>Piloto com 1 mecânico antes de alargar (a adopção é o risco #1) · template actual em papel · wifi na oficina.</p>
+        <div class="lbl-mini preco">Preço por unidade</div>
+        <p><strong>€ 18k – 22k</strong> de implementação · prazo de entrega 4 semanas calendário.</p>
+      </div>
+    </div>
+  </article>
+
+  <h2>Investimento · Três pacotes à escolha</h2>
+  <p>Os pacotes são <strong>combinações pré-definidas dos seis módulos</strong> com desconto sobre o preço unitário. A Clarice escolhe o que faz sentido para a primeira decisão; o resto fica no roadmap. Antes de qualquer pacote ≥ 4 módulos, há <strong>Sprint 0 obrigatória de €5k–7k</strong> para fechar risco técnico antes de assinar implementação.</p>
+
+  <div class="tiers">
+    <div class="tier">
+      <div class="tier-head">
+        <div class="tier-name">Core</div>
+      </div>
+      <div class="tier-eyebrow">Arranque · quick win</div>
+      <div class="tier-tagline">Entrada controlada para uma dor principal, sem prometer o portfólio completo.</div>
+      <div class="tier-price">€ 14k – 18k</div>
+      <div class="tier-monthly">€ 600 – 900 / mês</div>
+      <ul>
+        <li>1 MVP forte (C ou A+B reduzido)</li>
+        <li>Conectores em modo simulação + export XML PHC Advanced</li>
+        <li>Onboarding 2 semanas</li>
+        <li>SLA 99% horário útil</li>
+        <li>Suporte por email · 48h úteis</li>
+      </ul>
+    </div>
+
+    <div class="tier featured">
+      <div class="tier-head">
+        <div class="tier-name">PRO</div>
+        <span class="tier-badge">Recomendado</span>
+      </div>
+      <div class="tier-eyebrow">Operacional · 80% do benefício</div>
+      <div class="tier-tagline">Quatro fluxos críticos, faseados, com risco controlado para a primeira decisão.</div>
+      <div class="tier-price">€ 32k – 45k</div>
+      <div class="tier-monthly">€ 1.200 – 1.800 / mês</div>
+      <ul>
+        <li>MVP C + A + B + piloto F</li>
+        <li>XML PHC Advanced até integrador validar escrita</li>
+        <li>Master de fornecedores com aprendizagem contínua</li>
+        <li>Dashboard direcção com KPIs operacionais</li>
+        <li>Suporte business-hours</li>
+        <li>Revisão mensal de operação</li>
+      </ul>
+    </div>
+
+    <div class="tier">
+      <div class="tier-head">
+        <div class="tier-name">Enterprise</div>
+      </div>
+      <div class="tier-eyebrow">Roadmap · escala grupo</div>
+      <div class="tier-tagline">Portfólio completo por fases, condicionado a integrações e saneamento de dados.</div>
+      <div class="tier-price">€ 58k – 85k</div>
+      <div class="tier-monthly">€ 2.200 – 3.500 / mês</div>
+      <ul>
+        <li>6 MVPs no roadmap + módulo Admin completo</li>
+        <li>Multi-empresa com permissões cross (Frutas, Tomate, Cerejas)</li>
+        <li>D e E condicionados a Frotcom API + PHC Advanced</li>
+        <li>PWA oficina + onboarding personalizado de mecânicos</li>
+        <li>SLA 99% uptime · DPA formal assinado</li>
+        <li>Roadmap conjunto · sprint review mensal com direcção</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Catálogo modular — comprar à la carte</h3>
+  <p>Quem prefere uma combinação diferente dos pacotes acima pode contratar módulos isolados ao preço unitário, com mensalidade indexada ao número de módulos contratados.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Cód.</th><th>Módulo</th><th>Complexidade</th><th class="num">Setup</th><th class="num">Prazo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>A</strong></td><td>Validação de Quilómetros</td><td>Baixa</td><td class="num">€ 8k – 10k</td><td class="num">2 sem</td></tr>
+        <tr><td><strong>B</strong></td><td>OCR Facturas Fornecedor</td><td>Alta</td><td class="num">€ 18k – 22k</td><td class="num">4 sem</td></tr>
+        <tr><td><strong>C</strong></td><td>Digitalização Documentos</td><td>Média</td><td class="num">€ 12k – 15k</td><td class="num">3 sem</td></tr>
+        <tr><td><strong>D</strong></td><td>Médias de Combustível</td><td>Média *</td><td class="num">€ 12k – 15k *</td><td class="num">3 sem *</td></tr>
+        <tr><td><strong>E</strong></td><td>Bolsa de Carga + Comissões</td><td>Muito alta *</td><td class="num">€ 22k – 28k *</td><td class="num">6 sem *</td></tr>
+        <tr><td><strong>F</strong></td><td>Folha de Obra Oficina (PWA)</td><td>Alta</td><td class="num">€ 18k – 22k</td><td class="num">4 sem</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--muted);font-family:-apple-system,sans-serif"><strong>*</strong> Preço e prazo de D e E ficam condicionados à Sprint 0. Se as dependências (API Frotcom de leitura para D; integrador PHC Advanced + saneamento de dados Excel para E) não confirmarem, esses módulos saem do scope contratual ou entram em modo reduzido.</p>
+
+  <h2>Sprint 0 · Porta de entrada obrigatória</h2>
+  <p>Para qualquer pacote PRO ou Enterprise, há uma <strong>Sprint 0 obrigatória</strong> antes de assinar implementação. É o que protege a Lloretrans de comprar uma promessa que depois não é entregue, e protege a AiTiPro de prometer escrita PHC Advanced sem o integrador confirmar.</p>
+  <div class="callout">
+    <h4>O que entra na Sprint 0</h4>
+    <p style="margin-bottom:6px">€ 5k – 7k · 1 a 2 semanas calendário · descontável <strong>até 50%</strong> se avançarem para PRO ou Enterprise nos 30 dias seguintes.</p>
+    <ul style="margin-top:10px;font-size:14px">
+      <li>Workshop com integrador PHC Advanced + parecer escrito sobre escrita / XML.</li>
+      <li>Confirmação técnica Frotcom + Logue Trans (acessos, limites de API).</li>
+      <li>Volume documental real medido (CMR / guias vs facturas-fornecedor).</li>
+      <li>Escolha priorizada do MVP inicial e estimativa final de calendário.</li>
+      <li>Carta de preço fixo por fase para o pacote escolhido.</li>
+    </ul>
+  </div>
+
+  <h2>Calendário · PRO faseado, 10 a 12 semanas</h2>
+  <div class="timeline">
+    <div class="tl-row"><div class="tl-w">Sem 1</div><div class="tl-p">Sprint 0</div><div class="tl-d">Acessos Neon + Vercel · credenciais Frotcom · workshop integrador PHC Advanced · dataset shadow.</div></div>
+    <div class="tl-row"><div class="tl-w">Sem 2–3</div><div class="tl-p">MVP A · Validação km</div><div class="tl-d">Reconciliação Logue Trans × Frotcom · dashboard com semáforos · demo interna.</div></div>
+    <div class="tl-row"><div class="tl-w">Sem 3–6</div><div class="tl-p">MVP C · Documentos</div><div class="tl-d">Hub centralizado · associação automática · permissões cross-empresa.</div></div>
+    <div class="tl-row"><div class="tl-w">Sem 4–8</div><div class="tl-p">MVP B · OCR fornecedor</div><div class="tl-d">Extracção PDF · classificação por NIF · regras por fornecedor · 9 facturas reais como base.</div></div>
+    <div class="tl-row"><div class="tl-w">Sem 8–12</div><div class="tl-p">MVP F · Oficina (piloto)</div><div class="tl-d">PWA com 1 mecânico · refinamento de fluxo · alargar a 3 mecânicos · export PHC Advanced.</div></div>
+    <div class="tl-row"><div class="tl-w">Sem 12+</div><div class="tl-p">D + E (roadmap)</div><div class="tl-d">Entram como change request quando Frotcom API e saneamento de dados estiverem confirmados.</div></div>
+  </div>
+  <p style="font-size:13px;color:var(--muted)">A velocidade AI-native (Claude Opus 4.7 + GPT 5.5 no desenvolvimento) está incluída no calendário acima — entregamos em 10–12 semanas o que uma software house tradicional entrega em 4 a 6 meses. <strong>A velocidade está no preço, não no desconto.</strong></p>
+
+  <h2>Dependências críticas e mitigação</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Dependência</th><th>Responsável</th><th>Bloqueia</th><th>Mitigação</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>API Logue Trans</strong></td>
+          <td>Hélio · Lloretrans</td>
+          <td>MVP A e C em modo live</td>
+          <td>Stubs activos até API chegar · reunião técnica de 45 min nas primeiras 72h</td>
+        </tr>
+        <tr>
+          <td><strong>Integrador PHC Advanced</strong></td>
+          <td>Parceiro actual do grupo</td>
+          <td>Escrita automática em B, E, F</td>
+          <td>Demo opera por export XML enquanto integrador não confirma escrita directa</td>
+        </tr>
+        <tr>
+          <td><strong>API Frotcom de leitura</strong></td>
+          <td>Administração do grupo</td>
+          <td>Precisão do MVP D</td>
+          <td>D sinaliza com abastecimentos reais + odómetro disponível enquanto não houver leitura live</td>
+        </tr>
+        <tr>
+          <td><strong>Shadow session administrativa</strong></td>
+          <td>Clarice · 2h</td>
+          <td>Baselines de ROI para defender internamente</td>
+          <td>Pode ser pós-assinatura de Sprint 0</td>
+        </tr>
+        <tr>
+          <td><strong>Piloto mecânico (MVP F)</strong></td>
+          <td>Responsável da oficina · 3 semanas</td>
+          <td>Adopção do módulo oficina</td>
+          <td>Arrancar com 1 mecânico antes de alargar · reversibilidade total</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Verificado · Assumido · Em aberto</h2>
+  <div class="verif-block">
+    <div class="verif">
+      <h4>Verificado</h4>
+      <ul>
+        <li>9 facturas reais Lloretrans já classificadas na demo.</li>
+        <li>Threshold km = 3 km confirmado pela Clarice.</li>
+        <li>Regra de comissão (20% lucro + €2,50 nacional / €5 internacional) confirmada.</li>
+        <li>Demo pública em <code>lloretrans.aitipro.com</code>.</li>
+      </ul>
+    </div>
+    <div class="verif">
+      <h4>Assumido</h4>
+      <ul>
+        <li>SLA 99% em horário útil (não 24/7).</li>
+        <li>Suporte business-hours (9h–19h dias úteis).</li>
+        <li>IVA não incluído nos valores.</li>
+        <li>Validade da proposta: 30 dias após emissão.</li>
+      </ul>
+    </div>
+    <div class="verif">
+      <h4>Em aberto · fechar na Sprint 0</h4>
+      <ul>
+        <li>Confirmação do integrador PHC Advanced.</li>
+        <li>Acesso à API Frotcom de leitura.</li>
+        <li>Volume real de documentos / mês.</li>
+        <li>Saneamento dos dados da bolsa (Excel).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>O que <em>não</em> está incluído</h2>
+  <ul style="font-family:-apple-system,sans-serif;font-size:14px">
+    <li>Hardware (scanners, MFP de portaria, tablets oficina).</li>
+    <li>Licença de software de terceiros (PHC Advanced, Frotcom, cartões de combustível).</li>
+    <li>Trabalho do integrador PHC Advanced — quem o paga é o grupo, conforme contrato existente.</li>
+    <li>Migração histórica de dados (>12 meses) — orçamentada à parte se necessária.</li>
+    <li>Formação fora do âmbito do onboarding incluído.</li>
+    <li>Desenvolvimento custom fora dos seis módulos contratados.</li>
+  </ul>
+
+  <h2>Como justificar a mensalidade ao conselho</h2>
+  <p>Três comparações concretas, em vez de listas de funcionalidades:</p>
+  <ol style="font-family:-apple-system,sans-serif;font-size:14px">
+    <li><strong>Substituição de trabalho repetitivo.</strong> €1.500/mês é cerca de metade do custo de uma administrativa fully loaded em Portugal em 2026. A plataforma cruza km, regista CMR e classifica facturas todos os dias, sem férias e sem erro humano. A administrativa fica liberta para o que exige decisão.</li>
+    <li><strong>Custo de erro silencioso.</strong> Cada km não validado, cada classificação errada, cada CMR perdido custa em factura errada, IVA cruzado errado ou viagem facturada com prejuízo. Estimar 0,5% a 1% do volume facturado em erros silenciosos é conservador — para a Lloretrans são milhares de euros por ano que a plataforma fecha.</li>
+    <li><strong>Reuso multi-empresa.</strong> A plataforma vive uma vez no grupo. As 29 entidades partilham a mesma camada de digitalização e validação. A mensalidade não cresce linearmente com utilizadores — cresce com volume documental e suporte.</li>
+  </ol>
+
+  <h2>Garantias e protecções para o conselho</h2>
+  <ul style="font-family:-apple-system,sans-serif;font-size:14px">
+    <li><strong>Auditabilidade total.</strong> Todos os dados exportáveis em formato aberto. Nada fica preso à AiTiPro.</li>
+    <li><strong>Saída sem penalização</strong> com 90 dias de aviso. Os dados são devolvidos.</li>
+    <li><strong>NDA mútuo</strong> assinado antes de qualquer dado real entrar na plataforma.</li>
+    <li><strong>DPA formal</strong> conforme RGPD, incluído no pacote Enterprise.</li>
+    <li><strong>Decisão é humana.</strong> A IA regista, cruza, valida e classifica. Nenhuma acção irreversível é tomada sem confirmação humana.</li>
+    <li><strong>Cláusula de revisão anual</strong> de scope: o conselho pode subir ou descer a operação consoante o uso real.</li>
+  </ul>
+
+  <h2>Perguntas frequentes</h2>
+  <h3>Porquê três pacotes em vez de um preço único?</h3>
+  <p>Porque os seis fluxos têm complexidades diferentes e a Lloretrans pode não querer comprar tudo de uma vez. Cada pacote é uma decisão isolada que pode evoluir para o seguinte sem reescrever contrato.</p>
+
+  <h3>Porquê Sprint 0 obrigatória?</h3>
+  <p>Para validar com o integrador PHC Advanced e com a Frotcom o que é tecnicamente viável antes de assinar implementação. Reduz o risco de pagar uma promessa não entregue.</p>
+
+  <h3>Vocês usam IA para desenvolver — devia ser mais barato?</h3>
+  <p>A velocidade AI-native está no calendário, não no preço. Entregamos em 10 a 12 semanas o que uma software house tradicional entrega em 4 a 6 meses. O preço cobre integração, validação, suporte e responsabilidade operacional — coisas que a ferramenta não acelera.</p>
+
+  <h3>O que acontece se o integrador PHC Advanced não colaborar?</h3>
+  <p>O scope reduz: B / E / F operam por export XML em vez de escrita directa. O contrato regista isto explicitamente; a Lloretrans não paga por escrita que não acontece.</p>
+
+  <h3>Podem aceitar pagamento faseado?</h3>
+  <p>Sim. Modelo padrão: 30% à assinatura · 40% no aceite intermédio (semana 6) · 30% no aceite final.</p>
+
+  <h2>Próximos passos</h2>
+  <div class="callout ok">
+    <h4>Para a reunião de 11 de Maio com a administração</h4>
+    <p>1 · Validação do pacote escolhido (sugerimos PRO).<br/>2 · Assinatura do NDA mútuo + carta de intenção para Sprint 0.<br/>3 · Factura pró-forma da Sprint 0 emitida no próprio dia.<br/>4 · Arranque da Sprint 0 na semana seguinte com workshop do integrador PHC Advanced.</p>
+  </div>
+
+  <p style="font-family:-apple-system,sans-serif;font-size:14px"><strong>Frase de abertura recomendada para a Clarice apresentar ao conselho:</strong></p>
+  <div class="quote" style="font-size:16px">
+    Cinco a sete mil de Sprint 0 nas próximas duas semanas. Trinta e dois a quarenta e cinco mil de implementação. Mil duzentos a mil e oitocentos por mês de operação. Quatro fluxos críticos em dez a doze semanas. Velocidade demonstrada com dados reais, não prometida.
+  </div>
+
+  <div class="signature">
+    <strong>Bilal Machraa</strong> · CEO & Founder · AiTiPro<br/>
+    <span class="role">Fernando Basto · Business Development</span><br/>
+    <a href="mailto:bilal.machraa@aitipro.com">bilal.machraa@aitipro.com</a> · <a href="https://aitipro.com">aitipro.com</a><br/>
+    Demo viva: <a href="https://lloretrans.aitipro.com">lloretrans.aitipro.com</a>
+  </div>
+
+  <div class="footer">
+    <span>Proposta v1.1 · 27 de Abril de 2026 · Confidencial</span>
+    <span>Validade 30 dias · preços em euros, sem IVA</span>
+  </div>
+
+</div>
+</body>
+</html>

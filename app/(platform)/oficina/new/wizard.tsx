@@ -62,6 +62,17 @@ const TEMPLATES: Record<string, Item[]> = {
 
 const DRAFT_KEY = "oficina.wo.draft.v1";
 
+const VEHICLE_KIND_LABELS: Record<string, string> = {
+  pesado_mercadorias: "Pesado mercadorias",
+  ligeiro: "Ligeiro",
+  trator: "Trator",
+  reboque: "Reboque",
+};
+
+function vehicleKindLabel(kind: string): string {
+  return VEHICLE_KIND_LABELS[kind.toLowerCase()] ?? kind.replaceAll("_", " ");
+}
+
 export function WorkOrderWizard({
   vehicles,
   serviceCodes,
@@ -173,9 +184,9 @@ export function WorkOrderWizard({
   const canNext = {
     1: plate !== "",
     2: serviceCode !== "",
-    3: true, // checklist opcional — mecânico pode saltar se só intervém em items avulsos
+    3: true, // checklist opcional — mecânico pode saltar se só intervém em itens avulsos
     4: items.length > 0 && items.every((i) => i.description.trim()),
-    5: true, // fotos opcionais no demo
+    5: true, // fotos opcionais nesta avaliação
     6: signaturePath !== "",
   }[step];
 
@@ -203,11 +214,12 @@ export function WorkOrderWizard({
             <select
               value={plate}
               onChange={(e) => setPlate(e.target.value)}
+              aria-label="Escolher matrícula da viatura"
               className="h-14 w-full rounded-md border border-border bg-background px-3 text-lg font-mono"
             >
               <option value="">— escolher matrícula —</option>
               {vehicles.map((v) => (
-                <option key={v.plate} value={v.plate}>{v.plate} · {v.kind}</option>
+                <option key={v.plate} value={v.plate}>{v.plate} · {vehicleKindLabel(v.kind)}</option>
               ))}
             </select>
           </CardContent>
@@ -304,7 +316,7 @@ export function WorkOrderWizard({
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">4. Items ({items.length})</CardTitle>
+              <CardTitle className="text-base">4. Itens ({items.length})</CardTitle>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => addItem("part")}>
                   <Plus className="h-3 w-3" />Peça
@@ -317,7 +329,7 @@ export function WorkOrderWizard({
           </CardHeader>
           <CardContent className="space-y-3">
             {items.length === 0 ? (
-              <div className="text-sm text-muted-foreground text-center py-6">Sem items. Adiciona peça ou mão-de-obra.</div>
+              <div className="text-sm text-muted-foreground text-center py-6">Sem itens. Adiciona peça ou mão-de-obra.</div>
             ) : (
               items.map((item) => (
                 <div key={item.id} className="rounded-md border border-border p-3 space-y-2">
@@ -351,6 +363,7 @@ export function WorkOrderWizard({
                       value={item.quantity}
                       onChange={(e) => updateItem(item.id, { quantity: Number(e.target.value) })}
                       placeholder="Quantidade"
+                      inputMode="decimal"
                       className="text-base"
                     />
                     <Input
@@ -360,6 +373,7 @@ export function WorkOrderWizard({
                       value={item.unitPrice}
                       onChange={(e) => updateItem(item.id, { unitPrice: Number(e.target.value) })}
                       placeholder="€ / unid."
+                      inputMode="decimal"
                       className="text-base"
                     />
                   </div>
@@ -375,20 +389,20 @@ export function WorkOrderWizard({
 
       {step === 5 && (
         <Card>
-          <CardHeader><CardTitle className="text-base">5. Fotos (opcional no demo)</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">5. Fotos (opcional nesta avaliação)</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {(["before", "detail", "after"] as const).map((stage) => (
               <label key={stage} className="flex items-center gap-3 rounded-md border border-dashed border-border p-4 cursor-pointer">
                 <Camera className="h-5 w-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <div className="text-sm font-medium capitalize">{stage}</div>
+                  <div className="text-sm font-medium">{photoStageLabel(stage)}</div>
                   <div className="text-xs text-muted-foreground">Tocar para abrir câmara</div>
                 </div>
                 <input type="file" accept="image/*" capture="environment" className="hidden" />
               </label>
             ))}
             <p className="text-xs text-muted-foreground">
-              No demo as fotos não são persistidas. Em produção, o storage EU fica definido na Sprint 0.
+              Nesta avaliação as fotos não são persistidas. Em produção, o armazenamento na UE fica definido na Sprint 0.
             </p>
           </CardContent>
         </Card>
@@ -418,7 +432,7 @@ export function WorkOrderWizard({
               label="Checklist"
               value={`${checklist.filter((c) => c.substituted || c.verified).length}/${WORKSHOP_CHECKLIST.length} marcados`}
             />
-            <Kv label="Items" value={`${items.length} linhas · total ${total.toFixed(2)} €`} />
+            <Kv label="Itens" value={`${items.length} linhas · total ${total.toFixed(2)} €`} />
             <Kv label="Assinatura" value={signaturePath ? "✓ assinada" : "✗ em falta"} />
             {summary && <Kv label="Sumário" value={summary} />}
             <textarea
@@ -427,6 +441,7 @@ export function WorkOrderWizard({
               rows={2}
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
               placeholder="Sumário opcional para a factura/PHC Advanced"
+              aria-label="Sumário opcional para a factura ou PHC Advanced"
             />
           </CardContent>
         </Card>
@@ -529,6 +544,7 @@ function SignaturePadCanvas({ value, onChange }: { value: string; onChange: (svg
         ref={canvasRef}
         width={600}
         height={200}
+        aria-label="Área de assinatura do mecânico"
         className="w-full h-[200px] rounded-md border-2 border-dashed border-border bg-secondary/30 touch-none"
       />
       <div className="flex justify-between items-center">
@@ -547,4 +563,10 @@ function Kv({ label, value }: { label: string; value: string }) {
       <span className="font-mono text-sm">{value}</span>
     </div>
   );
+}
+
+function photoStageLabel(stage: "before" | "detail" | "after"): string {
+  if (stage === "before") return "Antes";
+  if (stage === "detail") return "Detalhe";
+  return "Depois";
 }

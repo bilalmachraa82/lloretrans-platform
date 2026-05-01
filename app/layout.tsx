@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Lloretrans × AiTiPro — Plataforma",
   description: "6 MVPs operacionais num único ambiente. Dashboards, OCR, bolsa de carga, oficina PWA.",
   robots: { index: false, follow: false },
+  icons: { icon: "/icon.svg" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
