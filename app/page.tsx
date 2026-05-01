@@ -38,7 +38,7 @@ const MODULES = [
     slug: "ocr",
     title: "OCR facturas fornecedor",
     problem: "50 fornecedores, 50 layouts. Conhecimento tácito de quem classifica sai com a pessoa.",
-    solution: "Primeira factura de cada fornecedor: tu ensinas o sistema. A partir daí, automática. Export XML PHC Advanced.",
+    solution: "Primeira factura de cada fornecedor: a equipa ensina o sistema. A partir daí, automática. Export XML PHC Advanced.",
     icon: ReceiptText,
     metric: "9",
     metricLabel: "facturas OCR reais",
@@ -105,7 +105,7 @@ export default function LandingPage() {
           <Image src="/aitipro-logo.png" alt="AiTiPro" width={154} height={36} className="h-7 w-auto" priority />
           <div>
             <div className="text-[10px] text-[hsl(32_82%_35%)] mt-0.5 tracking-[0.2em] uppercase font-semibold">Plataforma Lloretrans</div>
-            <div className="text-xs text-muted-foreground mt-1">Demo operacional sem preços</div>
+            <div className="text-xs text-muted-foreground mt-1">Demonstração operacional</div>
           </div>
         </Link>
         <nav className="flex items-center gap-3">
@@ -114,9 +114,6 @@ export default function LandingPage() {
           </Link>
           <Link href="#trust" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
             Confiança
-          </Link>
-          <Link href="#validacao" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
-            Validação
           </Link>
           <Link href="#roadmap" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors lg:inline-flex">
             Como começamos
@@ -218,15 +215,14 @@ export default function LandingPage() {
                   CS
                 </div>
                 <div>
-                  <div className="font-semibold text-sm">Clarice Santos</div>
+                  <div className="font-semibold text-sm">Operação Lloretrans</div>
                   <div className="text-xs text-muted-foreground">Lloretrans · Grupo Patrícia Pilar</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Reunião 16/04/2026</div>
                 </div>
               </div>
               <div className="mt-6 grid grid-cols-3 gap-4 text-center">
                 <Stat n="60" label="viaturas" />
                 <Stat n="4" label="empresas grupo" />
-                <Stat n="9" label="facturas OCR" />
+                <Stat n="306" label="cargas reais" />
               </div>
             </div>
           </div>
@@ -244,9 +240,9 @@ export default function LandingPage() {
             Cinco entram no pacote; combustível fica em roadmap.
           </h2>
           <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
-            Construídos a partir da transcrição literal da reunião com a Clarice. Cada um tem a sua
-            própria spec, plano de implementação e critérios de aceitação. O pacote final entrega A,
-            B, C, E e F em 10 semanas; D só entra quando a Frotcom confirmar acesso técnico.
+            Cada módulo tem spec própria, plano de implementação e critérios de aceitação. O
+            pacote entrega cinco módulos em produção em dez semanas; o módulo de combustível
+            entra logo que a Frotcom disponibilizar a API de leitura.
           </p>
         </div>
 
@@ -335,47 +331,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* VALIDAÇÃO ANTES DA PROPOSTA */}
-      <section id="validacao" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
-        <div className="max-w-3xl mb-12">
-          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
-            Validação antes da proposta
-          </div>
-          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
-            Primeiro a plataforma. <span className="italic">Depois a decisão.</span>
-          </h2>
-          <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
-            Antes de qualquer discussão comercial, a Clarice deve validar se a demonstração
-            corresponde à operação real. A proposta com valores só faz sentido depois dessa validação.
-          </p>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          <ValidationCard
-            title="1. Ver a demo"
-            body="Entrar com o perfil da Clarice, abrir os seis módulos e confirmar se a plataforma reflecte a realidade da operação."
-            points={["Dashboard executivo", "Deep-links por módulo", "Dados reais já carregados"]}
-          />
-          <ValidationCard
-            title="2. Validar expectativa"
-            body="Separar o que já corresponde, o que precisa de ajuste e que stakeholders devem ver a seguir."
-            points={["Dores da reunião", "Dependências PHC Advanced/Frotcom", "Risco de adopção oficina"]}
-          />
-          <ValidationCard
-            title="3. Só depois falar de faseamento"
-            body="Com a solução compreendida, discutir prioridades, retorno e caminho de aprovação para administração."
-            points={["Quick wins", "ROI a medir na Sprint 0", "Proposta formal pós-demo"]}
-          />
-        </div>
-
-        <p className="mt-10 text-sm text-muted-foreground text-center">
-          Material certo para mostrar antes de falar de valores:{" "}
-          <Link href="/apresentacao" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] underline">
-            abrir apresentação sem preços →
-          </Link>
-        </p>
-      </section>
-
       {/* COMO COMEÇAMOS · roadmap */}
       <section id="roadmap" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
         <div className="max-w-3xl mb-12">
@@ -423,11 +378,11 @@ export default function LandingPage() {
                 Pressupostos
               </div>
               <h2 className="font-display text-3xl lg:text-4xl font-semibold leading-tight tracking-normal">
-                Perguntas que fazemos antes de assinar.
+                Perguntas frequentes.
               </h2>
               <p className="mt-5 text-foreground/70 leading-relaxed">
-                Respostas directas às objecções que um director de operações vai pôr. Se nenhuma delas
-                encaixa na tua realidade, a resposta é: <span className="italic">conversamos</span>.
+                Respostas directas às dúvidas técnicas e operacionais mais comuns: dados, integrações,
+                responsabilidade humana e plano de adopção.
               </p>
             </div>
             <div className="lg:col-span-8 space-y-2">
@@ -445,7 +400,7 @@ export default function LandingPage() {
               />
               <FaqItem
                 q="Integramos com o vosso expert PHC Advanced interno?"
-                a="Sim, mas só depois de validação técnica com o expert PHC Advanced interno do grupo. Até lá, a proposta assume XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
+                a="Sim, mas só depois de validação técnica com o expert PHC Advanced interno do grupo. Até lá, a plataforma trabalha com XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
               />
               <FaqItem
                 q="O que acontece se o mecânico não usar a app?"
@@ -472,8 +427,9 @@ export default function LandingPage() {
                 Pronto para deixar o papel para trás?
               </h2>
               <p className="mt-5 text-white/75 text-lg leading-relaxed max-w-2xl">
-                60 segundos chegam para veres os 6 módulos em funcionamento. Dados determinísticos, login
-                sem password; escolhe o perfil da Clarice. A proposta formal fica para depois da validação.
+                Sessenta segundos chegam para percorrer os seis módulos com dados reais. O acesso
+                faz-se por perfil — Direcção Operacional, Comercial ou Mecânico — sem registo nem
+                password.
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
@@ -502,7 +458,7 @@ export default function LandingPage() {
             <Link href="/login" className="inline-flex min-h-11 items-center px-2 hover:text-foreground transition-colors">
               Demonstração
             </Link>
-            <span className="hidden sm:inline">RGPD · dados UE · build {new Date().getFullYear()}</span>
+            <span className="hidden sm:inline">RGPD · dados UE</span>
           </div>
         </div>
       </footer>
@@ -572,30 +528,5 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       </summary>
       <p className="mt-4 text-sm text-foreground/70 leading-relaxed">{a}</p>
     </details>
-  );
-}
-
-function ValidationCard({
-  title,
-  body,
-  points,
-}: {
-  title: string;
-  body: string;
-  points: string[];
-}) {
-  return (
-    <div className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-7">
-      <div className="font-display text-2xl font-semibold">{title}</div>
-      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
-      <ul className="mt-6 space-y-2.5 text-sm">
-        {points.map((i) => (
-          <li key={i} className="flex gap-2.5">
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(152_55%_38%)]" />
-            <span className="text-foreground/80">{i}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }

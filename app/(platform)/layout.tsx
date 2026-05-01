@@ -108,7 +108,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
               </SidebarLink>
             ) : (
               <SidebarLink href="/apresentacao" icon={FileText}>
-                Apresentação sem preços
+                Apresentação da plataforma
               </SidebarLink>
             )}
           </>

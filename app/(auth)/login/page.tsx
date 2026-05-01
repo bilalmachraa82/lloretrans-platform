@@ -166,11 +166,11 @@ export default async function LoginPage({
             Acesso à demonstração
           </Badge>
           <h1 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
-            Escolhe o perfil com que <span className="italic">queres explorar</span>.
+            Acesso por perfil de utilizador.
           </h1>
           <p className="mt-5 text-foreground/70 leading-relaxed">
-            Três perfis principais cobrem 90% da demonstração. Cada perfil vê apenas os módulos que lhe
-            dizem respeito. Dados de avaliação — podes mudar de perfil à vontade.
+            Três perfis principais cobrem a maior parte dos fluxos. Cada perfil vê apenas os
+            módulos da sua área. É possível alternar entre perfis a qualquer momento.
             {access === "admin-disabled" && (
               <span className="block mt-3 rounded-md border border-[hsl(32_82%_55%)]/35 bg-[hsl(40_40%_96%)] px-3 py-2 text-sm text-[hsl(32_82%_28%)]">
                 O perfil interno AiTiPro não está disponível na demonstração pública.

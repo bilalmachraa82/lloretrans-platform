@@ -20,31 +20,31 @@ import {
 export const metadata = {
   title: "Lloretrans | Apresentação executiva da plataforma",
   description:
-    "Apresentação executiva sem preços para validar com a Clarice Santos a plataforma operacional Lloretrans antes da proposta comercial.",
+    "Apresentação executiva da plataforma operacional Lloretrans.",
   robots: { index: false, follow: false },
 };
 
 const PROOF = [
   { value: "6", label: "fluxos mapeados", note: "km, OCR, documentos, combustível, bolsa, oficina" },
-  { value: "9", label: "facturas OCR", note: "9 facturas reais usadas para ensinar o classificador por fornecedor" },
+  { value: "9", label: "fornecedores treinados", note: "Classificação calibrada por NIF e padrão de fornecedor" },
   { value: "306", label: "cargas reais", note: "convertidas do Excel operacional" },
   { value: "2161", label: "abastecimentos", note: "dados reais carregados na demo" },
 ];
 
 const EXECUTIVE_MESSAGES = [
   {
-    title: "Não estamos a mostrar um conceito.",
-    body: "A reunião deve partir de uma plataforma navegável, já alinhada com os fluxos discutidos com a Clarice e o Éder.",
+    title: "Plataforma navegável.",
+    body: "Os seis fluxos discutidos com a equipa Lloretrans estão construídos e percorríveis com dados reais.",
     icon: ShieldCheck,
   },
   {
-    title: "Não estamos a pedir fé cega.",
-    body: "A decisão desta reunião é validar se a demonstração espelha a operação real antes de se falar de investimento.",
+    title: "Decisão humana preservada.",
+    body: "A IA prepara, classifica e sinaliza. A aprovação em qualquer passo irreversível continua do lado da Lloretrans, com rasto auditável.",
     icon: ClipboardCheck,
   },
   {
-    title: "Não estamos a esconder dependências.",
-    body: "PHC Advanced, Frotcom e adopção da oficina aparecem nesta apresentação como temas explícitos de validação.",
+    title: "Dependências assumidas de frente.",
+    body: "PHC Advanced, Frotcom e adopção da oficina aparecem listados, com responsável e estado de validação técnica.",
     icon: CircleAlert,
   },
 ];
@@ -56,8 +56,8 @@ const MODULES = [
     icon: TruckIcon,
     pain: "A administrativa cruza Logue Trans com Frotcom viagem a viagem e o erro segue para a facturação.",
     currentState: "Semáforo operacional, threshold de 3 km, histórico auditado e aprovação por excepção.",
-    proof: "A Clarice consegue ver logo o dia em atenção e abrir só o que precisa de validar.",
-    validate: "Se o threshold, os estados e o fluxo de aprovação correspondem ao processo real.",
+    proof: "O dashboard destaca logo o dia em atenção e abre apenas as viagens que precisam de validação.",
+    validate: "O threshold de 3 km e o circuito de aprovação ficam ajustados ao processo real após a Sprint 0.",
     href: "/login?target=km",
   },
   {
@@ -67,7 +67,7 @@ const MODULES = [
     pain: "O conhecimento de classificação está na pessoa e não no sistema; cada fornecedor tem o seu formato.",
     currentState: "Upload, extracção, classificação por NIF, memória por fornecedor e export orientado a PHC Advanced.",
     proof: "As 9 facturas reais já foram usadas para ensinar a classificação por fornecedor.",
-    validate: "Se a lógica de classificação e o grau de validação humana estão certos.",
+    validate: "A lógica de classificação por NIF é calibrada com a equipa antes de qualquer escrita automática.",
     href: "/login?target=ocr",
   },
   {
@@ -76,8 +76,8 @@ const MODULES = [
     icon: FileStack,
     pain: "CMR, guias e tickets vivem espalhados entre papel, WhatsApp e pesquisa manual.",
     currentState: "Hub documental único por viagem, matrícula, data, empresa e estado.",
-    proof: "A apresentação deixa claro quem pesquisa, quem digitaliza e quem confirma.",
-    validate: "Se este deve ser o ponto único de entrada documental da operação.",
+    proof: "Cada documento tem responsável de pesquisa, digitalização e confirmação registado.",
+    validate: "Hub documental único por viagem, pesquisável por matrícula, data e empresa.",
     href: "/login?target=docs",
   },
   {
@@ -87,7 +87,7 @@ const MODULES = [
     pain: "Os dados existem, mas estão separados por fornecedor e sem leitura consolidada por viatura.",
     currentState: "A demo cruza abastecimentos por matrícula e fornecedor e sinaliza anomalias com decisão humana.",
     proof: "Já estão carregadas 2161 linhas reais.",
-    validate: "Se a leitura actual serve para gestão e qual o impacto da dependência da API Frotcom.",
+    validate: "A leitura por viatura entra em produção quando a API Frotcom for disponibilizada; até lá, fica em modo informativo.",
     href: "/login?target=fuel",
   },
   {
@@ -97,8 +97,7 @@ const MODULES = [
     pain: "O comercial trabalha sobre Excel longo, memória tardia e comissões calculadas no fim do mês.",
     currentState: "Fluxo auditado por estado, documentos ligados a cada carga e regra de comissão reflectida na plataforma.",
     proof: "O Excel real de 306 cargas já foi convertido para navegação operacional.",
-    validate:
-      "Se a leitura da margem, dos estados e das colunas bate certo com a prática da Lloretrans, e onde o Excel precisa de saneamento antes de entrar em produção.",
+    validate: "Margem, estados e colunas espelham a folha actual; o saneamento do Excel histórico é parte da Sprint 0.",
     href: "/login?target=bolsa",
   },
   {
@@ -108,7 +107,7 @@ const MODULES = [
     pain: "O mecânico regista em papel e a administrativa relança tudo no PHC Advanced.",
     currentState: "PWA mobile-first com checklist, estados, assinatura e validação administrativa.",
     proof: "A folha de obra já pode ser mostrada em telemóvel como experiência real de uso.",
-    validate: "Se o mecânico adopta o fluxo e se a administrativa ganha controlo sem duplicação.",
+    validate: "Plano de adopção da oficina inclui treino presencial e fallback em papel com OCR.",
     href: "/login?target=oficina",
   },
 ];
@@ -131,30 +130,22 @@ const DEPENDENCIES = [
   },
 ];
 
-const DEMO_STEPS = [
-  "Abrir o dashboard da Clarice e ler a operação em dois minutos.",
-  "Entrar nos módulos A, B e C para validar controlo administrativo.",
-  "Mostrar o módulo E com as cargas reais convertidas do Excel.",
-  "Fechar com oficina em telemóvel e combustível como dependência assumida.",
-  "Sair da reunião com uma resposta clara: corresponde ou não corresponde?",
-];
-
 const COUNCIL_REASONS = [
   {
-    title: "Já existe plataforma",
-    body: "A reunião parte de fluxos navegáveis com dados reais, e não de uma promessa em PowerPoint.",
+    title: "Plataforma navegável",
+    body: "Os seis fluxos correm hoje contra dados reais. Não há promessas em PowerPoint a colmatar funcionalidades em falta.",
   },
   {
-    title: "Sprint 0 é arranque",
-    body: "A primeira semana fecha acessos, saneamento, integração e piloto. Não é descoberta teórica.",
+    title: "Sprint 0 com entregáveis fechados",
+    body: "Acessos, saneamento de dados, integração inicial e plano de piloto ficam fechados na primeira semana.",
   },
   {
     title: "Decisão humana preservada",
-    body: "IA prepara, classifica e sinaliza; a aprovação continua do lado Lloretrans em passos irreversíveis.",
+    body: "A IA prepara, classifica e sinaliza. A aprovação em passos irreversíveis fica do lado Lloretrans, com rasto auditável.",
   },
   {
-    title: "Preparado para crescer no grupo",
-    body: "A arquitectura, permissões e segregação documental já foram pensadas para mais empresas e mais equipas.",
+    title: "Preparada para o grupo",
+    body: "Arquitectura, permissões e segregação documental já desenhadas para mais empresas e mais equipas.",
   },
 ];
 
@@ -186,9 +177,9 @@ export default function ApresentacaoPage() {
           <div className="hidden h-7 w-px bg-[#e2e8f0] sm:block" />
           <div className="hidden sm:block">
             <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
-              Apresentação de validação
+              Plataforma operacional
             </div>
-            <div className="mt-1 text-xs text-[#6b7280]">Lloretrans · sem preços · antes do conselho</div>
+            <div className="mt-1 text-xs text-[#6b7280]">Lloretrans · plataforma operacional</div>
           </div>
         </Link>
         <div className="flex items-center gap-3">
@@ -198,14 +189,14 @@ export default function ApresentacaoPage() {
             size="sm"
             className="border-[#cbd5e1] bg-white text-[#1e2d3d] hover:border-[#1bc88a] hover:bg-white"
           >
-            <Link href="/login">Abrir demo</Link>
+            <Link href="/login">Abrir plataforma</Link>
           </Button>
           <Button
             asChild
             size="sm"
             className="border-0 bg-[#2ae5a0] text-[#1e2d3d] shadow-none hover:bg-[#1bc88a]"
           >
-            <Link href="mailto:bilal.machraa@aitipro.com?subject=Reuniao%20Lloretrans%20-%20validacao%20da%20plataforma">
+            <Link href="mailto:bilal.machraa@aitipro.com?subject=Lloretrans%20%C2%B7%20proxima%20conversa">
               Marcar reunião
             </Link>
           </Button>
@@ -219,17 +210,16 @@ export default function ApresentacaoPage() {
               variant="outline"
               className="mb-6 border-[#ca742d]/20 bg-[#fef3e8] text-[11px] uppercase tracking-[0.2em] text-[#ca742d]"
             >
-              Clarice Santos · Lloretrans · reunião de validação antes do conselho
+              Plataforma desenhada com a operação Lloretrans
             </Badge>
-            <h1 className="text-4xl font-semibold leading-[0.96] tracking-tight sm:text-5xl lg:text-[5.3rem]">
-              Validar se esta plataforma já espelha
-              <span className="block text-[#0d3b38]">a operação real da Lloretrans.</span>
+            <h1 className="text-4xl font-semibold leading-[0.98] tracking-tight sm:text-5xl lg:text-[4.6rem]">
+              Plataforma operacional Lloretrans.
+              <span className="block text-[#0d3b38]">Seis fluxos com dados reais.</span>
             </h1>
             <p className="mt-8 max-w-3xl text-lg leading-relaxed text-[#374151] lg:text-[1.15rem]">
-              Nesta reunião não se decide preço. Decide-se se os seis fluxos, os dados reais e os
-              controlos visíveis na demo correspondem ao que a Clarice precisa de levar ao conselho.
-              Se corresponder, a conversa seguinte passa a ser faseamento, ROI e prioridade. Se não
-              corresponder, ajusta-se antes de circular qualquer proposta.
+              Seis fluxos da operação Lloretrans — quilómetros, facturas de fornecedor, documentos,
+              combustível, bolsa de carga e oficina — funcionam hoje contra dados reais. Cada módulo
+              mantém a aprovação humana no momento crítico e deixa rasto auditável de cada decisão.
             </p>
           </div>
 
@@ -237,24 +227,24 @@ export default function ApresentacaoPage() {
             <div className="grid gap-5 rounded-[28px] border border-[#e2e8f0] bg-white p-7 shadow-elevated-lg">
               <div>
                 <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#ca742d]">
-                  Objetivo da reunião
+                  Princípio operacional
                 </div>
                 <p className="mt-3 text-3xl font-semibold leading-tight tracking-tight">
-                  Sair da reunião com um validar, ajustar ou avançar.
+                  A IA prepara. A pessoa decide. O sistema regista.
                 </p>
               </div>
               <div className="grid gap-3 text-sm text-[#4b5563]">
                 <p>
-                  <strong className="text-[#1e2d3d]">Hoje:</strong> confirmar se a demo espelha a
-                  operação real.
+                  <strong className="text-[#1e2d3d]">Aprovação humana</strong> em todos os passos
+                  irreversíveis.
                 </p>
                 <p>
-                  <strong className="text-[#1e2d3d]">Depois:</strong> decidir o que a Clarice leva ao
-                  conselho.
+                  <strong className="text-[#1e2d3d]">Audit log</strong> imutável por utilizador,
+                  antes/depois e motivo.
                 </p>
                 <p>
-                  <strong className="text-[#1e2d3d]">Regra base:</strong> decisão humana em todos os
-                  passos irreversíveis.
+                  <strong className="text-[#1e2d3d]">Dados na UE</strong> — Frankfurt, sem CDN
+                  americano.
                 </p>
               </div>
             </div>
@@ -266,7 +256,7 @@ export default function ApresentacaoPage() {
         <div className="mx-auto grid max-w-[1320px] gap-10 px-6 py-16 lg:grid-cols-[0.92fr_1.08fr] lg:px-10 lg:py-20">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2ae5a0]">
-              Mensagem central da reunião
+              Princípios da plataforma
             </div>
             <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
               &ldquo;Não é só tempo. A nossa preocupação também é o controlo.&rdquo;
@@ -275,9 +265,6 @@ export default function ApresentacaoPage() {
               A plataforma foi desenhada para responder a essa frase. Menos papel, menos Excel
               paralelo, mais trilho de decisão e mais capacidade de ler a operação sem depender de memória
               individual.
-            </p>
-            <p className="mt-8 text-sm uppercase tracking-[0.16em] text-white/46">
-              Clarice Santos · reunião de 16 de Abril de 2026
             </p>
           </div>
 
@@ -309,9 +296,9 @@ export default function ApresentacaoPage() {
               A conversa já pode partir de evidências, não de promessas.
             </h2>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-[#4b5563]">
-              A demonstração junta dados reais, regras reais e fricções reais. O objectivo da Clarice
-              nesta apresentação não é imaginar uma solução futura. É validar se o que já está montado
-              merece seguir para a fase de decisão.
+              A demonstração assenta em dados reais da operação Lloretrans: 306 cargas convertidas
+              do Excel, 2161 abastecimentos carregados e 9 facturas usadas para treinar a
+              classificação por fornecedor.
             </p>
           </div>
 
@@ -337,16 +324,15 @@ export default function ApresentacaoPage() {
           <div className="grid gap-6 border-b border-[#e2e8f0] pb-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
-                O que a Clarice vai validar
+                Os seis módulos
               </div>
               <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
-                Seis dores. Seis respostas. Uma leitura de reunião.
+                Seis dores. Seis respostas. Operação coberta de ponta a ponta.
               </h2>
             </div>
             <p className="max-w-2xl text-base leading-relaxed text-[#4b5563]">
-              Esta parte não serve para vender módulos. Serve para comparar dor actual, estado da demo,
-              prova visível e pergunta de validação. É isso que transforma a apresentação num instrumento
-              de decisão em vez de uma página bonita.
+              Para cada módulo: a dor actual identificada na operação Lloretrans, o que já está
+              construído na plataforma, e a evidência demonstrável na demo.
             </p>
           </div>
 
@@ -380,8 +366,8 @@ export default function ApresentacaoPage() {
                   <InfoBlock label="O que já está construído" body={module.currentState} />
 
                   <div className="grid gap-4">
-                    <InfoBlock label="Prova na reunião" body={module.proof} compact />
-                    <InfoBlock label="Validar com Clarice" body={module.validate} compact emphasis />
+                    <InfoBlock label="Evidência na demo" body={module.proof} compact />
+                    <InfoBlock label="Ponto a confirmar" body={module.validate} compact emphasis />
                   </div>
                 </article>
               );
@@ -401,9 +387,8 @@ export default function ApresentacaoPage() {
                 O que está claro hoje e o que precisa de confirmação.
               </h2>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-[#4b5563]">
-                A credibilidade da apresentação melhora quando as dependências aparecem de frente.
-                Isto protege a conversa comercial e mostra que a AiTiPro não está a vender o que não
-                controla.
+                Três pontos dependem de validação técnica externa à plataforma. Estão listados
+                abaixo com responsável e estado, para que entrem no plano de Sprint 0 sem surpresas.
               </p>
             </div>
 
@@ -433,30 +418,19 @@ export default function ApresentacaoPage() {
         <div className="mx-auto grid max-w-[1320px] gap-10 px-6 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-22">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2ae5a0]">
-              Roteiro sugerido
+              Infraestrutura
             </div>
             <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
-              Trinta minutos. Uma pergunta. Uma resposta útil.
+              Dados na UE. Auditoria append-only. RGPD por defeito.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/72">
-              A reunião deve ser curta, concreta e orientada a validação. O objectivo não é percorrer
-              todas as funcionalidades. É sair com uma leitura segura sobre o encaixe real da solução.
-            </p>
           </div>
 
-          <ol className="grid gap-4">
-            {DEMO_STEPS.map((step, index) => (
-              <li
-                key={step}
-                className="flex gap-4 rounded-2xl border border-white/10 bg-white/8 p-5 backdrop-blur"
-              >
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#2ae5a0] font-mono text-sm font-semibold text-[#1e2d3d]">
-                  {index + 1}
-                </span>
-                <span className="pt-1 text-sm leading-relaxed text-white/82">{step}</span>
-              </li>
-            ))}
-          </ol>
+          <ul className="grid gap-4 text-sm leading-relaxed text-white/82">
+            <li>Neon Postgres em Frankfurt (aws-eu-central-1) · Vercel fra1 · sem CDN americano.</li>
+            <li>Audit log imutável: utilizador, antes/depois, motivo, em cada mutação.</li>
+            <li>Aprovação humana obrigatória em todos os passos irreversíveis.</li>
+            <li>Adaptadores preparados para PHC Advanced, Logue Trans, Frotcom, Cepsa, Repsol e Radius.</li>
+          </ul>
         </div>
       </section>
 
@@ -464,16 +438,15 @@ export default function ApresentacaoPage() {
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
-              Porque esta abordagem é defensável
+              O que distingue esta plataforma
             </div>
             <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
-              Quatro razões para a Clarice validar antes de levar ao conselho.
+              Construída para a operação real, não para uma demonstração.
             </h2>
           </div>
           <p className="max-w-2xl text-base leading-relaxed text-[#4b5563]">
-            A apresentação ganha força quando mostra por que razão esta solução merece atenção interna:
-            já existe produto, a primeira semana não é teatro comercial, a decisão continua humana e a
-            arquitectura já foi pensada para escalar do Lloretrans para o grupo.
+            Produto navegável com dados reais, primeira semana com entregáveis fechados,
+            decisão humana preservada, e arquitectura preparada para escalar dentro do grupo.
           </p>
         </div>
 
@@ -495,26 +468,17 @@ export default function ApresentacaoPage() {
             <div>
               <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-[#2ae5a0]">
                 <TimerReset className="h-4 w-4" />
-                Fecho recomendado
+                Próximo passo
               </div>
               <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
-                Primeiro validar. Depois fasear. Só depois propor.
+                Abrir a plataforma e percorrer os fluxos.
               </h2>
             </div>
-            <div className="grid gap-4 text-sm leading-relaxed text-white/76">
-              <p>
-                <strong className="text-white">Plataforma:</strong> mostrar a demo com a Clarice e
-                recolher validação operacional.
-              </p>
-              <p>
-                <strong className="text-white">Administração:</strong> levar apenas o que já foi
-                validado e enquadrado.
-              </p>
-              <p>
-                <strong className="text-white">Proposta:</strong> entra depois, com faseamento, ROI e
-                próximos passos.
-              </p>
-            </div>
+            <p className="text-sm leading-relaxed text-white/76">
+              O acesso usa perfis pré-configurados. O perfil de Direcção Operacional dá visão
+              consolidada das 60 viaturas, validação de quilómetros do dia e folhas de oficina
+              pendentes.
+            </p>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-white/12 pt-6">
@@ -525,9 +489,6 @@ export default function ApresentacaoPage() {
             >
               <Link href="/login">Abrir a plataforma</Link>
             </Button>
-            <p className="text-sm text-white/70">
-              Depois da validação, seguem-se faseamento, ROI e proposta formal.
-            </p>
             <div className="ml-auto hidden rounded-xl bg-white px-4 py-3 lg:block">
               <Image src="/aitipro-logo.png" alt="AiTiPro" width={138} height={32} className="h-6 w-auto" />
             </div>
