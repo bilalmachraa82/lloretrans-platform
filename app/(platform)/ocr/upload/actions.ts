@@ -34,7 +34,7 @@ export async function uploadInvoice(formData: FormData): Promise<void> {
   const fixtureFilename = formData.get("fixtureFilename")?.toString();
 
   if (!fixtureFilename) {
-    throw new Error("Seleccionar uma amostra para demonstração — upload real ainda não está ligado neste ambiente.");
+    throw new Error("Seleccionar uma amostra para processamento.");
   }
 
   const catalogPath = path.join(process.cwd(), "fixtures", "extracted", "_catalog.json");
@@ -91,7 +91,7 @@ export async function uploadInvoice(formData: FormData): Promise<void> {
     id: randomId("ocr"),
     invoiceId: invId,
     engine: "azure-doc-intel-stub",
-    rawText: `[demo re-upload] ${entry.supplier.name} · ${entry.invoice.number}`,
+    rawText: `[reprocessamento] ${entry.supplier.name} · ${entry.invoice.number}`,
     rawJson: JSON.stringify(entry),
     confidencePerField: JSON.stringify({
       supplier: 0.97,

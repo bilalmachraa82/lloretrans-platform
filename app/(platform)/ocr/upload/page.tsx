@@ -38,7 +38,7 @@ export default async function InvoiceUploadPage() {
               <Upload className="h-10 w-10 text-muted-foreground" />
               <span className="text-sm font-medium">Escolher ou arrastar PDF</span>
               <span className="text-xs text-muted-foreground mt-1">
-                Em produção: pasta de entrada/Blob UE + extracção controlada. Aqui: simulação com amostra.
+                Pasta de entrada ou armazenamento na União Europeia, com extracção controlada e validação humana.
               </span>
               <input type="file" id="file" name="file" accept="application/pdf" className="hidden" />
             </label>
@@ -63,7 +63,7 @@ export default async function InvoiceUploadPage() {
               </div>
               <div className="flex items-end">
                 <Badge variant="secondary" className="text-[10px]">
-                  A avaliação guarda o OCR em cache. Em produção, cada upload fica registado e auditável.
+                  Cada upload fica registado e auditável.
                 </Badge>
               </div>
             </div>
@@ -80,7 +80,7 @@ export default async function InvoiceUploadPage() {
 
       <Card>
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
-          <div><strong>Pipeline em produção:</strong></div>
+          <div><strong>Pipeline:</strong></div>
           <div>1. Upload → armazenamento UE · 2. extracção de texto · 3. Claude API classifica via NIF → regra</div>
           <div>4. UI mostra confiança por campo · 5. Admin valida → regra aprendida · 6. Export XML PHC Advanced</div>
         </CardContent>

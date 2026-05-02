@@ -32,7 +32,7 @@ export default async function DocsUploadPage() {
               <span className="text-sm font-medium">Arrastar PDFs ou carregar</span>
               <span className="text-xs text-muted-foreground max-w-md">
                 Amostras reais disponíveis: CMR, Guia Recepção, Guia Transporte, Ticket Frio.
-                O upload real continua em modo de avaliação; produção liga scanner/pasta de rede a Blob UE.
+                O fluxo definitivo liga scanner ou pasta de rede a armazenamento na União Europeia.
               </span>
               <input type="file" id="files" name="filename" multiple accept="application/pdf,image/*" className="hidden" />
             </label>
@@ -50,8 +50,8 @@ export default async function DocsUploadPage() {
       </Card>
       <Card>
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
-          <div><strong>Pipeline:</strong> upload → extracção de CMR/matrícula/datas → tenta match por CMR exacto → fallback matrícula ±24h → restantes vão para órfãos.</div>
-          <div>Permissões cross-empresa: documentos ficam visíveis às empresas autorizadas (tabela <code>document_permissions</code>).</div>
+          <div><strong>Pipeline:</strong> upload → extracção de CMR/matrícula/datas → correspondência por CMR exacto → fallback matrícula ±24h → restantes vão para órfãos.</div>
+          <div>Permissões por empresa: documentos ficam visíveis apenas às empresas autorizadas.</div>
         </CardContent>
       </Card>
     </div>

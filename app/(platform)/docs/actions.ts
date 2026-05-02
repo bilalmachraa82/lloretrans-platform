@@ -179,7 +179,7 @@ interface ExportFilters {
 }
 
 /**
- * Manifesto de export em avaliação. O ZIP real depende do armazenamento UE definitivo; até lá
+ * Manifesto de export. O ZIP real depende do armazenamento UE definitivo; até lá
  * não devolvemos `application/zip` falso para não simular um artefacto inválido.
  */
 export async function exportZip(filters: ExportFilters): Promise<Response> {
@@ -219,10 +219,10 @@ export async function exportZip(filters: ExportFilters): Promise<Response> {
   const stamp = new Date().toISOString().slice(0, 10);
   const filename = `manifesto-documentos-${filters.tab ?? "todos"}-${stamp}.txt`;
   const body = [
-    "Export avaliação - manifesto de documentos",
+    "Export - manifesto de documentos",
     `Documentos: ${rows.length}`,
     `Filtros: ${JSON.stringify(filters)}`,
-    "Nota: ZIP real depende do armazenamento UE definitivo na Sprint 0.",
+    "Nota: ZIP final depende do armazenamento UE definitivo.",
   ].join("\n");
 
   return new Response(body, {

@@ -116,7 +116,7 @@ export default async function DocsPage({
     <div className="space-y-6">
       <PageHeader
         title="Digitalização Central"
-        description={`Hub cross-empresa · ${rows.length} documentos mostrados${scope ? ` · âmbito ${session.companyName ?? "empresa atribuída"}` : ""}`}
+        description={`Hub por empresa · ${rows.length} documentos mostrados${scope ? ` · âmbito ${session.companyName ?? "empresa atribuída"}` : ""}`}
         actions={canIngest ? (
           <Button asChild>
             <Link href="/docs/upload">

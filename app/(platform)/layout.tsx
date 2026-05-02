@@ -35,7 +35,7 @@ interface MvpEntry {
 
 const MVPS: MvpEntry[] = [
   { slug: "km", letter: "A", title: "Validação km", tagline: "Logue Trans × Frotcom", icon: TruckIcon, href: "/km" },
-  { slug: "ocr", letter: "B", title: "OCR Facturas", tagline: "9 facturas OCR", icon: ReceiptText, href: "/ocr" },
+  { slug: "ocr", letter: "B", title: "OCR Facturas", tagline: "Facturas · PHC Advanced", icon: ReceiptText, href: "/ocr" },
   { slug: "docs", letter: "C", title: "Docs Centrais", tagline: "CMR · guias · tickets", icon: FileStack, href: "/docs" },
   { slug: "fuel", letter: "D", title: "Combustível", tagline: "Cepsa · Repsol · Radius · bomba", icon: Fuel, href: "/fuel" },
   { slug: "bolsa", letter: "E", title: "Bolsa de Carga", tagline: "5 estados · comissões", icon: PackageSearch, href: "/bolsa" },
@@ -164,10 +164,10 @@ export default async function PlatformLayout({ children }: { children: React.Rea
           <div className="border-b border-[hsl(32_82%_55%)]/30 bg-[hsl(40_40%_96%)]">
             <div className="px-4 sm:px-8 py-2 flex items-center gap-3 text-[11px] flex-wrap">
               <Badge className="bg-[hsl(32_82%_55%)] text-[hsl(222_72%_12%)] border-0 text-[10px]">
-                Avaliação
+                Validação
               </Badge>
               <span className="text-foreground/70">
-                Vista de supervisão · percurso completo · dados de avaliação.
+                Vista de supervisão · percurso completo · dados operacionais.
               </span>
               <Link
                 href="/oficina/new"
@@ -196,9 +196,9 @@ export default async function PlatformLayout({ children }: { children: React.Rea
               </div>
             </details>
             <Badge variant="outline" className="text-[10px] whitespace-nowrap">
-              {process.env.USE_LIVE_APIS === "true" ? "APIs activas" : "Conectores · avaliação"}
+              {process.env.USE_LIVE_APIS === "true" ? "APIs activas" : "Conectores preparados"}
             </Badge>
-            <span className="hidden md:inline text-xs text-muted-foreground">Ambiente de avaliação</span>
+            <span className="hidden md:inline text-xs text-muted-foreground">Ambiente operacional</span>
           </div>
           <div className="hidden sm:block text-xs text-muted-foreground">
             RGPD · dados UE · registo de auditoria

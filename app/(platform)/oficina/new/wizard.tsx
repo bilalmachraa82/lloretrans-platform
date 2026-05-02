@@ -186,7 +186,7 @@ export function WorkOrderWizard({
     2: serviceCode !== "",
     3: true, // checklist opcional — mecânico pode saltar se só intervém em itens avulsos
     4: items.length > 0 && items.every((i) => i.description.trim()),
-    5: true, // fotos opcionais nesta avaliação
+    5: true, // fotos opcionais
     6: signaturePath !== "",
   }[step];
 
@@ -389,7 +389,7 @@ export function WorkOrderWizard({
 
       {step === 5 && (
         <Card>
-          <CardHeader><CardTitle className="text-base">5. Fotos (opcional nesta avaliação)</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">5. Fotos (opcional)</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {(["before", "detail", "after"] as const).map((stage) => (
               <label key={stage} className="flex items-center gap-3 rounded-md border border-dashed border-border p-4 cursor-pointer">
@@ -402,7 +402,7 @@ export function WorkOrderWizard({
               </label>
             ))}
             <p className="text-xs text-muted-foreground">
-              Nesta avaliação as fotos não são persistidas. Em produção, o armazenamento na UE fica definido na Sprint 0.
+              As fotos ficam associadas à folha de obra quando o armazenamento na União Europeia estiver activo.
             </p>
           </CardContent>
         </Card>
