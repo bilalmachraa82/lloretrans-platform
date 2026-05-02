@@ -87,7 +87,7 @@ function sparkSeed(key: string, length = 14): number[] {
   return out;
 }
 
-const MVP_CARDS = [
+const MODULE_CARDS = [
   {
     slug: "km",
     title: "Validação de km",
@@ -98,15 +98,15 @@ const MVP_CARDS = [
   },
   {
     slug: "ocr",
-    title: "OCR Facturas",
+    title: "Facturas de fornecedor",
     eyebrow: "Módulo B",
-    description: "Facturas reais calibradas por fornecedor · XML PHC Advanced",
+    description: "Facturas reais calibradas por fornecedor · preparação PHC Advanced",
     href: "/ocr",
     icon: ReceiptText,
   },
   {
     slug: "docs",
-    title: "Digitalização Central",
+    title: "Documentos centrais",
     eyebrow: "Módulo C",
     description: "Hub CMR + guias · associação automática · permissões por empresa",
     href: "/docs",
@@ -116,13 +116,13 @@ const MVP_CARDS = [
     slug: "fuel",
     title: "Combustível",
     eyebrow: "Módulo D",
-    description: "Cepsa/Repsol/Radius/bomba · Frotcom leitura pendente · anomalias por viatura",
+    description: "Cepsa/Repsol/Radius/bomba · leitura de bordo em validação · anomalias por viatura",
     href: "/fuel",
     icon: Fuel,
   },
   {
     slug: "bolsa",
-    title: "Bolsa de Carga",
+    title: "Bolsa de carga",
     eyebrow: "Módulo E",
     description: "Ciclo agendar → facturar → pagar · comissões automáticas · alertas",
     href: "/bolsa",
@@ -137,6 +137,33 @@ const MVP_CARDS = [
     icon: Wrench,
   },
 ] as const;
+
+function humanAuditLabel(action: string, entityType: string): string {
+  const labels: Record<string, string> = {
+    "workorder.submit": "Folha de obra submetida",
+    "workorder.pause": "Folha de obra pausada",
+    "workorder.wait_parts": "Folha de obra a aguardar peças",
+    "workorder.resume": "Folha de obra retomada",
+    "workorder.approve": "Folha de obra aprovada",
+    "workorder.reject": "Folha de obra devolvida",
+    "freight.transition": "Carga avançou de estado",
+    "freight.rollback": "Carga revertida",
+    "freight.create": "Carga criada",
+    "invoice.upload": "Factura recebida",
+    "invoice.approve": "Factura aprovada",
+    "invoice.export": "Factura preparada para PHC Advanced",
+    "document.ingest": "Documento recebido",
+    "document.associate": "Documento associado à viagem",
+    "document.dissociate": "Documento desassociado",
+    "km.approve": "Quilómetros aprovados",
+    "km.use_gps": "Quilómetros corrigidos por GPS",
+    "km.manual_override": "Quilómetros corrigidos manualmente",
+    "km.reject": "Quilómetros rejeitados",
+    "fuel.anomaly_resolve": "Anomalia de combustível resolvida",
+    "fuel.anomaly_reopen": "Anomalia de combustível reaberta",
+  };
+  return labels[action] ?? entityType.replaceAll("_", " ");
+}
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -195,7 +222,7 @@ export default async function DashboardPage() {
         <PageHeader
           eyebrow={`Sessão activa · ${session.companyName}`}
           title={`Olá, ${session.userName.split(" ")[0]}`}
-          description="Visão única sobre os 6 módulos operacionais. Os KPIs actualizam à medida que a equipa usa o sistema."
+          description="Visão única sobre os 6 módulos operacionais. Os indicadores actualizam à medida que a equipa usa o sistema."
           actions={
             <Badge variant="secondary" className="tabular">
               {new Date().toLocaleDateString("pt-PT", { weekday: "long", day: "2-digit", month: "long" })}
@@ -260,7 +287,7 @@ export default async function DashboardPage() {
           Módulos disponíveis
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {MVP_CARDS.filter((m) => canAccessMvp(session.role, m.slug)).map((m) => {
+          {MODULE_CARDS.filter((m) => canAccessMvp(session.role, m.slug)).map((m) => {
             const Icon = m.icon;
             return (
               <Link key={m.slug} href={m.href} className="group">
@@ -302,9 +329,7 @@ export default async function DashboardPage() {
               {recent.map((r) => (
                 <div key={r.id} className="flex items-center justify-between px-5 py-3 text-sm">
                   <div>
-                    <span className="font-mono text-xs text-muted-foreground">{r.action}</span>
-                    <span className="mx-2 text-muted-foreground">·</span>
-                    <span>{r.entityType}</span>
+                    <span>{humanAuditLabel(r.action, r.entityType)}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
                     {r.userName ?? "—"} · {formatRelative(r.createdAt)}

@@ -22,6 +22,7 @@ import { StatusPill } from "@/components/ui/status-pill";
 import { Input } from "@/components/ui/input";
 import { formatEur } from "@/lib/money";
 import { formatDateTime } from "@/lib/dates";
+import { Box, CirclePause, CirclePlay } from "lucide-react";
 import {
   approveWorkOrder,
   rejectWorkOrder,
@@ -75,7 +76,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
   if (!wo) notFound();
 
   if (session.role === "mecanico" && wo.mechanicId !== session.userId) {
-    throw new Error("FORBIDDEN: não podes ver folhas de outros mecânicos");
+    throw new Error("FORBIDDEN: não pode ver folhas de outros mecânicos");
   }
 
   const [items, photos, signatures, checklistAnswers, audits] = await Promise.all([
@@ -114,7 +115,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
         description={`${wo.plate} · ${wo.kind} · ${wo.mechanicName}`}
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline" asChild><Link href="/oficina">← Voltar</Link></Button>
+            <Button variant="outline" asChild><Link href="/oficina">Voltar</Link></Button>
             <StatusPill status={STATE_MAP[wo.state]?.pill ?? "neutral"}>{STATE_MAP[wo.state]?.label}</StatusPill>
           </div>
         }
@@ -144,7 +145,10 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
             {canStart && (
               <form action={startWorkOrder}>
                 <input type="hidden" name="id" value={wo.id} />
-                <Button type="submit" variant="success" className="w-full">▶ Iniciar trabalho</Button>
+                <Button type="submit" variant="success" className="w-full">
+                  <CirclePlay className="h-4 w-4" />
+                  Iniciar trabalho
+                </Button>
               </form>
             )}
             {canPause && (
@@ -153,20 +157,29 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
                   <input type="hidden" name="id" value={wo.id} />
                   <input type="hidden" name="kind" value="paused" />
                   <Input name="reason" placeholder="Motivo da pausa" />
-                  <Button type="submit" variant="outline" className="w-full">⏸ Pausar</Button>
+                  <Button type="submit" variant="outline" className="w-full">
+                    <CirclePause className="h-4 w-4" />
+                    Pausar
+                  </Button>
                 </form>
                 <form action={pauseWorkOrder} className="space-y-2">
                   <input type="hidden" name="id" value={wo.id} />
                   <input type="hidden" name="kind" value="waiting_parts" />
                   <Input name="reason" placeholder="Descrição das peças" />
-                  <Button type="submit" variant="outline" className="w-full">📦 Aguardar peças</Button>
+                  <Button type="submit" variant="outline" className="w-full">
+                    <Box className="h-4 w-4" />
+                    Aguardar peças
+                  </Button>
                 </form>
               </>
             )}
             {canResume && (
               <form action={resumeWorkOrder}>
                 <input type="hidden" name="id" value={wo.id} />
-                <Button type="submit" variant="success" className="w-full">▶ Retomar trabalho</Button>
+                <Button type="submit" variant="success" className="w-full">
+                  <CirclePlay className="h-4 w-4" />
+                  Retomar trabalho
+                </Button>
                 {wo.pauseReason && (
                   <div className="text-xs text-muted-foreground mt-2 italic">Motivo: {wo.pauseReason}</div>
                 )}
@@ -192,7 +205,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
               </form>
             )}
             {!canStart && !canPause && !canResume && !canAct && !canExport && (
-              <div className="text-xs text-muted-foreground">Nenhuma acção disponível para este estado / role.</div>
+              <div className="text-xs text-muted-foreground">Nenhuma acção disponível para este estado e perfil.</div>
             )}
           </CardContent>
         </Card>
@@ -244,7 +257,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
             <tbody>
               {items.map((i) => (
                 <tr key={i.id}>
-                  <td><Badge variant={i.kind === "part" ? "default" : "secondary"}>{i.kind}</Badge></td>
+                  <td><Badge variant={i.kind === "part" ? "default" : "secondary"}>{workOrderItemKindLabel(i.kind)}</Badge></td>
                   <td>{i.description}</td>
                   <td className="font-mono text-xs">{i.partCode ?? "—"}</td>
                   <td className="text-right font-mono">{i.quantity.toFixed(2)}</td>
@@ -266,10 +279,20 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {photos.map((p) => (
-                  <div key={p.id} className="aspect-square bg-secondary rounded-md p-2 text-[10px] text-center grid place-items-center">
-                    <div>
-                      <div className="font-semibold">{p.stage}</div>
-                      <div className="text-muted-foreground mt-1 break-all">{p.path}</div>
+                  <div key={p.id} className="overflow-hidden rounded-md border border-border bg-secondary">
+                    {p.path.startsWith("data:image/") ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={p.path} alt={`Foto ${p.stage}`} className="aspect-square w-full object-cover" />
+                    ) : (
+                      <div className="aspect-square p-2 text-[10px] text-center grid place-items-center">
+                        <div>
+                          <div className="font-semibold">{p.stage}</div>
+                          <div className="text-muted-foreground mt-1 break-all">{p.path}</div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="border-t border-border px-2 py-1 text-[10px] font-semibold uppercase tracking-wide">
+                      {photoStageLabel(p.stage)}
                     </div>
                   </div>
                 ))}
@@ -289,7 +312,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
                   <div key={s.id} className="rounded-md border border-border p-3">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">{s.signerName}</span>
-                      <Badge variant="secondary" className="text-[10px]">{s.signerRole}</Badge>
+                      <Badge variant="secondary" className="text-[10px]">{signatureRoleLabel(s.signerRole)}</Badge>
                     </div>
                     <svg viewBox="0 0 600 200" className="w-full h-24 border border-dashed border-border rounded bg-secondary/20">
                       <path d={s.svgPath} stroke="hsl(220 80% 40%)" strokeWidth="2" fill="none" strokeLinecap="round" />
@@ -313,7 +336,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
               {audits.map((a) => (
                 <li key={a.id} className="border-b border-border pb-2 last:border-0">
                   <div className="flex justify-between">
-                    <span className="font-mono text-xs">{a.action}</span>
+                    <span className="text-xs font-medium">{workOrderAuditLabel(a.action)}</span>
                     <span className="text-xs text-muted-foreground">{formatDateTime(a.createdAt)}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">{a.userName ?? "—"} · {a.reason ?? "(sem motivo)"}</div>
@@ -334,4 +357,37 @@ function Kv({ label, value, strong = false }: { label: string; value: string; st
       <span className={`font-mono ${strong ? "text-base font-semibold" : ""}`}>{value}</span>
     </div>
   );
+}
+
+function photoStageLabel(stage: string): string {
+  if (stage === "before") return "Antes";
+  if (stage === "detail") return "Detalhe";
+  if (stage === "after") return "Depois";
+  return stage;
+}
+
+function signatureRoleLabel(role: string): string {
+  if (role === "mechanic") return "Mecânico";
+  if (role === "admin") return "Administração";
+  return role;
+}
+
+function workOrderItemKindLabel(kind: string): string {
+  if (kind === "part") return "Peça";
+  if (kind === "labour") return "Mão-de-obra";
+  return kind;
+}
+
+function workOrderAuditLabel(action: string): string {
+  const labels: Record<string, string> = {
+    "workorder.submit": "Folha de obra submetida",
+    "workorder.pause": "Folha de obra pausada",
+    "workorder.wait_parts": "Folha de obra a aguardar peças",
+    "workorder.resume": "Folha de obra retomada",
+    "workorder.approve": "Folha de obra aprovada",
+    "workorder.reject": "Folha de obra devolvida",
+    "workorder.export": "Preparação PHC Advanced",
+    "workorder.start": "Trabalho iniciado",
+  };
+  return labels[action] ?? "Evento registado";
 }

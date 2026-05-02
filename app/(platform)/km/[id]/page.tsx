@@ -83,7 +83,7 @@ export default async function KmDetailPage({ params }: { params: Promise<{ id: s
         actions={
           <div className="flex items-center gap-2">
             <Button variant="outline" asChild>
-              <Link href="/km">← Voltar</Link>
+              <Link href="/km">Voltar</Link>
             </Button>
             <StatusPill status={stateMap[row.state]?.pill ?? "neutral"}>{stateMap[row.state]?.label ?? row.state}</StatusPill>
           </div>
@@ -163,7 +163,7 @@ export default async function KmDetailPage({ params }: { params: Promise<{ id: s
       {decided && (
         <Card>
           <CardContent className="p-4 text-sm">
-            <div className="font-medium text-success">✓ Decidida em {formatDateTime(row.decidedAt!)}</div>
+            <div className="font-medium text-success">Decidida em {formatDateTime(row.decidedAt!)}</div>
             <div className="text-xs text-muted-foreground mt-1">Km final: {formatKm(row.finalKm)}</div>
             {row.decisionReason && <div className="text-xs mt-1">Motivo: {row.decisionReason}</div>}
           </CardContent>
@@ -182,7 +182,7 @@ export default async function KmDetailPage({ params }: { params: Promise<{ id: s
               {audits.map((a) => (
                 <li key={a.id} className="border-b border-border pb-2 last:border-0">
                   <div className="flex justify-between">
-                    <span className="font-mono text-xs">{a.action}</span>
+                    <span className="text-xs font-medium">{kmAuditLabel(a.action)}</span>
                     <span className="text-xs text-muted-foreground">{formatDateTime(a.createdAt)}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -205,4 +205,12 @@ function Kv({ label, value, strong = false }: { label: string; value: string; st
       <span className={`font-mono ${strong ? "text-base font-semibold" : ""}`}>{value}</span>
     </div>
   );
+}
+
+function kmAuditLabel(action: string): string {
+  if (action === "km.approve") return "Quilómetros aprovados";
+  if (action === "km.use_gps") return "Valor GPS aplicado";
+  if (action === "km.manual_override") return "Valor manual aplicado";
+  if (action === "km.reject") return "Reconciliação rejeitada";
+  return action;
 }

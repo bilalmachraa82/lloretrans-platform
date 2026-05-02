@@ -50,7 +50,7 @@ export default async function VehiclesPage() {
         description={`${rows.length} viaturas · origem: fixtures reais AITIPRO + GPS quando disponível`}
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">← Admin</Link>
+            <Link href="/admin">Admin</Link>
           </Button>
         }
       />

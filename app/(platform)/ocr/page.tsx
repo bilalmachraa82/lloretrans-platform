@@ -11,12 +11,14 @@ import { formatEur } from "@/lib/money";
 import { formatDate } from "@/lib/dates";
 import { Upload } from "lucide-react";
 
-const STATE_LABELS: Record<string, { label: string; pill: "green" | "yellow" | "red" | "neutral" }> = {
-  pending_ocr: { label: "A extrair", pill: "neutral" },
-  pending_review: { label: "A validar", pill: "yellow" },
-  approved: { label: "Aprovada", pill: "green" },
-  exported: { label: "Exportada PHC Advanced", pill: "green" },
+const STATE_LABELS: Record<string, { label: string; pill: "green" | "yellow" | "red" | "neutral"; slug: string }> = {
+  pending_ocr: { label: "A extrair", pill: "neutral", slug: "extrair" },
+  pending_review: { label: "A validar", pill: "yellow", slug: "validar" },
+  approved: { label: "Aprovada", pill: "green", slug: "aprovada" },
+  exported: { label: "Exportada PHC Advanced", pill: "green", slug: "exportada" },
 };
+
+const STATE_BY_SLUG = Object.fromEntries(Object.entries(STATE_LABELS).map(([state, config]) => [config.slug, state]));
 
 export default async function OcrListPage({
   searchParams,
@@ -25,8 +27,9 @@ export default async function OcrListPage({
 }) {
   await requireRole(["admin", "clarice", "admin_oficina", "admin_contas"]);
   const { state } = await searchParams;
+  const dbState = state ? STATE_BY_SLUG[state] : undefined;
 
-  const whereClause = state ? eq(invoices.state, state) : undefined;
+  const whereClause = dbState ? eq(invoices.state, dbState) : undefined;
 
   const rows = await db
     .select({
@@ -57,22 +60,22 @@ export default async function OcrListPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        title="OCR Facturas de Fornecedor"
-        description={`${rows.length} facturas mostradas · Módulo B · 9 facturas reais usadas para ensinar regras por fornecedor · sem lote sintético`}
+        title="Facturas de fornecedor"
+        description={`${rows.length} facturas mostradas · leitura e classificação calibradas com facturas reais por fornecedor`}
         actions={
           <Button asChild>
             <Link href="/ocr/upload">
               <Upload className="h-4 w-4" />
-              Upload factura
+              Receber factura
             </Link>
           </Button>
         }
       />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {Object.entries(STATE_LABELS).map(([key, { label }]) => (
-          <Link key={key} href={`/ocr?state=${key}`}>
-            <Card className={`transition-colors hover:border-primary/60 ${state === key ? "border-primary" : ""}`}>
+        {Object.entries(STATE_LABELS).map(([key, { label, slug }]) => (
+          <Link key={key} href={`/ocr?state=${slug}`}>
+            <Card className={`transition-colors hover:border-primary/60 ${state === slug ? "border-primary" : ""}`}>
               <CardContent className="p-4">
                 <div className="text-xs text-muted-foreground">{label}</div>
                 <div className="text-2xl font-semibold font-mono">{byState[key] ?? 0}</div>

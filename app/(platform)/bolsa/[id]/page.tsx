@@ -113,13 +113,13 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
       <PageHeader
         title={`Carga ${row.reference}`}
         description={`${row.origin} → ${row.destination} · ${row.clientName} (${row.clientCountry})`}
-        actions={<Button variant="outline" asChild><Link href="/bolsa">← Voltar</Link></Button>}
+        actions={<Button variant="outline" asChild><Link href="/bolsa">Voltar</Link></Button>}
       />
 
       {(hasDeviation || hasOverdue) && (
         <div className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm space-y-1">
-          {hasDeviation && <div>⚠️ Factura fornecedor com desvio &gt; 5% vs acordado.</div>}
-          {hasOverdue && <div>⚠️ Factura cliente com data de pagamento ultrapassada.</div>}
+          {hasDeviation && <div><strong>Atenção:</strong> factura fornecedor com desvio &gt; 5% face ao acordado.</div>}
+          {hasOverdue && <div><strong>Atenção:</strong> factura cliente com data de pagamento ultrapassada.</div>}
         </div>
       )}
 
@@ -164,7 +164,7 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
                   <input type="hidden" name="loadId" value={row.id} />
                   <input type="hidden" name="toState" value={to} />
                   <Input name="reason" placeholder="Motivo (opcional)" className="text-xs" />
-                  <Button type="submit" size="sm">→ {STATE_LABELS[to]}</Button>
+                  <Button type="submit" size="sm">Avançar para {STATE_LABELS[to]}</Button>
                 </form>
               ))}
             </div>
@@ -176,7 +176,7 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
                     <input type="hidden" name="loadId" value={row.id} />
                     <input type="hidden" name="toState" value={to} />
                     <Input name="reason" placeholder="Motivo (obrigatório)" required className="text-xs" />
-                    <Button type="submit" size="sm" variant="outline">← {STATE_LABELS[to]}</Button>
+                    <Button type="submit" size="sm" variant="outline">Recuar para {STATE_LABELS[to]}</Button>
                   </form>
                 ))}
               </div>

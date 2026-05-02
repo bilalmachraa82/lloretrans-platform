@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 import { setSession } from "@/lib/auth/session";
 import { ROLE_LABELS, canAccessMvp, type Role } from "@/lib/auth/types";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 function canShowInternalAdminProfiles(): boolean {
   return process.env.ALLOW_INTERNAL_ADMIN_LOGIN === "true" && process.env.VERCEL_ENV !== "production";
@@ -65,7 +65,7 @@ const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
     label: "Clarice Santos",
     summary: "Direcção Operacional · visão global",
     angle:
-      "Acesso ao dashboard com as 60 viaturas, validação km do dia e folhas de oficina a validar.",
+      "Acesso ao painel com as 60 viaturas, validação km do dia e folhas de oficina a validar.",
   },
   {
     email: "eder@lloretrans.pt",
@@ -79,7 +79,7 @@ const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
     label: "Mecânico oficina",
     summary: "Oficina · aplicação móvel",
     angle:
-      "Aplicação móvel com assistente em 6 passos. Assinatura no ecrã. Funciona mesmo sem rede. Demora < 3 min.",
+      "Aplicação móvel com rascunho automático, checklist adaptada à viatura, fotos e assinatura no ecrã.",
   },
 ];
 
@@ -226,7 +226,8 @@ export default async function LoginPage({
                           {ROLE_LABELS[user.role as Role]}
                         </span>
                         <span className="text-xs text-[hsl(222_72%_30%)] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                          Entrar →
+                          Entrar
+                          <ArrowRight className="ml-1 inline h-3.5 w-3.5" />
                         </span>
                       </div>
                     </button>

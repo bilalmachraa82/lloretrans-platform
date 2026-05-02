@@ -46,7 +46,7 @@ export default async function AuditLogPage({
         description={`Append-only · ${rows.length} entradas mostradas · base para compliance RGPD`}
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">← Admin</Link>
+            <Link href="/admin">Admin</Link>
           </Button>
         }
       />

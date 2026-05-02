@@ -213,7 +213,7 @@ export default async function KmPage({
                   </td>
                   <td className="text-xs">
                     {r.decidedAt ? (
-                      <span className="text-success">✓ {formatKm(r.finalKm)}</span>
+                      <span className="text-success">Decidida · {formatKm(r.finalKm)}</span>
                     ) : (
                       <span className="text-muted-foreground">Pendente</span>
                     )}

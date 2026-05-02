@@ -21,6 +21,8 @@ export async function getVehicleFuelRanking(windowStart: Date): Promise<VehicleF
         sql<number>`CASE WHEN ${fuelFills.source} = 'bomba_interna' THEN ${fuelFills.liters} ELSE 0 END`,
       ).as("bomba_liters"),
       fillCount: count().as("fill_count"),
+      maxFillOdo: max(fuelFills.odometerKm).as("max_fill_odo"),
+      minFillOdo: min(fuelFills.odometerKm).as("min_fill_odo"),
     })
     .from(fuelFills)
     .where(gte(fuelFills.filledAt, windowStart))
@@ -47,12 +49,15 @@ export async function getVehicleFuelRanking(windowStart: Date): Promise<VehicleF
     .from(vehicles)
     .where(and(eq(vehicles.isInternal, true), eq(vehicles.hasCanbus, true)));
 
-  const fillsByVid = new Map<string, { totalLiters: number; bombaLiters: number; fillCount: number }>();
+  const fillsByVid = new Map<string, { totalLiters: number; bombaLiters: number; fillCount: number; kmRange: number }>();
   for (const f of fills) {
+    const maxFillOdo = f.maxFillOdo != null ? Number(f.maxFillOdo) : 0;
+    const minFillOdo = f.minFillOdo != null ? Number(f.minFillOdo) : 0;
     fillsByVid.set(f.vehicleId, {
       totalLiters: Number(f.totalLiters ?? 0),
       bombaLiters: Number(f.bombaLiters ?? 0),
       fillCount: Number(f.fillCount ?? 0),
+      kmRange: Math.max(0, maxFillOdo - minFillOdo),
     });
   }
   const canbusByVid = new Map<string, { kmRange: number }>();
@@ -63,7 +68,7 @@ export async function getVehicleFuelRanking(windowStart: Date): Promise<VehicleF
   }
 
   const ranking: VehicleFuelRanking[] = vehicleRows.map((v) => {
-    const f = fillsByVid.get(v.id) ?? { totalLiters: 0, bombaLiters: 0, fillCount: 0 };
+    const f = fillsByVid.get(v.id) ?? { totalLiters: 0, bombaLiters: 0, fillCount: 0, kmRange: 0 };
     const c = canbusByVid.get(v.id) ?? { kmRange: 0 };
     const bombaPct = f.totalLiters > 0 ? (100 * f.bombaLiters) / f.totalLiters : 0;
     return {
@@ -71,7 +76,7 @@ export async function getVehicleFuelRanking(windowStart: Date): Promise<VehicleF
       plate: v.plate,
       kind: v.kind,
       totalLiters: f.totalLiters,
-      totalKm: c.kmRange,
+      totalKm: c.kmRange > 0 ? c.kmRange : f.kmRange,
       fillCount: f.fillCount,
       bombaPct,
     };

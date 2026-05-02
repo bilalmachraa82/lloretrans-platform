@@ -12,9 +12,9 @@ export default async function DocsUploadPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Ingerir documentos"
-        description="Scan em lote · OCR metadados · auto-associação por CMR ou matrícula+data"
-        actions={<Button variant="outline" asChild><Link href="/docs">← Voltar</Link></Button>}
+        title="Receber documentos"
+        description="CMR, guias e tickets · leitura de metadados · associação por CMR ou matrícula e data"
+        actions={<Button variant="outline" asChild><Link href="/docs">Voltar</Link></Button>}
       />
       <Card>
         <CardContent className="p-8">
@@ -31,15 +31,14 @@ export default async function DocsUploadPage() {
               <Upload className="h-10 w-10 text-muted-foreground" />
               <span className="text-sm font-medium">Arrastar PDFs ou carregar</span>
               <span className="text-xs text-muted-foreground max-w-md">
-                Amostras reais disponíveis: CMR, Guia Recepção, Guia Transporte, Ticket Frio.
-                O fluxo definitivo liga scanner ou pasta de rede a armazenamento na União Europeia.
+                Recepção central para CMR, guias e tickets. O fluxo liga scanner ou pasta de rede a armazenamento na União Europeia.
               </span>
               <input type="file" id="files" name="filename" multiple accept="application/pdf,image/*" className="hidden" />
             </label>
             <div className="flex items-end gap-3">
               <div className="flex-1">
                 <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Ou simular nº documentos
+                  Quantidade de documentos no lote
                 </label>
                 <Input type="number" name="count" defaultValue="12" min="1" max="100" className="mt-1" />
               </div>
@@ -50,7 +49,7 @@ export default async function DocsUploadPage() {
       </Card>
       <Card>
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
-          <div><strong>Pipeline:</strong> upload → extracção de CMR/matrícula/datas → correspondência por CMR exacto → fallback matrícula ±24h → restantes vão para órfãos.</div>
+          <div><strong>Sequência operacional:</strong> recepção → leitura de CMR, matrícula e datas → correspondência por CMR exacto → associação por matrícula e janela temporal → revisão dos documentos sem viagem associada.</div>
           <div>Permissões por empresa: documentos ficam visíveis apenas às empresas autorizadas.</div>
         </CardContent>
       </Card>

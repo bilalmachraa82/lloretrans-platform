@@ -103,6 +103,9 @@ export async function approveReconciliation(formData: FormData): Promise<void> {
   const effectiveKm = finalKm ?? row.kmDeclared ?? row.kmGps ?? null;
   const isOverride =
     effectiveKm != null && row.kmDeclared != null && Math.abs(effectiveKm - row.kmDeclared) > 0.001;
+  if ((row.state === "red" || isOverride) && !reason) {
+    throw new Error("Motivo obrigatório para vermelho ou correcção manual de quilómetros.");
+  }
 
   await applyApproval({
     reconciliationId,

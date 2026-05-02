@@ -22,7 +22,7 @@ export default async function NewLoadPage() {
       <PageHeader
         title="Nova carga"
         description="Cria no sistema · substitui linha Excel · comissão calculada automaticamente quando paga"
-        actions={<Button variant="outline" asChild><Link href="/bolsa">← Voltar</Link></Button>}
+        actions={<Button variant="outline" asChild><Link href="/bolsa">Voltar</Link></Button>}
       />
 
       <Card>

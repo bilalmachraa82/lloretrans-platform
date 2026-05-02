@@ -43,7 +43,7 @@ export default async function FlagsPage() {
         description="Activar/desactivar módulos sem deploy"
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">← Admin</Link>
+            <Link href="/admin">Admin</Link>
           </Button>
         }
       />

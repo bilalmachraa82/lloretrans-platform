@@ -34,7 +34,7 @@ const PROOF = [
 const PRODUCT_SHOTS = [
   {
     src: "/product-shots/dashboard-crop.png",
-    title: "Dashboard operacional",
+    title: "Painel operacional",
     body: "Visão consolidada dos módulos, indicadores críticos e trabalho pendente.",
   },
   {
@@ -83,8 +83,8 @@ const MODULES = [
     title: "OCR de facturas fornecedor",
     icon: ReceiptText,
     pain: "O conhecimento de classificação está na pessoa e não no sistema; cada fornecedor tem o seu formato.",
-    currentState: "Upload, extracção, classificação por NIF, memória por fornecedor e export orientado a PHC Advanced.",
-    proof: "As facturas reais carregadas mostram extracção, confiança, estado de validação e serviço PHC proposto.",
+    currentState: "Recepção do PDF, extracção, classificação por NIF, memória por fornecedor e preparação para PHC Advanced.",
+    proof: "As facturas reais carregadas mostram extracção, confiança, estado de validação e serviço PHC Advanced proposto.",
     validate: "A lógica de classificação por NIF é calibrada com a equipa antes de qualquer escrita automática.",
     href: "/login?target=ocr",
   },
@@ -105,7 +105,7 @@ const MODULES = [
     pain: "Os dados existem, mas estão separados por fornecedor e sem leitura consolidada por viatura.",
     currentState: "A plataforma cruza abastecimentos por matrícula e fornecedor e sinaliza anomalias com decisão humana.",
     proof: "Já estão carregadas 2161 linhas reais.",
-    validate: "A leitura por viatura entra em produção quando a API Frotcom for disponibilizada; até lá, fica em modo informativo.",
+    validate: "A leitura por viatura fica sujeita à confirmação técnica da leitura de bordo; até lá, a sinalização usa abastecimentos e odómetro disponível.",
     href: "/login?target=fuel",
   },
   {
@@ -125,7 +125,7 @@ const MODULES = [
     pain: "O mecânico regista em papel e a administrativa relança tudo no PHC Advanced.",
     currentState: "Aplicação móvel com checklist, estados, assinatura e validação administrativa.",
     proof: "A folha de obra já pode ser mostrada em telemóvel como experiência real de uso.",
-    validate: "Plano de adopção da oficina inclui treino presencial e fallback em papel com OCR.",
+    validate: "Plano de adopção da oficina inclui treino presencial, piloto com um mecânico e plano de contingência para folhas em papel.",
     href: "/login?target=oficina",
   },
 ];
@@ -151,7 +151,7 @@ const DEPENDENCIES = [
 const COUNCIL_REASONS = [
   {
     title: "Plataforma navegável",
-    body: "Os seis fluxos correm hoje contra dados reais. Não há promessas em PowerPoint a colmatar funcionalidades em falta.",
+    body: "Os seis fluxos correm hoje contra dados reais, com ecrãs navegáveis e estados operacionais visíveis.",
   },
   {
     title: "Primeira semana fechada",

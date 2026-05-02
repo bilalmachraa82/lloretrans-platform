@@ -113,7 +113,7 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
         description={`${doc.plate ?? "sem matrícula"} · ${doc.loadedAt ? formatDate(doc.loadedAt) : "sem data"}`}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" asChild><Link href="/docs">← Voltar</Link></Button>
+            <Button variant="outline" asChild><Link href="/docs">Voltar</Link></Button>
             {assoc && (
               <form action={dissociateDocument}>
                 <input type="hidden" name="documentId" value={doc.id} />
@@ -132,8 +132,8 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
           <CardContent>
             <div className="aspect-[3/4] rounded-md border border-dashed border-border bg-secondary/50 grid place-items-center text-sm text-muted-foreground p-6 text-center">
               <div>
-                <div className="font-mono text-xs mb-2 break-all">{doc.sourcePath}</div>
-                <div>Em produção: PDF embed aqui.</div>
+                <div className="font-semibold text-foreground">Ficheiro original associado</div>
+                <div className="mt-2">Documento ligado ao registo e pronto para consulta operacional.</div>
               </div>
             </div>
           </CardContent>
@@ -143,12 +143,12 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
           <Card>
             <CardHeader><CardTitle className="text-base">Metadados extraídos</CardTitle></CardHeader>
             <CardContent className="space-y-2 text-sm">
-              <Kv label="Tipo" value={doc.kind} />
+              <Kv label="Tipo" value={docKindLabel(doc.kind)} />
               <Kv label="CMR" value={doc.cmrNumber ?? "—"} />
               <Kv label="Matrícula" value={doc.plate ?? "—"} />
               <Kv label="Data carga" value={doc.loadedAt ? formatDate(doc.loadedAt) : "—"} />
               <Kv label="Data entrega" value={doc.deliveredAt ? formatDate(doc.deliveredAt) : "—"} />
-              <Kv label="Estado" value={doc.state} />
+              <Kv label="Estado" value={docStateLabel(doc.state)} />
               {doc.ocrText && <div className="pt-2 border-t border-border text-xs text-muted-foreground italic">{doc.ocrText}</div>}
             </CardContent>
           </Card>
@@ -162,7 +162,7 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
                 <Kv label="Matrícula" value={assoc.plate} />
                 <Kv label="Cliente" value={assoc.clientName ?? "—"} />
                 <Kv label="Início" value={formatDateTime(assoc.startedAt)} />
-                <Kv label="Método" value={assoc.method as string} />
+                <Kv label="Método" value={associationMethodLabel(assoc.method as string)} />
                 <Kv label="Confiança" value={`${((assoc.confidence as number) * 100).toFixed(0)}%`} />
               </CardContent>
             </Card>
@@ -208,7 +208,7 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
               {audits.map((a) => (
                 <li key={a.id} className="border-b border-border pb-2 last:border-0">
                   <div className="flex justify-between">
-                    <span className="font-mono text-xs">{a.action}</span>
+                    <span className="text-xs font-medium">{documentAuditLabel(a.action)}</span>
                     <span className="text-xs text-muted-foreground">{formatDateTime(a.createdAt)}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">{a.userName ?? "—"} · {a.reason ?? "(sem motivo)"}</div>
@@ -229,4 +229,37 @@ function Kv({ label, value }: { label: string; value: string }) {
       <span className="font-mono text-sm">{value}</span>
     </div>
   );
+}
+
+function docKindLabel(kind: string): string {
+  const labels: Record<string, string> = {
+    cmr: "CMR",
+    guia_remessa: "Guia remessa",
+    guia_recepcao: "Guia recepção",
+    ticket_frio: "Ticket frio",
+    controlo_tara: "Controlo tara",
+  };
+  return labels[kind] ?? kind;
+}
+
+function docStateLabel(state: string): string {
+  if (state === "associated") return "Associado";
+  if (state === "orphan") return "Sem viagem associada";
+  if (state === "pending_association") return "A associar";
+  return state;
+}
+
+function associationMethodLabel(method: string): string {
+  if (method === "cmr_exact") return "CMR exacto";
+  if (method === "plate_date_match") return "Matrícula + data";
+  if (method === "manual") return "Confirmação manual";
+  return method;
+}
+
+function documentAuditLabel(action: string): string {
+  if (action === "document.ingest") return "Documento recebido";
+  if (action === "document.associate") return "Documento associado";
+  if (action === "document.dissociate") return "Documento desassociado";
+  if (action === "document.export_zip") return "Exportação preparada";
+  return action;
 }

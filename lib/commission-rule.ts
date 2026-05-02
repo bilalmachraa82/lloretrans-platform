@@ -1,10 +1,10 @@
 // Regra de comissão confirmada pelo Éder (2026-04-20):
 //   amount = margin × 20% + bónus fixo por carga (€2,50 nacional · €5 internacional)
-//   só se aplica se a carga tiver sido feita com viatura interna Lloretrans.
+//   o bónus fixo só se aplica quando a carga usa viatura interna Lloretrans.
 //
 // Esta heurística de nacional vs internacional funciona com os dados que temos no seed:
 // considera-se nacional se origem E destino estiverem ambos em Portugal continental.
-// Em produção seria substituído por país derivado da morada ou código ISO.
+// Com moradas oficiais, esta lista passa a ser substituída por país derivado da morada ou código ISO.
 
 const PORTUGUESE_CITIES = [
   "lisboa",
@@ -22,8 +22,48 @@ const PORTUGUESE_CITIES = [
   "guimaraes",
   "guimarães",
   "torres vedras",
+  "a dos cunhados",
+  "alcobaça",
+  "alcoentre",
   "marl",
   "algoz",
+  "almeirim",
+  "almada",
+  "alverca",
+  "amadora",
+  "arruda dos vinhos",
+  "azambuja",
+  "barreiro",
+  "benavente",
+  "batalha",
+  "caldas da rainha",
+  "carregado",
+  "castanheira do ribatejo",
+  "cascais",
+  "cereja",
+  "figueira da foz",
+  "golegã",
+  "laundos",
+  "loures",
+  "mafra",
+  "maia",
+  "mangualde",
+  "marinha grande",
+  "montijo",
+  "odivelas",
+  "oeiras",
+  "palmela",
+  "peniche",
+  "pombal",
+  "póvoa de varzim",
+  "povoa de varzim",
+  "santarém",
+  "santarem",
+  "sintra",
+  "tojal",
+  "torres novas",
+  "vila franca de xira",
+  "vila nova de gaia",
   "lloretrans",
 ];
 
@@ -73,14 +113,6 @@ export function computeCommissionAmount(
   const hasInternalPlate = load.plate != null && internalPlates.has(load.plate);
   const isNational = isNationalLoad(load.origin, load.destination);
 
-  if (rule.requireInternalVehicle && !hasInternalPlate) {
-    return {
-      amountEur: 0,
-      eligible: false,
-      reason: "Sem viatura Lloretrans",
-      breakdown: { percentPart: 0, bonusPart: 0, isNational, hasInternalPlate },
-    };
-  }
   if (rule.minMarginPct > 0 && load.marginPct < rule.minMarginPct) {
     return {
       amountEur: 0,
@@ -90,14 +122,21 @@ export function computeCommissionAmount(
     };
   }
 
-  const percentPart = load.margin * rule.percentOfMargin;
-  const bonusPart = isNational ? rule.fixedBonusNationalEur : rule.fixedBonusInternationalEur;
+  const percentPart = Math.max(0, load.margin) * rule.percentOfMargin;
+  const bonusPart =
+    !rule.requireInternalVehicle || hasInternalPlate
+      ? isNational
+        ? rule.fixedBonusNationalEur
+        : rule.fixedBonusInternationalEur
+      : 0;
   const amountEur = Math.round((percentPart + bonusPart) * 100) / 100;
 
   return {
     amountEur,
-    eligible: true,
-    reason: "OK",
+    eligible: amountEur > 0,
+    reason: bonusPart === 0 && rule.requireInternalVehicle && !hasInternalPlate
+      ? "Sem bónus de viatura Lloretrans"
+      : "OK",
     breakdown: { percentPart, bonusPart, isNational, hasInternalPlate },
   };
 }

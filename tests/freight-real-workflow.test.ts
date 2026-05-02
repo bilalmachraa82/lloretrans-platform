@@ -41,4 +41,26 @@ describe("real freight workflow", () => {
     expect(result.eligible).toBe(true);
     expect(result.amountEur).toBe(2.5);
   });
+
+  it("classifies top Portuguese routes as national for fixed bonus", () => {
+    const result = computeCommissionAmount(
+      { margin: 0, marginPct: 0, plate: "BQ-71-GV", origin: "LAUNDOS", destination: "MAIA" },
+      { percentOfMargin: 0.2, fixedBonusNationalEur: 2.5, fixedBonusInternationalEur: 5, requireInternalVehicle: true, minMarginPct: 0 },
+      new Set(["BQ-71-GV"]),
+    );
+    expect(result.breakdown.isNational).toBe(true);
+    expect(result.amountEur).toBe(2.5);
+  });
+
+  it("keeps margin commission for subcontracted loads without internal-vehicle bonus", () => {
+    const result = computeCommissionAmount(
+      { margin: 100, marginPct: 0.1, plate: null, origin: "MADRID", destination: "TOJAL" },
+      { percentOfMargin: 0.2, fixedBonusNationalEur: 2.5, fixedBonusInternationalEur: 5, requireInternalVehicle: true, minMarginPct: 0 },
+      new Set(["BQ-71-GV"]),
+    );
+    expect(result.eligible).toBe(true);
+    expect(result.breakdown.percentPart).toBe(20);
+    expect(result.breakdown.bonusPart).toBe(0);
+    expect(result.amountEur).toBe(20);
+  });
 });

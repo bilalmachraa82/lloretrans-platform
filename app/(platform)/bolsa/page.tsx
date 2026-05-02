@@ -180,6 +180,14 @@ export default async function BolsaPage({
       </div>
 
       <Card>
+        <CardContent className="p-4 text-sm leading-relaxed text-muted-foreground">
+          <strong className="text-foreground">Nota de leitura:</strong> a folha histórica foi importada sem corrigir os
+          campos originais. Quando o preço cliente e o valor pago ao transportador vêm iguais, a margem fica a zero; esse
+          saneamento é precisamente um dos pontos a fechar antes de operar a bolsa em produção.
+        </CardContent>
+      </Card>
+
+      <Card>
         <CardContent className="p-4">
           <form className="grid gap-3 md:grid-cols-[1fr_160px_160px_220px_auto]">
             <input type="hidden" name="view" value={view} />

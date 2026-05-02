@@ -19,11 +19,11 @@ export default async function InvoiceUploadPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Upload de factura"
-        description="Fluxo real: PDF → extracção de texto → classificação automática por NIF → validação humana."
+        title="Receber factura de fornecedor"
+        description="Recepção do PDF · leitura de campos · classificação por NIF · validação humana."
         actions={
           <Button asChild variant="outline">
-            <Link href="/ocr">← Voltar</Link>
+            <Link href="/ocr">Voltar</Link>
           </Button>
         }
       />
@@ -38,7 +38,7 @@ export default async function InvoiceUploadPage() {
               <Upload className="h-10 w-10 text-muted-foreground" />
               <span className="text-sm font-medium">Escolher ou arrastar PDF</span>
               <span className="text-xs text-muted-foreground mt-1">
-                Pasta de entrada ou armazenamento na União Europeia, com extracção controlada e validação humana.
+                PDF novo fica em fila de leitura. As facturas reais abaixo já têm leitura e classificação disponíveis.
               </span>
               <input type="file" id="file" name="file" accept="application/pdf" className="hidden" />
             </label>
@@ -46,7 +46,7 @@ export default async function InvoiceUploadPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Ou escolher uma das 9 facturas reais
+                  Ou escolher uma factura real já lida
                 </label>
                 <select
                   name="fixtureFilename"
@@ -63,15 +63,15 @@ export default async function InvoiceUploadPage() {
               </div>
               <div className="flex items-end">
                 <Badge variant="secondary" className="text-[10px]">
-                  Cada upload fica registado e auditável.
+                  Cada entrada fica registada e auditável.
                 </Badge>
               </div>
             </div>
 
             <div className="flex items-center justify-between border-t border-border pt-4">
-              <div className="text-xs text-muted-foreground">
-                Após upload, a factura aparece em <span className="font-mono">pending_review</span>.
-              </div>
+                <div className="text-xs text-muted-foreground">
+                  Cada entrada fica com responsável, data e estado de validação.
+                </div>
               <Button type="submit">Processar</Button>
             </div>
           </form>
@@ -80,9 +80,9 @@ export default async function InvoiceUploadPage() {
 
       <Card>
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
-          <div><strong>Pipeline:</strong></div>
-          <div>1. Upload → armazenamento UE · 2. extracção de texto · 3. Claude API classifica via NIF → regra</div>
-          <div>4. UI mostra confiança por campo · 5. Admin valida → regra aprendida · 6. Export XML PHC Advanced</div>
+          <div><strong>Sequência operacional:</strong></div>
+          <div>1. Recepção do PDF · 2. leitura de campos · 3. classificação por NIF e fornecedor</div>
+          <div>4. validação humana · 5. regra aprendida · 6. preparação para PHC Advanced</div>
         </CardContent>
       </Card>
     </div>

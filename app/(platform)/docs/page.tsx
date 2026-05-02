@@ -121,7 +121,7 @@ export default async function DocsPage({
           <Button asChild>
             <Link href="/docs/upload">
               <Upload className="h-4 w-4" />
-              Ingerir documentos
+              Receber documentos
             </Link>
           </Button>
         ) : null}

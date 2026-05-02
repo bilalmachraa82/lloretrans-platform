@@ -382,7 +382,7 @@ async function main(): Promise<void> {
       kmDeclared: kmGps + delta,
       kmGps,
       notes: null,
-      source: "logue_trans_demo",
+      source: "logue_trans",
     });
     reconRows.push({
       id: id("rec", i),
@@ -479,6 +479,7 @@ async function main(): Promise<void> {
 
   const docRows: (typeof schema.documents.$inferInsert)[] = [];
   const docPermRows: (typeof schema.documentPermissions.$inferInsert)[] = [];
+  const docAssocRows: (typeof schema.documentAssociations.$inferInsert)[] = [];
   const docSamples = [
     { sourceFilename: "CMR.jpeg", kind: "cmr", direction: "saida" },
     { sourceFilename: "Guia Receção.jpeg", kind: "guia_recepcao", direction: "entrada" },
@@ -504,10 +505,26 @@ async function main(): Promise<void> {
       createdAt: dt(index + 1),
     });
     docPermRows.push({ id: id("dperm", index), documentId, companyId: "co_llt", canRead: true, canDownload: true });
+    if (index === 0 || index === 2) {
+      docPermRows.push({ id: id("dperm_fdo", index), documentId, companyId: "co_fdo", canRead: true, canDownload: true });
+    }
+    if (index !== 1 && tripsRows[index]) {
+      docAssocRows.push({
+        id: id("dassoc", index),
+        documentId,
+        tripId: tripsRows[index].id!,
+        confidence: sample.kind === "cmr" ? 0.99 : 0.91,
+        method: sample.kind === "cmr" ? "cmr_exact" : "plate_date_match",
+        confirmedBy: null,
+        confirmedAt: null,
+        createdAt: dt(index + 1),
+      });
+    }
   });
   await db.insert(schema.documents).values(docRows);
   await db.insert(schema.documentPermissions).values(docPermRows);
-  console.log(`✓ documents: ${docRows.length} real samples`);
+  if (docAssocRows.length > 0) await db.insert(schema.documentAssociations).values(docAssocRows);
+  console.log(`✓ documents: ${docRows.length} real samples · ${docAssocRows.length} associations`);
 
   const extraVehicles: (typeof schema.vehicles.$inferInsert)[] = [];
   function ensureFuelVehicle(plate: string | null, provider: string): string {

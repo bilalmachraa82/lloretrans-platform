@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { formatServiceLabel } from "@/lib/service-labels";
 import Link from "next/link";
 
 export default async function CodesPage() {
@@ -31,7 +32,7 @@ export default async function CodesPage() {
         description="S1-S9 externos · L1-L8 internos · I0-I9 operações internas"
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">← Admin</Link>
+            <Link href="/admin">Admin</Link>
           </Button>
         }
       />
@@ -55,8 +56,8 @@ export default async function CodesPage() {
                   <tr key={s.code}>
                     <td className="font-mono">{s.code}</td>
                     <td>
-                      <div className="font-medium">{s.label}</div>
-                      <div className="text-xs text-muted-foreground">{s.description}</div>
+                      <div className="font-medium">{formatServiceLabel(s.label)}</div>
+                      <div className="text-xs text-muted-foreground">{formatServiceLabel(s.description ?? "")}</div>
                     </td>
                     <td>
                       <Badge variant="secondary">{s.kind}</Badge>

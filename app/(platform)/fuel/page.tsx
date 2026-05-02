@@ -20,11 +20,16 @@ export default async function FuelPage() {
   const windowStart = new Date();
   windowStart.setDate(windowStart.getDate() - windowDays);
 
-  const [fillsAgg, canbusRows, anomaliesOpen, topAnomalies] = await Promise.all([
+  const [fillsAgg, fillRows, canbusRows, anomaliesOpen, topAnomalies] = await Promise.all([
     db
       .select({ totalLiters: sum(fuelFills.liters), totalEur: sum(fuelFills.totalEur), n: count() })
       .from(fuelFills)
       .where(gte(fuelFills.filledAt, windowStart)),
+    db
+      .select({ filledAt: fuelFills.filledAt, liters: fuelFills.liters })
+      .from(fuelFills)
+      .where(gte(fuelFills.filledAt, windowStart))
+      .orderBy(fuelFills.filledAt),
     db
       .select({ readAt: fuelReadingsCanbus.readAt, liters: fuelReadingsCanbus.litersConsumed, odo: fuelReadingsCanbus.odometerKm })
       .from(fuelReadingsCanbus)
@@ -49,12 +54,15 @@ export default async function FuelPage() {
       .limit(10),
   ]);
 
-  // Aggregate per day for chart
+  // Aggregate per day for chart. Board readings win; fuel fills provide the operational fallback.
   const byDay = new Map<string, { liters: number; count: number }>();
-  for (const r of canbusRows) {
-    const key = r.readAt.toISOString().slice(0, 10);
+  const chartSource = canbusRows.length > 0
+    ? canbusRows.map((r) => ({ date: r.readAt, liters: r.liters ?? 0 }))
+    : fillRows.map((r) => ({ date: r.filledAt, liters: r.liters ?? 0 }));
+  for (const r of chartSource) {
+    const key = r.date.toISOString().slice(0, 10);
     const cur = byDay.get(key) ?? { liters: 0, count: 0 };
-    cur.liters += r.liters ?? 0;
+    cur.liters += r.liters;
     cur.count += 1;
     byDay.set(key, cur);
   }
@@ -81,7 +89,7 @@ export default async function FuelPage() {
     <div className="space-y-6">
       <PageHeader
         title="Combustível · últimos 30 dias"
-        description="Abastecimentos reais Cepsa, Repsol, Radius Velocity e bomba interna · Frotcom GPS/API por confirmar"
+        description="Abastecimentos reais Cepsa, Repsol, Radius Velocity e bomba interna · leitura de bordo em validação técnica"
         actions={
           <form action={exportMonthlyReport} className="flex gap-2">
             <input type="hidden" name="year" value={now.getFullYear()} />
@@ -101,7 +109,7 @@ export default async function FuelPage() {
       <Card>
         <CardContent className="p-4 text-sm text-muted-foreground">
           Dados reais carregados: Cepsa 1261 linhas · Repsol 175 · Radius 96 · Bomba interna 629.
-          Frotcom anexo é mensalidade/equipamento, não leitura CANBUS.
+          O anexo Frotcom recebido é mensalidade/equipamento, não leitura operacional por viatura.
         </CardContent>
       </Card>
 
@@ -111,7 +119,7 @@ export default async function FuelPage() {
         </CardHeader>
         <CardContent>
           <p className="mb-3 text-xs text-muted-foreground">
-            Sinalização baseada em abastecimentos + odómetro disponível. Validação final depende da API Frotcom de leitura.
+            Sinalização baseada em abastecimentos e odómetro disponível. A leitura de bordo fica sujeita a validação técnica.
           </p>
           <SimpleLineChart data={chartData} yLabel="L/dia médio" />
         </CardContent>

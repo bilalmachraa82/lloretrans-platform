@@ -27,7 +27,7 @@ export default async function SuppliersPage() {
         description="OCR suppliers são fornecedores de facturas; transportadores do Excel são carriers do MVP E; LLORETRANS interno não é fornecedor externo."
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">← Admin</Link>
+            <Link href="/admin">Admin</Link>
           </Button>
         }
       />

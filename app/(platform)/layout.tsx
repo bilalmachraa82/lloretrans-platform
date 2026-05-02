@@ -35,10 +35,10 @@ interface MvpEntry {
 
 const MVPS: MvpEntry[] = [
   { slug: "km", letter: "A", title: "Validação km", tagline: "Logue Trans × Frotcom", icon: TruckIcon, href: "/km" },
-  { slug: "ocr", letter: "B", title: "OCR Facturas", tagline: "Facturas · PHC Advanced", icon: ReceiptText, href: "/ocr" },
-  { slug: "docs", letter: "C", title: "Docs Centrais", tagline: "CMR · guias · tickets", icon: FileStack, href: "/docs" },
+  { slug: "ocr", letter: "B", title: "Facturas de fornecedor", tagline: "Leitura · PHC Advanced", icon: ReceiptText, href: "/ocr" },
+  { slug: "docs", letter: "C", title: "Documentos centrais", tagline: "CMR · guias · tickets", icon: FileStack, href: "/docs" },
   { slug: "fuel", letter: "D", title: "Combustível", tagline: "Cepsa · Repsol · Radius · bomba", icon: Fuel, href: "/fuel" },
-  { slug: "bolsa", letter: "E", title: "Bolsa de Carga", tagline: "5 estados · comissões", icon: PackageSearch, href: "/bolsa" },
+  { slug: "bolsa", letter: "E", title: "Bolsa de carga", tagline: "Estados · comissões", icon: PackageSearch, href: "/bolsa" },
   { slug: "oficina", letter: "F", title: "Oficina", tagline: "Mecânico · aplicação móvel", icon: Wrench, href: "/oficina" },
 ];
 
@@ -68,14 +68,14 @@ export default async function PlatformLayout({ children }: { children: React.Rea
 
       <nav className="mt-8 space-y-1">
         <SidebarLink href="/dashboard" icon={LayoutDashboard}>
-          Dashboard
+          Painel
         </SidebarLink>
 
         {isDemoSupervisor ? (
           <>
             <div className="mt-5 mb-2 flex items-baseline justify-between px-2">
               <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Percurso recomendado
+                Operação Lloretrans
               </span>
               <span className="text-[9px] text-[hsl(32_82%_35%)] uppercase tracking-wider font-semibold">
                 6 módulos
@@ -164,16 +164,16 @@ export default async function PlatformLayout({ children }: { children: React.Rea
           <div className="border-b border-[hsl(32_82%_55%)]/30 bg-[hsl(40_40%_96%)]">
             <div className="px-4 sm:px-8 py-2 flex items-center gap-3 text-[11px] flex-wrap">
               <Badge className="bg-[hsl(32_82%_55%)] text-[hsl(222_72%_12%)] border-0 text-[10px]">
-                Validação
+                Supervisão
               </Badge>
               <span className="text-foreground/70">
-                Vista de supervisão · percurso completo · dados operacionais.
+                Visão consolidada · seis fluxos · dados operacionais.
               </span>
               <Link
                 href="/oficina/new"
                 className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline"
               >
-                Testar folha de obra
+                Abrir folha de obra
               </Link>
               <Link href="/login" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline">
                 Trocar perfil
@@ -196,7 +196,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
               </div>
             </details>
             <Badge variant="outline" className="text-[10px] whitespace-nowrap">
-              {process.env.USE_LIVE_APIS === "true" ? "APIs activas" : "Conectores preparados"}
+              {process.env.USE_LIVE_APIS === "true" ? "Integrações activas" : "Integrações em validação"}
             </Badge>
             <span className="hidden md:inline text-xs text-muted-foreground">Ambiente operacional</span>
           </div>

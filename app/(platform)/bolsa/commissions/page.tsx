@@ -65,7 +65,7 @@ export default async function CommissionsPage({
               <Button type="submit" variant="outline">Recalcular</Button>
             </form>
             <Button variant="outline" asChild>
-              <Link href="/bolsa">← Voltar</Link>
+              <Link href="/bolsa">Voltar</Link>
             </Button>
           </div>
         }
@@ -75,7 +75,7 @@ export default async function CommissionsPage({
         <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
           <div>
             <strong>Regra confirmada (Éder, 2026-04-20):</strong> comissão = <code>20% do lucro total</code> + bónus fixo por carga.
-            Só se aplica se a carga usou uma viatura interna Lloretrans.
+            O bónus fixo só se aplica se a carga usou uma viatura interna Lloretrans.
           </div>
           {rules.map((r) => (
             <div key={r.id}>
@@ -83,7 +83,7 @@ export default async function CommissionsPage({
               {(r.percentOfMargin * 100).toFixed(0)}% lucro
               {" + "}
               {formatEur(r.fixedBonusNationalEur)} nacional / {formatEur(r.fixedBonusInternationalEur)} internacional
-              {r.requireInternalVehicle ? " · viatura interna obrigatória" : ""}
+              {r.requireInternalVehicle ? " · bónus só em viatura interna" : ""}
               {r.minMarginPct ? ` · margem mínima ${(r.minMarginPct * 100).toFixed(0)}%` : ""}
             </div>
           ))}

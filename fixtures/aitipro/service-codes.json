@@ -8,7 +8,7 @@
   },
   {
     "code": "S2",
-    "label": "Eletricista",
+    "label": "Electricista",
     "description": "Reparação eléctrica (veículo cliente)",
     "kind": "oficina_externa",
     "source": "tabela_codigos"
@@ -36,14 +36,14 @@
   },
   {
     "code": "S6",
-    "label": "Eletrónica e Programação",
+    "label": "Electrónica e Programação",
     "description": "Diagnóstico, ECU, programação (veículo cliente)",
     "kind": "oficina_externa",
     "source": "tabela_codigos"
   },
   {
     "code": "S7",
-    "label": "Retificação e Torneiras",
+    "label": "Rectificação e Torneiras",
     "description": "Rectificação mecânica (veículo cliente)",
     "kind": "oficina_externa",
     "source": "tabela_codigos"
@@ -57,7 +57,7 @@
   },
   {
     "code": "S9",
-    "label": "Inspeção",
+    "label": "Inspecção",
     "description": "Inspecção IPO (veículo cliente)",
     "kind": "oficina_externa",
     "source": "tabela_codigos"
@@ -71,7 +71,7 @@
   },
   {
     "code": "L2",
-    "label": "Serviços de Eletricista",
+    "label": "Serviços de Electricista",
     "description": "Eléctrica em viatura interna",
     "kind": "oficina_interna",
     "source": "tabela_codigos"
@@ -99,7 +99,7 @@
   },
   {
     "code": "L6",
-    "label": "Serviços de Retificação e Torneiras",
+    "label": "Serviços de Rectificação e Torneiras",
     "description": "Rectificação mecânica interna",
     "kind": "oficina_interna",
     "source": "tabela_codigos"
@@ -113,7 +113,7 @@
   },
   {
     "code": "L8",
-    "label": "Serviços de Eletrónica e Programação",
+    "label": "Serviços de Electrónica e Programação",
     "description": "Electrónica/programação interna",
     "kind": "oficina_interna",
     "source": "tabela_codigos"
@@ -169,7 +169,7 @@
   },
   {
     "code": "I7",
-    "label": "Serviços de Inspeções",
+    "label": "Serviços de Inspecções",
     "description": "IPO frota interna",
     "kind": "operacao_interna",
     "source": "tabela_codigos"

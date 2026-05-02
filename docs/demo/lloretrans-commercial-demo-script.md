@@ -30,7 +30,7 @@
 
 1. `/admin` · 2 min
    - Mostrar `Admin` → service codes, vehicles, suppliers.
-   - Dizer: "Esta demo é presentation-ready porque deixou de estar assente só em seed sintético; está assente no pacote AITIPRO recebido."
+   - Dizer: "Esta plataforma já pode ser apresentada porque deixou de depender de dados genéricos; está assente no pacote AITIPRO recebido."
    - Mostrar: famílias de códigos S1-S9 externos, L1-L8 internos, I0-I9 operações internas.
 
 2. `/bolsa` · 4 min

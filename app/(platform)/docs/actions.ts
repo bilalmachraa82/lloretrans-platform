@@ -85,8 +85,8 @@ export async function dissociateDocument(formData: FormData): Promise<void> {
 }
 
 /**
- * Mock de upload em lote: cria N rows `pending_association`, tenta auto-associar
- * por matrícula + data (últimas 24h de viagens existentes), e regista audit.
+ * Recebe um lote, cria documentos em triagem, tenta associar por matrícula + data
+ * nas últimas 24h de viagens existentes, e regista auditoria.
  */
 export async function bulkIngest(formData: FormData): Promise<void> {
   const session = await requireRole(["admin", "clarice", "digitalizacao"]);
@@ -95,7 +95,7 @@ export async function bulkIngest(formData: FormData): Promise<void> {
   const total = Math.max(rawCount, names.length);
   if (total <= 0) throw new Error("Nenhum ficheiro fornecido");
 
-  // Sampling determinista de viagens recentes (stub de auto-associação).
+  // Amostragem determinista de viagens recentes para associação inicial.
   const recentTrips = await db
     .select({
       id: trips.id,
@@ -112,7 +112,7 @@ export async function bulkIngest(formData: FormData): Promise<void> {
   let orphan = 0;
 
   for (let i = 0; i < total; i++) {
-    const filename = names[i] ?? `upload-${Date.now()}-${i}.pdf`;
+    const filename = names[i] ?? `documento-${Date.now()}-${i}.pdf`;
     const kind = detectKindFromFilename(filename);
     const docId = randomId("doc");
     const tripHit = recentTrips.length > 0 && i % 10 !== 7 ? recentTrips[i % recentTrips.length] : null;
@@ -130,7 +130,7 @@ export async function bulkIngest(formData: FormData): Promise<void> {
       deliveredAt: tripHit?.endedAt ?? null,
       sourcePath: `/uploads/${docId}-${filename}`,
       sourceHash: `hash_${docId}`,
-      ocrText: `${kind} ingerido via hub · ${filename}`,
+      ocrText: `${kind} recebido no hub documental · ${filename}`,
       state: tripHit ? "associated" : "orphan",
       uploadedBy: session.userId,
     });

@@ -64,7 +64,7 @@ export default async function OficinaPage() {
         title={isMechanic ? `Oficina · ${session.userName.split(" ")[0]}` : "Oficina · validação"}
         description={
           isMechanic
-            ? `Tens ${rows.length} folhas · cria nova em <3 min`
+            ? `${rows.length} folhas · rascunho automático`
             : `${rows.length} folhas submetidas para validação`
         }
         actions={
@@ -72,7 +72,7 @@ export default async function OficinaPage() {
             <Button asChild size="lg" variant={isMechanic ? "default" : "outline"}>
               <Link href="/oficina/new">
                 <Plus className="h-5 w-5" />
-                {isMechanic ? "Nova folha" : "Abrir fluxo do mecânico"}
+                {isMechanic ? "Nova folha" : "Abrir folha de obra"}
               </Link>
             </Button>
           </div>
@@ -81,8 +81,8 @@ export default async function OficinaPage() {
 
       {!isMechanic && (
         <div className="rounded-md border border-[hsl(222_72%_30%)]/20 bg-[hsl(222_72%_30%)]/5 px-4 py-3 text-sm">
-          <strong>Validação administrativa:</strong> abaixo estão as folhas submetidas. Para ver a experiência
-          móvel do mecânico, usar <strong>&quot;Abrir fluxo do mecânico&quot;</strong>.
+          <strong>Validação administrativa:</strong> abaixo estão as folhas submetidas. Para abrir o fluxo
+          móvel usado na oficina, usar <strong>&quot;Abrir folha de obra&quot;</strong>.
         </div>
       )}
 
@@ -93,9 +93,12 @@ export default async function OficinaPage() {
               <CardContent className="p-8 text-center">
                 <Wrench className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
                 <div className="text-base font-medium">Sem folhas ainda</div>
-                <div className="text-sm text-muted-foreground mt-1">Cria a tua primeira folha agora.</div>
+                <div className="text-sm text-muted-foreground mt-1">Criar a primeira folha de obra.</div>
                 <Button asChild className="mt-4">
-                  <Link href="/oficina/new">+ Nova folha</Link>
+                  <Link href="/oficina/new">
+                    <Plus className="h-4 w-4" />
+                    Nova folha
+                  </Link>
                 </Button>
               </CardContent>
             </Card>

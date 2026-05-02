@@ -21,6 +21,7 @@ import { StatusPill } from "@/components/ui/status-pill";
 import { Input } from "@/components/ui/input";
 import { formatEur } from "@/lib/money";
 import { formatDate, formatDateTime } from "@/lib/dates";
+import { formatServiceLabel } from "@/lib/service-labels";
 import { approveInvoice, reopenInvoice, exportInvoiceAction, updateClassification } from "./actions";
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -94,7 +95,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         actions={
           <div className="flex gap-2">
             <Button variant="outline" asChild>
-              <Link href="/ocr">← Voltar</Link>
+              <Link href="/ocr">Voltar</Link>
             </Button>
             {isPendingReview && canApproveOrClassify && (
               <form action={approveInvoice}>
@@ -127,16 +128,15 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Documento original</CardTitle>
-              <Badge variant="secondary">Scan · OCR cacheado</Badge>
+              <Badge variant="secondary">Documento recebido</Badge>
             </div>
           </CardHeader>
           <CardContent>
             <div className="aspect-[3/4] rounded-md border border-dashed border-border bg-secondary/50 grid place-items-center text-sm text-muted-foreground p-6 text-center">
               <div>
-                <div className="font-mono text-xs mb-2 break-all">{row.sourcePath}</div>
-                <div className="max-w-xs">
-                  Em produção: PDF embed com overlay dos campos extraídos + caixas bounding box por engine OCR.
-                  Aqui: amostra de digitalização Lloretrans.
+                <div className="font-semibold text-foreground">Factura disponível para validação</div>
+                <div className="mt-2 max-w-xs">
+                  Os campos extraídos aparecem ao lado do documento, com classificação proposta por fornecedor e aprovação humana antes de qualquer exportação.
                 </div>
               </div>
             </div>
@@ -183,7 +183,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                     <option value="">— escolher —</option>
                     {services.map((s) => (
                       <option key={s.code} value={s.code}>
-                        {s.code} · {s.label}
+                        {s.code} · {formatServiceLabel(s.label)}
                       </option>
                     ))}
                   </select>
@@ -317,7 +317,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 {audits.map((a) => (
                   <li key={a.id} className="border-b border-border pb-2 last:border-0">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs">{a.action}</span>
+                      <span className="text-xs font-medium">{invoiceAuditLabel(a.action)}</span>
                       <span className="text-xs text-muted-foreground">{formatDateTime(a.createdAt)}</span>
                     </div>
                     <div className="text-xs text-muted-foreground mt-0.5">
@@ -350,4 +350,13 @@ function Kv({ label, value, strong = false }: { label: string; value: string; st
       <div className={`font-mono ${strong ? "text-base font-semibold" : "text-sm"}`}>{value}</div>
     </div>
   );
+}
+
+function invoiceAuditLabel(action: string): string {
+  if (action === "invoice.upload") return "Factura recebida";
+  if (action === "invoice.approve") return "Factura aprovada";
+  if (action === "invoice.reopen") return "Factura reaberta";
+  if (action === "invoice.export") return "Preparação PHC Advanced";
+  if (action === "invoice.classify") return "Classificação ajustada";
+  return action;
 }

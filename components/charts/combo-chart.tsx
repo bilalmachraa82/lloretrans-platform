@@ -48,7 +48,7 @@ export function FuelComboChart({ data }: { data: ComboPoint[] }) {
         <Area
           type="monotone"
           dataKey="canbus"
-          name="Consumo CANBUS (L)"
+          name="Leitura de bordo (L)"
           stroke="hsl(222 64% 38%)"
           strokeWidth={2}
           fill="url(#canbusGrad)"

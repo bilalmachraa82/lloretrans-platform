@@ -33,7 +33,7 @@ const PROOF = [
 const PRODUCT_SHOTS = [
   {
     src: "/product-shots/dashboard-crop.png",
-    title: "Dashboard operacional",
+    title: "Painel operacional",
     body: "Visão consolidada dos módulos, alertas críticos e trabalho pendente.",
   },
   {
@@ -63,7 +63,7 @@ const MODULES = [
     title: "Facturas fornecedor",
     icon: ReceiptText,
     pain: "Cada fornecedor tem o seu formato e a classificação depende de conhecimento tácito.",
-    answer: "Upload, extracção, classificação por NIF, memória por fornecedor e export orientado a PHC Advanced.",
+    answer: "Recepção do PDF, extracção, classificação por NIF, memória por fornecedor e preparação para PHC Advanced.",
   },
   {
     code: "C",

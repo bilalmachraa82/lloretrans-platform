@@ -8,6 +8,7 @@ import { db } from "@/db/client";
 import {
   workOrders,
   workOrderItems,
+  workOrderPhotos,
   workOrderSignatures,
   workOrderChecklistAnswers,
   vehicles,
@@ -23,6 +24,7 @@ function minutesBetween(a: Date, b: Date): number {
 const submitPayloadSchema = z.object({
   plate: z.string().trim().min(1),
   serviceCode: z.string().trim().min(1),
+  serviceCodes: z.array(z.string().trim().min(1)).optional(),
   summary: z.string().trim().min(1),
   items: z.array(z.object({
     kind: z.enum(["part", "labour"]),
@@ -36,6 +38,10 @@ const submitPayloadSchema = z.object({
     substituted: z.boolean(),
     verified: z.boolean(),
     notes: z.string().trim().optional(),
+  })).optional(),
+  photos: z.array(z.object({
+    stage: z.enum(["before", "detail", "after"]),
+    path: z.string().trim().min(1),
   })).optional(),
   signatureSvgPath: z.string().trim().min(1),
   signerName: z.string().trim().min(1),
@@ -94,6 +100,19 @@ export async function submitWorkOrder(formData: FormData): Promise<void> {
     signedAt: now,
   });
 
+  if (payload.photos && payload.photos.length > 0) {
+    for (let i = 0; i < payload.photos.length; i++) {
+      const photo = payload.photos[i];
+      await db.insert(workOrderPhotos).values({
+        id: randomId(`wop_${i}`),
+        workOrderId: woId,
+        stage: photo.stage,
+        path: photo.path,
+        capturedAt: now,
+      });
+    }
+  }
+
   if (payload.checklist && payload.checklist.length > 0) {
     for (let i = 0; i < payload.checklist.length; i++) {
       const c = payload.checklist[i];
@@ -115,8 +134,10 @@ export async function submitWorkOrder(formData: FormData): Promise<void> {
     entityId: woId,
     after: {
       reference,
+      serviceCodes: payload.serviceCodes ?? [payload.serviceCode],
       itemCount: payload.items.length,
       checklistCount: payload.checklist?.length ?? 0,
+      photoCount: payload.photos?.length ?? 0,
     },
   });
 

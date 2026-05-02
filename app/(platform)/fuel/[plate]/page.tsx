@@ -88,7 +88,7 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
       <PageHeader
         title={`Viatura ${vehicle.plate}`}
         description={`${vehicle.kind} · 60 dias · ${vehicle.isInternal ? "interna" : "externa"}`}
-        actions={<Button variant="outline" asChild><Link href="/fuel">← Voltar</Link></Button>}
+        actions={<Button variant="outline" asChild><Link href="/fuel">Voltar</Link></Button>}
       />
 
       <div className="grid gap-4 sm:grid-cols-4">
@@ -104,7 +104,7 @@ export default async function VehicleFuelPage({ params }: { params: Promise<{ pl
         </CardHeader>
         <CardContent>
           <p className="mb-3 text-xs text-muted-foreground">
-            Sinalização baseada em abastecimentos + odómetro disponível. Validação final depende da API Frotcom de leitura.
+            Sinalização baseada em abastecimentos e odómetro disponível. A leitura de bordo fica sujeita a validação técnica.
           </p>
           <FuelComboChart data={chartData} />
         </CardContent>
