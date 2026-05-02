@@ -542,6 +542,65 @@
     line-height: 1.55;
   }
 
+  .formula-strip {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1.35fr .65fr;
+    gap: 22px;
+    align-items: stretch;
+    border: 1px solid rgba(42, 229, 160, .45);
+    border-radius: 24px;
+    background: linear-gradient(180deg, var(--surface-tint), #fff);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .formula-text {
+    margin-top: 10px;
+    color: var(--green);
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.45;
+    white-space: nowrap;
+  }
+
+  .formula-strip p {
+    margin-top: 12px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.62;
+  }
+
+  .assumption-list {
+    display: grid;
+    gap: 10px;
+    border-left: 1px solid var(--border);
+    padding-left: 22px;
+  }
+
+  .assumption-list div {
+    display: grid;
+    grid-template-columns: 118px 1fr;
+    gap: 12px;
+    align-items: baseline;
+    border-bottom: 1px dashed var(--border-strong);
+    padding-bottom: 10px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .assumption-list div:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .assumption-list strong {
+    color: var(--text);
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12px;
+  }
+
   .chart-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -565,6 +624,10 @@
     border-color: rgba(42, 229, 160, .65);
     background: linear-gradient(180deg, var(--surface-tint), #fff);
     box-shadow: var(--shadow-lg);
+  }
+
+  .chart-card.cashflow {
+    grid-column: 1 / -1;
   }
 
   .chart-title {
@@ -652,6 +715,36 @@
     color: var(--text-muted);
     font-size: 12px;
     line-height: 1.55;
+  }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .kpi-chip {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    padding: 10px;
+  }
+
+  .kpi-chip .k {
+    color: var(--text-soft);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+  }
+
+  .kpi-chip .v {
+    margin-top: 4px;
+    color: var(--text);
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 13px;
+    font-weight: 800;
   }
 
   .module-grid {
@@ -885,15 +978,19 @@
     .page { padding: 28px 20px 70px; }
     .topbar { padding-right: 0; }
     h1 { font-size: 44px; line-height: .99; }
-    .topbar, .hero, .summary-grid, .visual-proof, .chart-card.featured, .module, .signature-grid {
+    .topbar, .hero, .summary-grid, .visual-proof, .chart-card.featured, .module, .signature-grid, .formula-strip {
       grid-template-columns: 1fr;
     }
+    .formula-text { white-space: normal; }
+    .assumption-list { border-left: 0; border-top: 1px solid var(--border); padding-left: 0; padding-top: 18px; }
+    .chart-title { flex-direction: column; }
+    .payback-pill { text-align: left; }
     .chart-card { width: calc(100% - 1px); }
     .topbar { align-items: flex-start; flex-direction: column; }
     .meta { text-align: left; }
     .hero { gap: 28px; padding-top: 42px; }
     .summary-side { border-left: 0; border-top: 1px solid var(--border); }
-    .stats, .phase-grid, .chart-grid, .module-body, .three { grid-template-columns: 1fr; }
+    .stats, .phase-grid, .chart-grid, .module-body, .three, .kpi-row { grid-template-columns: 1fr; }
     .phase-card.recommended { transform: none; }
     .tl-row { grid-template-columns: 72px 1fr; align-items: start; }
     .tl-body, .dot { grid-column: 2; }
@@ -1070,16 +1167,31 @@
   <section class="section" id="business-case">
     <div class="section-head">
       <div class="label">Business case e critérios de retorno</div>
-      <h2>Gráficos de break-even a 36 meses.</h2>
+      <h2>Break-even financeiro com baseline de trabalho.</h2>
       <p>
-        Os gráficos comparam o custo acumulado da situação actual com o custo acumulado da nova solução.
-        A leitura executiva é o ponto de break-even e a poupança acumulada potencial após validação da baseline.
-        Como o custo actual mensal de RH/administração ainda não está confirmado, a linha de custo actual deve ser lida
-        como baseline a validar na Sprint 0.
+        Os gráficos comparam custos acumulados: linha laranja para manter a situação actual e linha verde para implementar
+        a nova solução. As baselines abaixo são cenários de trabalho a validar na Sprint 0; depois dessa validação, os mesmos
+        gráficos passam a usar os custos reais de RH, retrabalho e risco financeiro da operação Lloretrans.
       </p>
     </div>
 
     <div class="chart-grid">
+      <article class="formula-strip">
+        <div>
+          <div class="label">Método de cálculo</div>
+          <div class="formula-text">Break-even = investimento inicial / (custo actual mensal validado - € 900/mês)</div>
+          <p>
+            O payback é o mês em que o custo acumulado da solução passa a ser inferior ao custo acumulado de continuar
+            com o processo actual. A poupança acumulada aos 36 meses é calculada pela diferença entre as duas linhas.
+          </p>
+        </div>
+        <div class="assumption-list" aria-label="Premissas usadas nos gráficos">
+          <div><strong>Actual</strong><span>Custo actual acumulado = baseline mensal × mês.</span></div>
+          <div><strong>Solução</strong><span>Custo acumulado = investimento + € 900/mês.</span></div>
+          <div><strong>Validação</strong><span>Cenário de trabalho a validar com horas reais na Sprint 0.</span></div>
+        </div>
+      </article>
+
       <article class="chart-card featured">
         <div>
           <div class="chart-title">
@@ -1087,12 +1199,17 @@
               <h3>Implementação Completa · modelo executivo</h3>
               <div class="chart-sub">€ 45.000 + € 900/mês · módulo D não incluído nem cobrado hoje.</div>
             </div>
-            <div class="payback-pill"><div class="k">Break-even</div><div class="v">Mês 36</div></div>
+            <div class="payback-pill"><div class="k">Break-even estimado</div><div class="v">Mês 20</div></div>
           </div>
           <p class="chart-note">
-            Neste modelo conservador, a implementação é considerada no início do projecto. A solução atinge break-even
-            em 36 meses se a baseline actual validada for igual ou superior a <strong>€ 2.150/mês</strong>.
+            Cenário de trabalho a validar: se a operação actual representar <strong>€ 3.200/mês</strong> entre tempo
+            administrativo, retrabalho e risco evitável, a solução completa cruza a baseline perto do mês 20.
           </p>
+          <div class="kpi-row">
+            <div class="kpi-chip"><div class="k">Baseline actual</div><div class="v">€ 3.200/mês</div></div>
+            <div class="kpi-chip"><div class="k">Custo solução 36m</div><div class="v">€ 77.400</div></div>
+            <div class="kpi-chip"><div class="k">Poupança 36m</div><div class="v">€ 37.800</div></div>
+          </div>
           <div class="legend">
             <span><i class="swatch"></i>Linha custo actual</span>
             <span><i class="swatch new"></i>Linha nova solução</span>
@@ -1104,17 +1221,18 @@
           <line class="gridline" x1="58" y1="169" x2="580" y2="169" />
           <line class="axis" x1="58" y1="238" x2="580" y2="238" />
           <line class="axis" x1="58" y1="24" x2="58" y2="238" />
-          <text class="chart-label" x="48" y="36" text-anchor="end">€80k</text>
-          <text class="chart-label" x="48" y="174" text-anchor="end">€25k</text>
+          <text class="chart-label" x="48" y="36" text-anchor="end">€120k</text>
+          <text class="chart-label" x="48" y="105" text-anchor="end">€80k</text>
+          <text class="chart-label" x="48" y="174" text-anchor="end">€40k</text>
           <text class="chart-label" x="58" y="266">M0</text>
           <text class="chart-label" x="219" y="266">M12</text>
           <text class="chart-label" x="393" y="266">M24</text>
           <text class="chart-label" x="564" y="266">M36</text>
-          <polyline class="line-current" points="58,238 145,203 232,169 319,134 406,100 493,65 580,31" />
-          <polyline class="line-new" points="58,118 145,103 232,89 319,74 406,60 493,45 580,31" />
-          <line class="breakeven" x1="580" y1="31" x2="580" y2="238" />
-          <circle cx="580" cy="31" r="6" fill="#2ae5a0" stroke="#0d3b38" stroke-width="2" />
-          <text class="chart-label-strong" x="452" y="24">break-even M36</text>
+          <polyline class="line-current" points="58,238 145,205 232,172 319,139 406,106 493,72 580,39" />
+          <polyline class="line-new" points="58,160 145,151 232,142 319,132 406,123 493,114 580,104" />
+          <line class="breakeven" x1="342" y1="130" x2="342" y2="238" />
+          <circle cx="342" cy="130" r="6" fill="#2ae5a0" stroke="#0d3b38" stroke-width="2" />
+          <text class="chart-label-strong" x="354" y="126">Mês 20</text>
         </svg>
       </article>
 
@@ -1124,7 +1242,7 @@
             <h3>Fase 1 · Gatinhar</h3>
             <div class="chart-sub">€ 14.000 + € 900/mês</div>
           </div>
-          <div class="payback-pill"><div class="k">Baseline</div><div class="v">€1.289/mês</div></div>
+          <div class="payback-pill"><div class="k">Break-even estimado</div><div class="v">Mês 12</div></div>
         </div>
         <svg class="break-even-chart" viewBox="0 0 640 300" role="img" aria-label="Break-even chart Fase 1">
           <line class="gridline" x1="58" y1="39" x2="580" y2="39" />
@@ -1133,12 +1251,18 @@
           <line class="axis" x1="58" y1="238" x2="580" y2="238" />
           <line class="axis" x1="58" y1="32" x2="58" y2="238" />
           <text class="chart-label" x="58" y="266">M0</text><text class="chart-label" x="219" y="266">M12</text><text class="chart-label" x="393" y="266">M24</text><text class="chart-label" x="564" y="266">M36</text>
-          <polyline class="line-current" points="58,238 145,205 232,172 319,139 406,105 493,72 580,39" />
-          <polyline class="line-new" points="58,178 145,155 232,132 319,109 406,86 493,62 580,39" />
-          <line class="breakeven" x1="580" y1="39" x2="580" y2="238" />
+          <polyline class="line-current" points="58,238 145,205 232,173 319,140 406,108 493,75 580,43" />
+          <polyline class="line-new" points="58,202 145,188 232,174 319,160 406,146 493,132 580,118" />
+          <line class="breakeven" x1="227" y1="175" x2="227" y2="238" />
+          <circle cx="227" cy="175" r="5" fill="#2ae5a0" stroke="#0d3b38" stroke-width="2" />
         </svg>
         <div class="legend"><span><i class="swatch"></i>Linha custo actual</span><span><i class="swatch new"></i>Linha nova solução</span></div>
-        <p class="chart-note">Break-even em 36 meses se A+C substituírem ou evitarem pelo menos € 1.289/mês de custo operacional actual.</p>
+        <div class="kpi-row">
+          <div class="kpi-chip"><div class="k">Baseline actual</div><div class="v">€ 2.100/mês</div></div>
+          <div class="kpi-chip"><div class="k">Custo solução 36m</div><div class="v">€ 46.400</div></div>
+          <div class="kpi-chip"><div class="k">Poupança 36m</div><div class="v">€ 29.200</div></div>
+        </div>
+        <p class="chart-note">Cenário de trabalho a validar: A+C compensam o investimento quando substituem ou evitam cerca de € 2.100/mês de custo operacional actual.</p>
       </article>
 
       <article class="chart-card">
@@ -1147,7 +1271,7 @@
             <h3>Fase 2 · Andar</h3>
             <div class="chart-sub">€ 25.500 + € 900/mês</div>
           </div>
-          <div class="payback-pill"><div class="k">Baseline</div><div class="v">€1.608/mês</div></div>
+          <div class="payback-pill"><div class="k">Break-even estimado</div><div class="v">Mês 15</div></div>
         </div>
         <svg class="break-even-chart" viewBox="0 0 640 300" role="img" aria-label="Break-even chart Fase 2">
           <line class="gridline" x1="58" y1="31" x2="580" y2="31" />
@@ -1156,21 +1280,27 @@
           <line class="axis" x1="58" y1="238" x2="580" y2="238" />
           <line class="axis" x1="58" y1="24" x2="58" y2="238" />
           <text class="chart-label" x="58" y="266">M0</text><text class="chart-label" x="219" y="266">M12</text><text class="chart-label" x="393" y="266">M24</text><text class="chart-label" x="564" y="266">M36</text>
-          <polyline class="line-current" points="58,238 145,203 232,169 319,134 406,100 493,65 580,31" />
-          <polyline class="line-new" points="58,146 145,127 232,108 319,89 406,70 493,51 580,31" />
-          <line class="breakeven" x1="580" y1="31" x2="580" y2="238" />
+          <polyline class="line-current" points="58,238 145,206 232,173 319,141 406,109 493,77 580,44" />
+          <polyline class="line-new" points="58,185 145,174 232,163 319,152 406,141 493,129 580,118" />
+          <line class="breakeven" x1="276" y1="157" x2="276" y2="238" />
+          <circle cx="276" cy="157" r="5" fill="#2ae5a0" stroke="#0d3b38" stroke-width="2" />
         </svg>
         <div class="legend"><span><i class="swatch"></i>Linha custo actual</span><span><i class="swatch new"></i>Linha nova solução</span></div>
-        <p class="chart-note">Break-even em 36 meses se A+B+C confirmarem baseline operacional de pelo menos € 1.608/mês.</p>
+        <div class="kpi-row">
+          <div class="kpi-chip"><div class="k">Baseline actual</div><div class="v">€ 2.600/mês</div></div>
+          <div class="kpi-chip"><div class="k">Custo solução 36m</div><div class="v">€ 57.900</div></div>
+          <div class="kpi-chip"><div class="k">Poupança 36m</div><div class="v">€ 35.700</div></div>
+        </div>
+        <p class="chart-note">Cenário de trabalho a validar: A+B+C tornam o retorno visível quando a baseline administrativa confirmada fica perto de € 2.600/mês.</p>
       </article>
 
-      <article class="chart-card">
+      <article class="chart-card cashflow">
         <div class="chart-title">
           <div>
             <h3>Implementação Completa · cashflow faseado</h3>
             <div class="chart-sub">Sprint 0, módulos e mensalidade após estabilização.</div>
           </div>
-          <div class="payback-pill"><div class="k">Baseline</div><div class="v">€2.025/mês</div></div>
+          <div class="payback-pill"><div class="k">Break-even estimado</div><div class="v">Mês 18</div></div>
         </div>
         <svg class="break-even-chart" viewBox="0 0 640 300" role="img" aria-label="Break-even chart cashflow faseado">
           <line class="gridline" x1="58" y1="31" x2="580" y2="31" />
@@ -1179,12 +1309,18 @@
           <line class="axis" x1="58" y1="238" x2="580" y2="238" />
           <line class="axis" x1="58" y1="24" x2="58" y2="238" />
           <text class="chart-label" x="58" y="266">M0</text><text class="chart-label" x="219" y="266">M12</text><text class="chart-label" x="393" y="266">M24</text><text class="chart-label" x="564" y="266">M36</text>
-          <polyline class="line-current" points="58,238 145,203 232,169 319,134 406,100 493,65 580,31" />
-          <polyline class="line-new" points="58,228 145,103 232,88 319,72 406,57 493,44 580,31" />
-          <line class="breakeven" x1="580" y1="31" x2="580" y2="238" />
+          <polyline class="line-current" points="58,238 145,205 232,172 319,139 406,106 493,72 580,39" />
+          <polyline class="line-new" points="58,232 145,159 232,150 319,140 406,131 493,122 580,112" />
+          <line class="breakeven" x1="319" y1="140" x2="319" y2="238" />
+          <circle cx="319" cy="140" r="5" fill="#2ae5a0" stroke="#0d3b38" stroke-width="2" />
         </svg>
         <div class="legend"><span><i class="swatch"></i>Linha custo actual</span><span><i class="swatch new"></i>Linha nova solução</span></div>
-        <p class="chart-note">Leitura alternativa com cobrança por fases. Usada apenas para análise de cashflow, mantendo o investimento total aprovado.</p>
+        <div class="kpi-row">
+          <div class="kpi-chip"><div class="k">Baseline actual</div><div class="v">€ 3.200/mês</div></div>
+          <div class="kpi-chip"><div class="k">Custo solução 36m</div><div class="v">€ 72.900</div></div>
+          <div class="kpi-chip"><div class="k">Poupança 36m</div><div class="v">€ 42.300</div></div>
+        </div>
+        <p class="chart-note">Leitura de cashflow por fases, mantendo o investimento total aprovado. A linha verde considera entregas por módulo e mensalidade após estabilização.</p>
       </article>
     </div>
   </section>
@@ -1234,7 +1370,7 @@
         <div><div class="module-code">Módulo A · validação km</div><div class="module-title">Validação de Quilómetros</div><div class="module-price"><span>Preço fechado</span><strong>€ 4.000 · 2 semanas</strong></div></div>
         <div class="module-body">
           <div><div class="mini-label orange">Situação actual</div><p>Validação manual entre Logue Trans e Frotcom, viagem a viagem, com risco de erro passar para a facturação.</p></div>
-          <div><div class="mini-label green">Solução proposta</div><p>Dashboard diário com semáforo verde/amarelo/vermelho, threshold 3 km, aprovação em lote e export CSV para PHC Advanced.</p></div>
+          <div><div class="mini-label green">Solução proposta</div><p>Painel diário com semáforo verde/amarelo/vermelho, threshold 3 km, aprovação em lote e exportação CSV para PHC Advanced.</p></div>
           <div><div class="mini-label dark">Dependências</div><p>API Logue Trans e credenciais Frotcom do grupo.</p></div>
         </div>
       </article>
@@ -1267,15 +1403,15 @@
         <div class="module-body">
           <div><div class="mini-label orange">Situação actual</div><p>Gestão em Excel, facturação de fornecedor com atraso e comissões calculadas manualmente.</p></div>
           <div><div class="mini-label green">Solução proposta</div><p>Webapp com 306 cargas, R/NR, CMR, facturas fornecedor/cliente e comissões automáticas pela regra confirmada.</p></div>
-          <div><div class="mini-label dark">Dependências</div><p>Workshop PHC Advanced e saneamento dos dados Excel actuais.</p></div>
+          <div><div class="mini-label dark">Dependências</div><p>Sessão de trabalho PHC Advanced e saneamento dos dados Excel actuais.</p></div>
         </div>
       </article>
       <article class="module">
         <div><div class="module-code">Módulo F · oficina</div><div class="module-title">Folha de Obra Oficina</div><div class="module-price"><span>Preço fechado</span><strong>€ 9.000 · 3 semanas</strong></div></div>
         <div class="module-body">
           <div><div class="mini-label orange">Situação actual</div><p>Registo em papel e relançamento administrativo no PHC Advanced, sem rastreabilidade completa na origem.</p></div>
-          <div><div class="mini-label green">Solução proposta</div><p>Webapp mobile-first com estados, assinatura, validação administrativa e export para integração PHC Advanced.</p></div>
-          <div><div class="mini-label dark">Dependências</div><p>Piloto com um mecânico, template actual em papel, wifi na oficina e plano de adopção.</p></div>
+          <div><div class="mini-label green">Solução proposta</div><p>Aplicação móvel com estados, assinatura, validação administrativa e exportação para integração PHC Advanced.</p></div>
+          <div><div class="mini-label dark">Dependências</div><p>Piloto com um mecânico, folha actual em papel, rede na oficina e plano de adopção.</p></div>
         </div>
       </article>
     </div>
@@ -1292,7 +1428,7 @@
         <tbody>
           <tr><td><strong>Sprint 0</strong></td><td>Validação técnica, PHC Advanced, Frotcom, Logue Trans e plano final.</td><td class="num">€ 3.500</td></tr>
           <tr><td><strong>Módulo A</strong></td><td>Validação km Logue Trans × Frotcom.</td><td class="num">€ 4.000</td></tr>
-          <tr><td><strong>Módulo B</strong></td><td>OCR facturas fornecedor + classificação + export PHC Advanced.</td><td class="num">€ 11.500</td></tr>
+          <tr><td><strong>Módulo B</strong></td><td>OCR facturas fornecedor + classificação + exportação PHC Advanced.</td><td class="num">€ 11.500</td></tr>
           <tr><td><strong>Módulo C</strong></td><td>Digitalização central de documentos.</td><td class="num">€ 6.500</td></tr>
           <tr><td><strong>Módulo E</strong></td><td>Bolsa de carga + comissões.</td><td class="num">€ 10.500</td></tr>
           <tr><td><strong>Módulo F</strong></td><td>Folha de obra digital oficina.</td><td class="num">€ 9.000</td></tr>
@@ -1399,7 +1535,7 @@
         <span class="badge">Premissas comerciais</span>
         <ul>
           <li>IVA não incluído.</li>
-          <li>Suporte business-hours 9h-18h dias úteis.</li>
+          <li>Suporte em horário útil, 9h-18h nos dias úteis.</li>
           <li>Preço fechado de € 45.000 para os módulos incluídos.</li>
           <li>Pagamento padrão 30% / 40% / 30%.</li>
         </ul>

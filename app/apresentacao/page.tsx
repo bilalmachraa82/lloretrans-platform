@@ -192,12 +192,14 @@ export default function ApresentacaoPage() {
             className="h-7 w-auto"
             priority
           />
-          <div className="hidden h-7 w-px bg-[#e2e8f0] sm:block" />
-          <div className="hidden sm:block">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+          <div className="h-7 w-px bg-[#e2e8f0]" />
+          <div className="block min-w-0">
+            <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#ca742d] sm:text-[10px] sm:tracking-[0.22em]">
               Plataforma operacional
             </div>
-            <div className="mt-1 text-xs text-[#6b7280]">Lloretrans · plataforma operacional</div>
+            <div className="mt-1 text-[11px] text-[#6b7280] sm:text-xs">
+              Lloretrans<span className="hidden sm:inline"> · plataforma operacional</span>
+            </div>
           </div>
         </Link>
         <div className="flex w-full items-center gap-3 sm:w-auto">

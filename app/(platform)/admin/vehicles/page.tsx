@@ -47,10 +47,10 @@ export default async function VehiclesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Master · Viaturas"
-        description={`${rows.length} viaturas · origem: fixtures reais AITIPRO + GPS quando disponível`}
+        description={`${rows.length} viaturas · base Lloretrans com GPS quando disponível`}
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">Admin</Link>
+            <Link href="/admin">Administração</Link>
           </Button>
         }
       />

@@ -219,7 +219,7 @@ export async function exportZip(filters: ExportFilters): Promise<Response> {
   const stamp = new Date().toISOString().slice(0, 10);
   const filename = `manifesto-documentos-${filters.tab ?? "todos"}-${stamp}.txt`;
   const body = [
-    "Export - manifesto de documentos",
+    "Exportação - manifesto de documentos",
     `Documentos: ${rows.length}`,
     `Filtros: ${JSON.stringify(filters)}`,
     "Nota: ZIP final depende do armazenamento UE definitivo.",

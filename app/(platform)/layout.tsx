@@ -100,7 +100,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
               Abrir folha de obra
             </SidebarLink>
             <SidebarLink href="/login" icon={Users}>
-              Trocar de perfil
+              Mudar vista operacional
             </SidebarLink>
             {session.role === "admin" ? (
               <SidebarLink href="/proposta" icon={FileText}>
@@ -176,7 +176,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
                 Abrir folha de obra
               </Link>
               <Link href="/login" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline">
-                Trocar perfil
+                Mudar vista operacional
               </Link>
             </div>
           </div>

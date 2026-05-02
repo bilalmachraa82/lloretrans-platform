@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/dates";
-import { Users, TruckIcon, Building2, FlaskConical } from "lucide-react";
+import { Users, TruckIcon, Building2, SlidersHorizontal } from "lucide-react";
 
 export default async function AdminPage() {
   await requireRole(["admin"]);
@@ -37,8 +37,8 @@ export default async function AdminPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Admin"
-        description="Masters, utilizadores, feature flags e audit log. Acesso restrito a role admin."
+        title="Administração técnica"
+        description="Dados mestres, utilizadores, parâmetros operacionais e registo de auditoria. Acesso restrito."
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -74,8 +74,8 @@ export default async function AdminPage() {
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
-            <FlaskConical className="h-4 w-4" />
-            Feature flags
+            <SlidersHorizontal className="h-4 w-4" />
+            Parâmetros operacionais
           </h2>
           <Button variant="outline" size="sm" asChild>
             <Link href="/admin/flags">Gerir</Link>
@@ -88,7 +88,7 @@ export default async function AdminPage() {
                 <div className="font-mono text-xs">{f.key}</div>
                 <div className="text-xs text-muted-foreground">{f.description}</div>
               </div>
-              <Badge variant={f.enabled ? "success" : "secondary"}>{f.enabled ? "on" : "off"}</Badge>
+              <Badge variant={f.enabled ? "success" : "secondary"}>{f.enabled ? "Activo" : "Inactivo"}</Badge>
             </div>
           ))}
         </div>
@@ -97,7 +97,7 @@ export default async function AdminPage() {
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Audit log · últimas 25 acções
+            Registo de auditoria · últimas 25 acções
           </h2>
           <Button variant="outline" size="sm" asChild>
             <Link href="/admin/audit">Ver tudo</Link>
@@ -120,7 +120,7 @@ export default async function AdminPage() {
                 {recentAudits.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="text-center text-muted-foreground py-6">
-                      Sem entradas ainda. Faz uma acção num MVP para ver aqui.
+                      Sem entradas ainda. As acções relevantes aparecem aqui assim que a equipa usa os módulos.
                     </td>
                   </tr>
                 ) : (

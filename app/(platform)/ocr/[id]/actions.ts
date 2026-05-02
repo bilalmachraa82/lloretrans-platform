@@ -1,8 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { db } from "@/db/client";
-import { invoices, supplierRules } from "@/db/schema";
+import { invoiceLines, invoices, suppliers, supplierRules } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { audit } from "@/lib/audit";
@@ -72,6 +73,26 @@ export async function exportInvoiceAction(formData: FormData): Promise<void> {
     throw new Error(`Factura tem de estar aprovada antes de exportar (estado actual: ${before.state})`);
   }
 
+  const [supplier] = before.supplierId
+    ? await db
+        .select({
+          name: suppliers.name,
+          taxId: suppliers.taxId,
+        })
+        .from(suppliers)
+        .where(eq(suppliers.id, before.supplierId))
+        .limit(1)
+    : [null];
+
+  const lines = await db.select().from(invoiceLines).where(eq(invoiceLines.invoiceId, invoiceId)).orderBy(invoiceLines.lineNumber);
+  const xml = buildPhcInvoiceXml({
+    invoice: before,
+    supplier: supplier ?? null,
+    lines,
+  });
+  const filename = `phc-factura-${safeFilename(before.invoiceNumber ?? invoiceId)}.xml`;
+  const dataUrl = `data:application/xml;charset=utf-8;base64,${Buffer.from(xml, "utf-8").toString("base64")}`;
+
   await db
     .update(invoices)
     .set({ state: "exported", exportedAt: new Date(), updatedAt: new Date() })
@@ -83,9 +104,11 @@ export async function exportInvoiceAction(formData: FormData): Promise<void> {
     entityType: "invoice",
     entityId: invoiceId,
     before: { state: before.state },
-    after: { format: "xml-phc" },
+    after: { format: "xml-phc", filename, lines: lines.length },
   });
   revalidatePath(`/ocr/${invoiceId}`);
+  revalidatePath("/ocr");
+  redirect(dataUrl);
 }
 
 export async function updateClassification(formData: FormData): Promise<void> {
@@ -151,4 +174,74 @@ export async function updateClassification(formData: FormData): Promise<void> {
   }
 
   revalidatePath(`/ocr/${invoiceId}`);
+}
+
+function buildPhcInvoiceXml({
+  invoice,
+  supplier,
+  lines,
+}: {
+  invoice: typeof invoices.$inferSelect;
+  supplier: { name: string; taxId: string | null } | null;
+  lines: Array<typeof invoiceLines.$inferSelect>;
+}): string {
+  const emittedAt = new Date().toISOString();
+  const invoiceDate = invoice.issuedAt?.toISOString().slice(0, 10) ?? "";
+  const dueDate = invoice.dueAt?.toISOString().slice(0, 10) ?? "";
+  const bodyLines = lines
+    .map(
+      (line) => `    <Linha>
+      <Numero>${line.lineNumber}</Numero>
+      <Descricao>${xmlEscape(line.description)}</Descricao>
+      <Quantidade>${formatXmlNumber(line.quantity, 3)}</Quantidade>
+      <PrecoUnitario>${formatXmlNumber(line.unitPrice, 4)}</PrecoUnitario>
+      <Total>${formatXmlNumber(line.total, 2)}</Total>
+    </Linha>`,
+    )
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<FacturaFornecedorExport>
+  <Origem>AiTiPro Lloretrans</Origem>
+  <EmitidoEm>${emittedAt}</EmitidoEm>
+  <Factura>
+    <Id>${xmlEscape(invoice.id)}</Id>
+    <Numero>${xmlEscape(invoice.invoiceNumber ?? "")}</Numero>
+    <Data>${invoiceDate}</Data>
+    <Vencimento>${dueDate}</Vencimento>
+    <Fornecedor>
+      <Nome>${xmlEscape(supplier?.name ?? "")}</Nome>
+      <NIF>${xmlEscape(supplier?.taxId ?? "")}</NIF>
+    </Fornecedor>
+    <Matrícula>${xmlEscape(invoice.plate ?? "")}</Matrícula>
+    <Servico>${xmlEscape(invoice.serviceCode ?? "")}</Servico>
+    <Obra>${xmlEscape(invoice.workCode ?? "")}</Obra>
+    <Totais>
+      <Base>${formatXmlNumber(invoice.totalNet, 2)}</Base>
+      <IVA>${formatXmlNumber(invoice.totalVat, 2)}</IVA>
+      <Total>${formatXmlNumber(invoice.totalGross, 2)}</Total>
+    </Totais>
+  </Factura>
+  <Linhas>
+${bodyLines}
+  </Linhas>
+</FacturaFornecedorExport>
+`;
+}
+
+function xmlEscape(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
+}
+
+function formatXmlNumber(value: number | null, decimals: number): string {
+  return (value ?? 0).toFixed(decimals);
+}
+
+function safeFilename(value: string): string {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9_.-]+/g, "-").replace(/^-+|-+$/g, "") || "factura";
 }

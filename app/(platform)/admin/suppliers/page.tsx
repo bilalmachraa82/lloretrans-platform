@@ -24,10 +24,10 @@ export default async function SuppliersPage() {
     <div className="space-y-6">
       <PageHeader
         title="Master · Fornecedores"
-        description="OCR suppliers são fornecedores de facturas; transportadores do Excel são carriers do MVP E; LLORETRANS interno não é fornecedor externo."
+        description="Fornecedores de facturas, transportadores da bolsa e regras aprendidas ficam separados para evitar classificações erradas."
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">Admin</Link>
+            <Link href="/admin">Administração</Link>
           </Button>
         }
       />
@@ -39,8 +39,8 @@ export default async function SuppliersPage() {
                 <th>Nome</th>
                 <th>NIF</th>
                 <th>Categoria</th>
-                <th>Serviço default</th>
-                <th>Obra default</th>
+                <th>Serviço por defeito</th>
+                <th>Obra por defeito</th>
                 <th>Regras aprendidas</th>
               </tr>
             </thead>

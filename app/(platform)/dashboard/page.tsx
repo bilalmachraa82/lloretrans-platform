@@ -124,7 +124,7 @@ const MODULE_CARDS = [
     slug: "bolsa",
     title: "Bolsa de carga",
     eyebrow: "Módulo E",
-    description: "Ciclo agendar → facturar → pagar · comissões automáticas · alertas",
+    description: "Ciclo de agendamento, facturação e pagamento · comissões automáticas · alertas",
     href: "/bolsa",
     icon: PackageSearch,
   },
@@ -132,7 +132,7 @@ const MODULE_CARDS = [
     slug: "oficina",
     title: "Oficina",
     eyebrow: "Módulo F",
-    description: "Folha de obra móvel · funciona sem rede · assinatura · export PHC Advanced",
+    description: "Folha de obra móvel · funciona sem rede · assinatura · exportação PHC Advanced",
     href: "/oficina",
     icon: Wrench,
   },
@@ -141,6 +141,8 @@ const MODULE_CARDS = [
 function humanAuditLabel(action: string, entityType: string): string {
   const labels: Record<string, string> = {
     "workorder.submit": "Folha de obra submetida",
+    "workorder.start": "Trabalho iniciado",
+    "workorder.create": "Folha de obra criada",
     "workorder.pause": "Folha de obra pausada",
     "workorder.wait_parts": "Folha de obra a aguardar peças",
     "workorder.resume": "Folha de obra retomada",
@@ -162,7 +164,15 @@ function humanAuditLabel(action: string, entityType: string): string {
     "fuel.anomaly_resolve": "Anomalia de combustível resolvida",
     "fuel.anomaly_reopen": "Anomalia de combustível reaberta",
   };
-  return labels[action] ?? entityType.replaceAll("_", " ");
+  const entityLabels: Record<string, string> = {
+    work_order: "Folha de obra actualizada",
+    invoice: "Factura actualizada",
+    document: "Documento actualizado",
+    freight_load: "Carga actualizada",
+    km_reconciliation: "Validação de quilómetros actualizada",
+    fuel_anomaly: "Anomalia de combustível actualizada",
+  };
+  return labels[action] ?? entityLabels[entityType] ?? "Evento registado";
 }
 
 export default async function DashboardPage() {

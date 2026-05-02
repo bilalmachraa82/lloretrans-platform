@@ -71,6 +71,23 @@ describe("Fernando-aligned static proposal", () => {
     expect(proposal.match(/<polyline/g)?.length ?? 0).toBeGreaterThanOrEqual(8);
   });
 
+  it("uses calculated break-even scenarios instead of forcing every chart to month 36", () => {
+    const proposal = fs.readFileSync(proposalPath, "utf-8");
+
+    expect(proposal).toContain(
+      "Break-even = investimento inicial / (custo actual mensal validado - € 900/mês)",
+    );
+    expect(proposal).toContain("Cenário de trabalho a validar");
+    expect(proposal).toContain("Break-even estimado");
+    expect(proposal).toContain("Mês 12");
+    expect(proposal).toContain("Mês 15");
+    expect(proposal).toContain("Mês 18");
+    expect(proposal).toContain("Mês 20");
+    expect(proposal).toContain("Poupança 36m");
+    expect(proposal.toLowerCase()).not.toContain("break-even m36");
+    expect(proposal).not.toContain("Break-even em 36 meses se");
+  });
+
   it("keeps all six operational modules and the real proof points", () => {
     const proposal = fs.readFileSync(proposalPath, "utf-8");
 

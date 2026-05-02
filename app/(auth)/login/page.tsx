@@ -170,7 +170,7 @@ export default async function LoginPage({
           </h1>
           <p className="mt-5 leading-relaxed text-[#4b5563]">
             Três perfis principais cobrem a maior parte dos fluxos. Cada perfil vê apenas os
-            módulos da sua área. É possível alternar entre perfis a qualquer momento.
+            módulos da sua área e reproduz a separação de permissões prevista para a operação.
             {access === "admin-disabled" && (
               <span className="block mt-3 rounded-md border border-[hsl(32_82%_55%)]/35 bg-[hsl(40_40%_96%)] px-3 py-2 text-sm text-[hsl(32_82%_28%)]">
                 O perfil interno AiTiPro não está disponível neste acesso público.

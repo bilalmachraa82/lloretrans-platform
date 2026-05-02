@@ -39,11 +39,11 @@ export default async function FlagsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Feature flags"
-        description="Activar/desactivar módulos sem deploy"
+        title="Parâmetros operacionais"
+        description="Activar ou suspender módulos sem nova publicação"
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">Admin</Link>
+            <Link href="/admin">Administração</Link>
           </Button>
         }
       />
@@ -64,7 +64,7 @@ export default async function FlagsPage() {
                   <td className="font-mono text-xs">{f.key}</td>
                   <td>{f.description}</td>
                   <td>
-                    <Badge variant={f.enabled ? "success" : "secondary"}>{f.enabled ? "on" : "off"}</Badge>
+                    <Badge variant={f.enabled ? "success" : "secondary"}>{f.enabled ? "Activo" : "Inactivo"}</Badge>
                   </td>
                   <td>
                     <form action={toggleFlag}>

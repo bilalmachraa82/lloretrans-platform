@@ -1,12 +1,12 @@
-# Lloretrans · Script Comercial da Demo
+# Lloretrans · Roteiro Comercial da Demonstração
 
 **Objectivo:** mostrar controlo operacional com evidência real, sem prometer integrações ainda por confirmar.
 **Ambiente:** `https://lloretrans.aitipro.com` ou local `http://localhost:3001`.
-**Login recomendado:** Clarice para visão executiva; Bilal para Admin.
+**Login recomendado:** Clarice para visão executiva; Bilal para administração técnica.
 
 ## Versão 5 minutos
 
-1. `/admin` — evidência e masters.
+1. `/admin` — evidência e dados mestres.
    - Dizer: "Começo pelo que é verificável: ficheiros recebidos, códigos reais S1-S9/L1-L8/I0-I9, viaturas e fornecedores."
    - Não dizer: "Isto já está ligado ao PHC Advanced."
 
@@ -20,7 +20,7 @@
 
 4. `/fuel` — combustível por fornecedor.
    - Dizer: "Temos Cepsa 1261 linhas, Repsol 175, Radius 96 e bomba interna 629. O anexo Frotcom recebido é mensalidade/equipamento, não leitura operacional."
-   - Não dizer: "Temos leitura live da Frotcom."
+   - Não dizer: "Temos leitura directa da Frotcom já activa."
 
 5. `/ocr` e `/oficina/new` — conhecimento tácito e adopção.
    - Dizer: "No OCR, as 9 facturas reais já mostram regras por fornecedor. Na oficina, o checklist vem da folha em papel; o risco principal é adopção humana, por isso o rollout começa com 1 mecânico."
@@ -29,7 +29,7 @@
 ## Versão 15 minutos
 
 1. `/admin` · 2 min
-   - Mostrar `Admin` → service codes, vehicles, suppliers.
+   - Mostrar `Administração` → códigos de serviço, viaturas e fornecedores.
    - Dizer: "Esta plataforma já pode ser apresentada porque deixou de depender de dados genéricos; está assente no pacote AITIPRO recebido."
    - Mostrar: famílias de códigos S1-S9 externos, L1-L8 internos, I0-I9 operações internas.
 
@@ -44,7 +44,7 @@
    - Dizer: "O cálculo está auditável, mas há duas confirmações antes de proposta fechada: sentido das colunas e bónus quando lucro é zero."
 
 4. `/fuel` e `/fuel/[plate]` · 3 min
-   - Mostrar evidence card dos fornecedores.
+   - Mostrar cartão de evidência dos fornecedores.
    - Abrir uma matrícula.
    - Dizer: "Isto é sinalização operacional. Não bloqueia cartão, não acusa motorista, não substitui investigação."
    - Não dizer: "A API Frotcom já está activa."
@@ -54,8 +54,8 @@
    - Dizer: "Cada correcção humana cria memória de fornecedor para reduzir dependência da pessoa que sabe classificar."
 
 6. `/oficina/new` · 2 min
-   - Mostrar fluxo mobile-first e checklist.
-   - Dizer: "Este é o módulo com maior risco humano. A recomendação é piloto com 1 mecânico, treino presencial e fallback documentado."
+   - Mostrar fluxo em telemóvel e checklist.
+   - Dizer: "Este é o módulo com maior risco humano. A recomendação é piloto com 1 mecânico, treino presencial e plano de contingência documentado."
 
 ## Perguntas abertas para o Éder
 

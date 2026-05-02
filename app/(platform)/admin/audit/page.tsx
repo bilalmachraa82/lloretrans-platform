@@ -42,11 +42,11 @@ export default async function AuditLogPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Audit log"
-        description={`Append-only · ${rows.length} entradas mostradas · base para compliance RGPD`}
+        title="Registo de auditoria"
+        description={`Registo inviolável · ${rows.length} entradas mostradas · base para RGPD`}
         actions={
           <Button variant="outline" asChild>
-            <Link href="/admin">Admin</Link>
+            <Link href="/admin">Administração</Link>
           </Button>
         }
       />
@@ -68,7 +68,7 @@ export default async function AuditLogPage({
                 <th>Quem</th>
                 <th>Acção</th>
                 <th>Entidade · id</th>
-                <th>Antes → Depois</th>
+                <th>Antes / Depois</th>
                 <th>Motivo</th>
               </tr>
             </thead>

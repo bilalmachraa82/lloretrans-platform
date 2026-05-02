@@ -72,6 +72,38 @@ describe("static copy guard", () => {
     }
   });
 
+  it("does not expose prototype or developer jargon in customer-facing pages", () => {
+    const text = customerFacingFiles.map((file) => fs.readFileSync(path.join(process.cwd(), file), "utf-8")).join("\n");
+    const weakPhrases = [
+      "MVP ·",
+      "Folha de Obra Oficina (PWA)",
+      "PWA mobile",
+      "quick win",
+      "quick wins",
+      "stakeholder",
+      "pre-seeded",
+      "feature flags",
+      "audit log append-only",
+      "deploy Vercel fra1",
+      "fixtures reais",
+      "carriers do MVP",
+      "template actual",
+      "business-hours",
+      "Workshop com expert",
+      "Demo primeiro",
+      "Dashboard diário",
+      "Bulk-approve",
+      "Upload →",
+      "export PHC",
+      "mobile-first",
+      "work order",
+    ];
+
+    for (const phrase of weakPhrases) {
+      expect(text.toLowerCase()).not.toContain(phrase.toLowerCase());
+    }
+  });
+
   it("qualifies PHC references in customer-facing pages", () => {
     const text = customerFacingFiles.map((file) => fs.readFileSync(path.join(process.cwd(), file), "utf-8")).join("\n");
     expect(text).not.toMatch(/\bPHC\b(?! (Advanced|CS|GO))/);
