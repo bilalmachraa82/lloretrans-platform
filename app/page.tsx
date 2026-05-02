@@ -38,10 +38,10 @@ const MODULES = [
     slug: "ocr",
     title: "OCR facturas fornecedor",
     problem: "50 fornecedores, 50 layouts. Conhecimento tácito de quem classifica sai com a pessoa.",
-    solution: "Primeira factura de cada fornecedor: a equipa ensina o sistema. A partir daí, automática. Export XML PHC Advanced.",
+    solution: "Primeira factura de cada fornecedor: a equipa confirma a regra. A partir daí, classificação assistida. Export XML PHC Advanced.",
     icon: ReceiptText,
-    metric: "9",
-    metricLabel: "facturas OCR reais",
+    metric: "PHC",
+    metricLabel: "export XML",
   },
   {
     code: "C",
@@ -78,10 +78,10 @@ const MODULES = [
     slug: "oficina",
     title: "Folha de obra oficina",
     problem: "Mecânico preenche papel. Administrativa relança no PHC Advanced. Duplicação total.",
-    solution: "App mobile offline-first. Mecânico em 3 minutos. Admin valida. Export PHC Advanced.",
+    solution: "Aplicação móvel que funciona sem rede. Mecânico regista em 3 minutos. Administrativa valida. Export PHC Advanced.",
     icon: Wrench,
-    metric: "17",
-    metricLabel: "itens checklist papel",
+    metric: "<3 min",
+    metricLabel: "registo de oficina",
   },
 ];
 
@@ -122,7 +122,7 @@ export default function LandingPage() {
             Apresentação
           </Link>
           <Button asChild variant="outline" size="sm">
-            <Link href="/login">Aceder à demonstração →</Link>
+            <Link href="/login">Aceder à demonstração</Link>
           </Button>
         </nav>
       </header>
@@ -144,12 +144,12 @@ export default function LandingPage() {
             <p className="text-lg text-foreground/70 leading-relaxed max-w-2xl">
               Plataforma operacional para transportadoras portuguesas. Seis módulos
               integrados que cobrem o ciclo completo — do CMR na portaria ao XML
-              pronto para o PHC Advanced. <span className="font-semibold text-foreground">Dados na UE. Audit log imutável em cada acção.
+              pronto para o PHC Advanced. <span className="font-semibold text-foreground">Dados na UE. Registo de auditoria inviolável em cada acção.
               Humano aprova antes de qualquer passo irreversível.</span>
             </p>
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Button asChild size="lg" className="shadow-elevated">
-                <Link href="/login">Ver demonstração em 60 segundos →</Link>
+                <Link href="/login">Aceder à demonstração</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <Link href="mailto:bilal.machraa@aitipro.com?subject=Agendar%20apresentação%20Lloretrans">
@@ -170,7 +170,7 @@ export default function LandingPage() {
               <HeroStat
                 big="< 3 min"
                 label="folha de obra completa"
-                sub="Mecânico regista offline · admin valida"
+                sub="Mecânico regista sem rede · administrativa valida"
               />
               <HeroStat
                 big="1×"
@@ -180,12 +180,13 @@ export default function LandingPage() {
               <HeroStat
                 big="UE"
                 label="dados em repouso"
-                sub="Neon Postgres · Frankfurt · sem CDN US"
+                sub="Postgres · Frankfurt · dados na UE"
               />
             </div>
             <p className="text-[11px] text-muted-foreground mt-5 pl-6 lg:pl-10 leading-relaxed">
-              Ambiente de demonstração com fixtures reais do evidence pack e dados determinísticos complementares.
-              Produção replica o mesmo modelo contra os vossos sistemas, após confirmação das integrações.
+              Demonstração com dados reais da operação Lloretrans: cargas, abastecimentos e
+              facturas históricas. Em produção, a plataforma corre contra os sistemas internos
+              após confirmação técnica das integrações.
             </p>
           </div>
         </div>
@@ -204,8 +205,8 @@ export default function LandingPage() {
                 <span className="italic text-[hsl(222_72%_30%)]">controlo</span>.
               </p>
               <p className="mt-6 text-foreground/70 leading-relaxed max-w-2xl">
-                A IA regista. O humano valida. Cada acção, mesmo um clique, escreve entrada imutável
-                no <span className="font-mono text-sm">audit_log</span>. É esse o compromisso da
+                A IA regista. O humano valida. Cada acção, mesmo um clique, escreve entrada inviolável
+                no registo de auditoria. É esse o compromisso da
                 plataforma — acelerar sem tirar decisão a ninguém.
               </p>
             </div>
@@ -236,13 +237,13 @@ export default function LandingPage() {
             Seis módulos · um só sistema
           </div>
           <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
-            Cada módulo resolve <span className="italic">uma dor concreta</span>.
-            Cinco entram no pacote; combustível fica em roadmap.
+            Cada módulo resolve <span className="italic">uma dor concreta</span>
+            da operação.
           </h2>
           <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
-            Cada módulo tem spec própria, plano de implementação e critérios de aceitação. O
-            pacote entrega cinco módulos em produção em dez semanas; o módulo de combustível
-            entra logo que a Frotcom disponibilizar a API de leitura.
+            Cada módulo tem plano de implementação e critérios de aceitação. O módulo de
+            combustível aprofunda a leitura por viatura logo que a Frotcom disponibilizar
+            a API de leitura.
           </p>
         </div>
 
@@ -291,7 +292,7 @@ export default function LandingPage() {
                       <span className="ml-2 text-xs text-muted-foreground">{m.metricLabel}</span>
                     </div>
                     <span className="text-xs text-[hsl(222_72%_30%)] font-medium group-hover:underline">
-                      Ver demonstração →
+                      Abrir módulo
                     </span>
                   </div>
                 </article>
@@ -314,7 +315,7 @@ export default function LandingPage() {
               </div>
               <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
                 Infra europeia. <br />
-                Auditoria <span className="italic text-[hsl(32_82%_65%)]">append-only</span>.
+                Auditoria <span className="italic text-[hsl(32_82%_65%)]">inviolável</span>.
               </h2>
               <p className="mt-6 text-white/70 leading-relaxed text-lg">
                 Dados em repouso em Frankfurt. Zero analytics de terceiros. Cada mutação é registada
@@ -322,10 +323,10 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="lg:col-span-7 grid sm:grid-cols-2 gap-6">
-              <TrustCard icon={Globe} title="Dados na UE" body="Neon Postgres em Frankfurt (aws-eu-central-1). Deploy Vercel fra1. IA externa só com DPA e aprovação por fluxo." />
-              <TrustCard icon={ShieldCheck} title="RGPD by default" body="Audit log imutável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
-              <TrustCard icon={CheckCircle2} title="Humano no loop" body="IA regista, classifica, sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
-              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores preparados para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do expert PHC Advanced interno do grupo." />
+              <TrustCard icon={Globe} title="Dados na UE" body="Base de dados Postgres em Frankfurt. Servidor aplicacional na União Europeia. IA externa só com contrato de tratamento de dados aprovado pelo grupo." />
+              <TrustCard icon={ShieldCheck} title="RGPD por defeito" body="Registo de auditoria inviolável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
+              <TrustCard icon={CheckCircle2} title="Humano no circuito" body="IA regista, classifica e sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
+              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores preparados para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do responsável PHC Advanced interno do grupo." />
             </div>
           </div>
         </div>
@@ -342,14 +343,14 @@ export default function LandingPage() {
           </h2>
           <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
             Cada módulo entra em produção supervisionada antes de avançarmos. Sem big-bang, sem
-            ranges em aberto. Começamos com Sprint 0 para validar PHC Advanced, Frotcom e Logue Trans.
+            intervalos em aberto. Começamos com Sprint 0 para confirmar PHC Advanced, Frotcom e Logue Trans.
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           <RoadmapCard
             week="Semana 1"
             title="Sprint 0"
-            body="Workshop com expert PHC Advanced interno. Credenciais Logue Trans e Frotcom. Volume documental real e plano fechado."
+            body="Sessão de trabalho com o responsável interno por PHC Advanced. Credenciais Logue Trans e Frotcom. Volume documental real e plano fechado."
           />
           <RoadmapCard
             week="Semanas 2–3"
@@ -363,8 +364,8 @@ export default function LandingPage() {
           />
           <RoadmapCard
             week="Semanas 8–10"
-            title="Módulo F + roadmap D"
-            body="Oficina mobile com piloto de 1 mecânico. Combustível fica preparado para entrar quando a Frotcom confirmar a API."
+            title="Módulo F + fase seguinte D"
+            body="Oficina móvel com piloto de 1 mecânico. Combustível fica preparado para entrar quando a Frotcom confirmar a API."
           />
         </div>
       </section>
@@ -388,7 +389,7 @@ export default function LandingPage() {
             <div className="lg:col-span-8 space-y-2">
               <FaqItem
                 q="Que dados saem da empresa?"
-                a="Dados operacionais em repouso ficam na UE: Neon Postgres em Frankfurt (aws-eu-central-1) e Vercel fra1. Fluxos com Claude/Anthropic só avançam com DPA aprovado; sem isso, ficam desligados ou usam extracção local."
+                a="Dados operacionais em repouso ficam na UE: base de dados Postgres em Frankfurt e servidor aplicacional na União Europeia. Fluxos com IA externa só avançam com contrato de tratamento de dados aprovado pelo grupo; sem isso, ficam desligados ou usam extracção local."
               />
               <FaqItem
                 q="Quem assina os lançamentos no PHC Advanced?"
@@ -399,8 +400,8 @@ export default function LandingPage() {
                 a="Existe fallback para Logue Trans via flag de configuração. A reconciliação continua, com aviso no dashboard. Nenhum módulo depende de um único fornecedor externo para correr."
               />
               <FaqItem
-                q="Integramos com o vosso expert PHC Advanced interno?"
-                a="Sim, mas só depois de validação técnica com o expert PHC Advanced interno do grupo. Até lá, a plataforma trabalha com XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
+                q="Integramos com o vosso responsável PHC Advanced interno?"
+                a="Sim, mas só depois de confirmação técnica com o responsável PHC Advanced interno do grupo. Até lá, a plataforma trabalha com XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
               />
               <FaqItem
                 q="O que acontece se o mecânico não usar a app?"
@@ -427,14 +428,13 @@ export default function LandingPage() {
                 Pronto para deixar o papel para trás?
               </h2>
               <p className="mt-5 text-white/75 text-lg leading-relaxed max-w-2xl">
-                Sessenta segundos chegam para percorrer os seis módulos com dados reais. O acesso
-                faz-se por perfil — Direcção Operacional, Comercial ou Mecânico — sem registo nem
-                password.
+                O acesso faz-se por perfil — Direcção Operacional, Comercial ou Mecânico — com
+                dados reais já carregados. Não exige instalação nem registo.
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
               <Button asChild size="lg" className="bg-white text-[hsl(222_72%_22%)] hover:bg-white/90 border-0 shadow-elevated-lg w-full lg:w-auto">
-                <Link href="/login">Abrir demonstração →</Link>
+                <Link href="/login">Abrir demonstração</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10 w-full lg:w-auto">
                 <Link href="/apresentacao">Abrir apresentação</Link>

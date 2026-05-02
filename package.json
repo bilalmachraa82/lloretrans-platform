@@ -2,7 +2,7 @@
   "name": "lloretrans-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "Plataforma interna Lloretrans × AiTiPro — 6 MVPs num único Next.js app",
+  "description": "Plataforma interna Lloretrans × AiTiPro — 6 módulos num único Next.js app",
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",

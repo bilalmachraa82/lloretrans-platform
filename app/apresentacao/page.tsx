@@ -25,10 +25,28 @@ export const metadata = {
 };
 
 const PROOF = [
-  { value: "6", label: "fluxos mapeados", note: "km, OCR, documentos, combustível, bolsa, oficina" },
-  { value: "9", label: "fornecedores treinados", note: "Classificação calibrada por NIF e padrão de fornecedor" },
-  { value: "306", label: "cargas reais", note: "convertidas do Excel operacional" },
-  { value: "2161", label: "abastecimentos", note: "dados reais carregados na demo" },
+  { value: "6", label: "fluxos operacionais", note: "Quilómetros, OCR, documentos, combustível, bolsa e oficina" },
+  { value: "306", label: "cargas reais", note: "Convertidas do Excel histórico para fluxo auditável" },
+  { value: "2 161", label: "abastecimentos", note: "Cruzados por matrícula e fornecedor na plataforma" },
+  { value: "60", label: "viaturas", note: "Volume operacional alvo da plataforma" },
+];
+
+const PRODUCT_SHOTS = [
+  {
+    src: "/product-shots/dashboard-crop.png",
+    title: "Dashboard operacional",
+    body: "Visão consolidada dos módulos, indicadores críticos e trabalho pendente.",
+  },
+  {
+    src: "/product-shots/ocr-crop.png",
+    title: "Facturas fornecedor",
+    body: "Classificação por NIF, confiança, estado de validação e preparação para PHC Advanced.",
+  },
+  {
+    src: "/product-shots/bolsa-crop.png",
+    title: "Bolsa de carga",
+    body: "Cargas, margem, comissões, atrasos e filtros operacionais sobre dados importados.",
+  },
 ];
 
 const EXECUTIVE_MESSAGES = [
@@ -44,7 +62,7 @@ const EXECUTIVE_MESSAGES = [
   },
   {
     title: "Dependências assumidas de frente.",
-    body: "PHC Advanced, Frotcom e adopção da oficina aparecem listados, com responsável e estado de validação técnica.",
+    body: "PHC Advanced, Frotcom e adopção da oficina aparecem listados, com responsável e estado de confirmação técnica.",
     icon: CircleAlert,
   },
 ];
@@ -66,7 +84,7 @@ const MODULES = [
     icon: ReceiptText,
     pain: "O conhecimento de classificação está na pessoa e não no sistema; cada fornecedor tem o seu formato.",
     currentState: "Upload, extracção, classificação por NIF, memória por fornecedor e export orientado a PHC Advanced.",
-    proof: "As 9 facturas reais já foram usadas para ensinar a classificação por fornecedor.",
+    proof: "As facturas reais carregadas mostram extracção, confiança, estado de validação e serviço PHC proposto.",
     validate: "A lógica de classificação por NIF é calibrada com a equipa antes de qualquer escrita automática.",
     href: "/login?target=ocr",
   },
@@ -105,7 +123,7 @@ const MODULES = [
     title: "Folha de obra da oficina",
     icon: Wrench,
     pain: "O mecânico regista em papel e a administrativa relança tudo no PHC Advanced.",
-    currentState: "PWA mobile-first com checklist, estados, assinatura e validação administrativa.",
+    currentState: "Aplicação móvel com checklist, estados, assinatura e validação administrativa.",
     proof: "A folha de obra já pode ser mostrada em telemóvel como experiência real de uso.",
     validate: "Plano de adopção da oficina inclui treino presencial e fallback em papel com OCR.",
     href: "/login?target=oficina",
@@ -115,8 +133,8 @@ const MODULES = [
 const DEPENDENCIES = [
   {
     title: "PHC Advanced",
-    owner: "expert interno do grupo",
-    note: "A plataforma prepara e estrutura; a validação com o expert interno decide o grau de integração efectiva.",
+    owner: "responsável interno do grupo",
+    note: "A plataforma prepara e estrutura; a confirmação com o responsável interno decide o grau de integração efectiva.",
   },
   {
     title: "Frotcom",
@@ -159,7 +177,7 @@ export default function ApresentacaoPage() {
           backgroundSize: "22px 22px",
         }}
       />
-      <div className="pointer-events-none fixed inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_top_left,rgba(42,229,160,0.18),transparent_42%),radial-gradient(circle_at_top_right,rgba(202,116,45,0.14),transparent_36%)]" />
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_top_left,rgba(42,229,160,0.08),transparent_42%),radial-gradient(circle_at_top_right,rgba(202,116,45,0.08),transparent_36%)]" />
 
       <header className="relative mx-auto flex max-w-[1320px] items-center justify-between px-6 py-8 lg:px-10">
         <Link
@@ -194,7 +212,7 @@ export default function ApresentacaoPage() {
           <Button
             asChild
             size="sm"
-            className="border-0 bg-[#2ae5a0] text-[#1e2d3d] shadow-none hover:bg-[#1bc88a]"
+            className="border-0 bg-[#0d3b38] text-white shadow-none hover:bg-[#134f4b]"
           >
             <Link href="mailto:bilal.machraa@aitipro.com?subject=Lloretrans%20%C2%B7%20proxima%20conversa">
               Marcar reunião
@@ -239,7 +257,7 @@ export default function ApresentacaoPage() {
                   irreversíveis.
                 </p>
                 <p>
-                  <strong className="text-[#1e2d3d]">Audit log</strong> imutável por utilizador,
+                  <strong className="text-[#1e2d3d]">Registo de auditoria</strong> inviolável por utilizador,
                   antes/depois e motivo.
                 </p>
                 <p>
@@ -249,6 +267,54 @@ export default function ApresentacaoPage() {
               </div>
             </div>
           </aside>
+        </div>
+      </section>
+
+      <section className="relative mx-auto max-w-[1320px] px-6 pb-16 lg:px-10 lg:pb-22">
+        <div className="grid gap-8 rounded-[28px] border border-[#d8e1df] bg-white p-5 shadow-elevated-lg lg:grid-cols-[1.1fr_0.9fr] lg:p-7">
+          <div className="overflow-hidden rounded-[20px] border border-[#e2e8f0] bg-[#f8fffc]">
+            <Image
+              src={PRODUCT_SHOTS[0].src}
+              alt={PRODUCT_SHOTS[0].title}
+              width={1120}
+              height={650}
+              className="h-full min-h-[340px] w-full object-cover object-left-top"
+              priority
+            />
+          </div>
+          <div className="flex flex-col justify-between gap-6 p-2 lg:p-4">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                Plataforma em ecrã
+              </div>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
+                O produto já mostra dados, estados e decisões.
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-[#4b5563]">
+                As capturas abaixo são do ambiente operacional Lloretrans: indicadores, facturas,
+                cargas e validações navegáveis por perfil.
+              </p>
+            </div>
+            <div className="grid gap-4">
+              {PRODUCT_SHOTS.slice(1).map((shot) => (
+                <article key={shot.title} className="grid gap-4 rounded-2xl border border-[#e2e8f0] bg-[#f8fffc] p-4 sm:grid-cols-[0.92fr_1.08fr]">
+                  <div className="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white">
+                    <Image
+                      src={shot.src}
+                      alt={shot.title}
+                      width={1120}
+                      height={650}
+                      className="h-32 w-full object-cover object-top"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold leading-tight">{shot.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{shot.body}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -293,12 +359,12 @@ export default function ApresentacaoPage() {
               Prova operacional
             </div>
             <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
-              A conversa já pode partir de evidências, não de promessas.
+              Evidência operacional, não promessa.
             </h2>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-[#4b5563]">
-              A demonstração assenta em dados reais da operação Lloretrans: 306 cargas convertidas
-              do Excel, 2161 abastecimentos carregados e 9 facturas usadas para treinar a
-              classificação por fornecedor.
+              A plataforma assenta em dados reais da operação Lloretrans: 306 cargas convertidas
+              do Excel, 2 161 abastecimentos carregados e facturas reais usadas para calibrar a
+              classificação por NIF e padrão de fornecedor.
             </p>
           </div>
 
@@ -403,7 +469,7 @@ export default function ApresentacaoPage() {
                     <div className="text-2xl font-semibold tracking-tight">{dependency.title}</div>
                   </div>
                   <div className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6b7280]">
-                    Dono da validação
+                    Responsável
                   </div>
                   <p className="mt-2 text-sm font-medium text-[#374151]">{dependency.owner}</p>
                   <p className="mt-4 text-sm leading-relaxed text-[#4b5563]">{dependency.note}</p>
@@ -421,13 +487,13 @@ export default function ApresentacaoPage() {
               Infraestrutura
             </div>
             <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
-              Dados na UE. Auditoria append-only. RGPD por defeito.
+              Dados na UE. Auditoria inviolável. RGPD por defeito.
             </h2>
           </div>
 
           <ul className="grid gap-4 text-sm leading-relaxed text-white/82">
-            <li>Neon Postgres em Frankfurt (aws-eu-central-1) · Vercel fra1 · sem CDN americano.</li>
-            <li>Audit log imutável: utilizador, antes/depois, motivo, em cada mutação.</li>
+            <li>Base de dados Postgres em Frankfurt · servidor aplicacional na União Europeia · sem CDN americano.</li>
+            <li>Registo de auditoria inviolável: utilizador, antes/depois, motivo, em cada mutação.</li>
             <li>Aprovação humana obrigatória em todos os passos irreversíveis.</li>
             <li>Adaptadores preparados para PHC Advanced, Logue Trans, Frotcom, Cepsa, Repsol e Radius.</li>
           </ul>
@@ -468,7 +534,7 @@ export default function ApresentacaoPage() {
             <div>
               <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-[#2ae5a0]">
                 <TimerReset className="h-4 w-4" />
-                Próximo passo
+                Acesso à plataforma
               </div>
               <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
                 Abrir a plataforma e percorrer os fluxos.
@@ -485,7 +551,7 @@ export default function ApresentacaoPage() {
             <Button
               asChild
               size="lg"
-              className="border-0 bg-[#2ae5a0] text-[#1e2d3d] shadow-none hover:bg-[#1bc88a]"
+              className="border-0 bg-white text-[#1e2d3d] shadow-none hover:bg-white/90"
             >
               <Link href="/login">Abrir a plataforma</Link>
             </Button>

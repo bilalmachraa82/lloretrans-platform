@@ -65,7 +65,7 @@ const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
     label: "Clarice Santos",
     summary: "Direcção Operacional · visão global",
     angle:
-      "Entra no dashboard com as 60 viaturas, validação km do dia e folhas de oficina a validar.",
+      "Acesso ao dashboard com as 60 viaturas, validação km do dia e folhas de oficina a validar.",
   },
   {
     email: "eder@lloretrans.pt",
@@ -76,10 +76,10 @@ const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
   },
   {
     email: "joao.mec@lloretrans.pt",
-    label: "João Oliveira",
-    summary: "Mecânico · PWA oficina",
+    label: "Mecânico oficina",
+    summary: "Oficina · aplicação móvel",
     angle:
-      "PWA mobile com assistente em 6 passos. Assinatura no ecrã. Funciona mesmo sem rede. Demora < 3 min.",
+      "Aplicação móvel com assistente em 6 passos. Assinatura no ecrã. Funciona mesmo sem rede. Demora < 3 min.",
   },
 ];
 
@@ -153,9 +153,9 @@ export default async function LoginPage({
           <Image src="/aitipro-logo.png" alt="AiTiPro" width={154} height={36} className="h-7 w-auto" priority />
           <div className="hidden sm:block">
             <div className="text-[10px] text-[hsl(32_82%_35%)] tracking-[0.2em] uppercase font-semibold">
-              Acesso à demonstração
+              Acesso por perfil
             </div>
-            <div className="mt-1 text-xs text-muted-foreground">Lloretrans · perfis de validação</div>
+            <div className="mt-1 text-xs text-muted-foreground">Lloretrans · perfis operacionais</div>
           </div>
         </Link>
       </header>
@@ -163,7 +163,7 @@ export default async function LoginPage({
       <section className="relative z-10 mx-auto max-w-[1100px] px-6 pt-8 pb-20 animate-fade-in">
         <div className="max-w-2xl mb-10">
           <Badge variant="outline" className="mb-4 text-[11px] tracking-wider uppercase">
-            Acesso à demonstração
+            Acesso por perfil
           </Badge>
           <h1 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
             Acesso por perfil de utilizador.
@@ -173,12 +173,12 @@ export default async function LoginPage({
             módulos da sua área. É possível alternar entre perfis a qualquer momento.
             {access === "admin-disabled" && (
               <span className="block mt-3 rounded-md border border-[hsl(32_82%_55%)]/35 bg-[hsl(40_40%_96%)] px-3 py-2 text-sm text-[hsl(32_82%_28%)]">
-                O perfil interno AiTiPro não está disponível na demonstração pública.
+                O perfil interno AiTiPro não está disponível neste acesso público.
               </span>
             )}
             {target && (
               <span className="block mt-3 text-[hsl(222_72%_30%)] text-sm font-medium">
-                Entrarás directamente no módulo <code className="font-mono">{target.toUpperCase()}</code>.
+                Acesso directo ao módulo <code className="font-mono">{target.toUpperCase()}</code>.
               </span>
             )}
           </p>
@@ -189,9 +189,9 @@ export default async function LoginPage({
           <div className="mb-12">
             <div className="flex items-baseline justify-between mb-3">
               <h2 className="font-display text-sm font-semibold tracking-[0.05em] uppercase text-[hsl(32_82%_35%)]">
-                Perfis principais
+                Perfis operacionais
               </h2>
-              <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Começa por aqui</span>
+              <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Acesso directo</span>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
               {spotlightUsers.map(({ persona, user }) => {
@@ -242,7 +242,7 @@ export default async function LoginPage({
           <summary className="list-none cursor-pointer flex items-center justify-between px-5 py-4 hover:bg-white transition-colors rounded-lg">
             <div>
               <div className="font-display text-sm font-semibold">Outros perfis</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5">Perfis de demonstração para validações pontuais</div>
+              <div className="text-[11px] text-muted-foreground mt-0.5">Perfis operacionais por área funcional</div>
             </div>
             <span className="text-[hsl(222_72%_30%)] text-lg font-semibold transition-transform group-open:rotate-45 leading-none">+</span>
           </summary>
@@ -282,7 +282,7 @@ export default async function LoginPage({
                               <div className="text-[10px] text-muted-foreground truncate">{u.companyName}</div>
                             </div>
                             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                              Demo
+                              Área
                             </div>
                           </button>
                         </form>
@@ -298,11 +298,11 @@ export default async function LoginPage({
         <div className="mt-16 pt-8 border-t border-[hsl(220_14%_88%)] text-center text-xs text-muted-foreground space-x-3">
           <span>Neon Postgres · UE Frankfurt</span>
           <span>·</span>
-          <span>Vercel fra1</span>
+          <span>Servidor aplicacional UE</span>
           <span>·</span>
-          <span>Audit log append-only</span>
+          <span>Registo de auditoria inviolável</span>
           <span>·</span>
-          <span>RGPD by default</span>
+          <span>RGPD por defeito</span>
         </div>
       </section>
     </main>
