@@ -73,9 +73,9 @@ const MODULES = [
     title: "Validação de quilómetros",
     icon: TruckIcon,
     pain: "A administrativa cruza Logue Trans com Frotcom viagem a viagem e o erro segue para a facturação.",
-    currentState: "Semáforo operacional, threshold de 3 km, histórico auditado e aprovação por excepção.",
+    currentState: "Semáforo operacional, diferença de 3 km, histórico auditado e aprovação por excepção.",
     proof: "O dashboard destaca logo o dia em atenção e abre apenas as viagens que precisam de validação.",
-    validate: "O threshold de 3 km e o circuito de aprovação ficam ajustados ao processo real após a Sprint 0.",
+    validate: "A diferença de 3 km e o circuito de aprovação ficam ajustados ao processo real na primeira semana de trabalho.",
     href: "/login?target=km",
   },
   {
@@ -103,7 +103,7 @@ const MODULES = [
     title: "Combustível",
     icon: Fuel,
     pain: "Os dados existem, mas estão separados por fornecedor e sem leitura consolidada por viatura.",
-    currentState: "A demo cruza abastecimentos por matrícula e fornecedor e sinaliza anomalias com decisão humana.",
+    currentState: "A plataforma cruza abastecimentos por matrícula e fornecedor e sinaliza anomalias com decisão humana.",
     proof: "Já estão carregadas 2161 linhas reais.",
     validate: "A leitura por viatura entra em produção quando a API Frotcom for disponibilizada; até lá, fica em modo informativo.",
     href: "/login?target=fuel",
@@ -115,7 +115,7 @@ const MODULES = [
     pain: "O comercial trabalha sobre Excel longo, memória tardia e comissões calculadas no fim do mês.",
     currentState: "Fluxo auditado por estado, documentos ligados a cada carga e regra de comissão reflectida na plataforma.",
     proof: "O Excel real de 306 cargas já foi convertido para navegação operacional.",
-    validate: "Margem, estados e colunas espelham a folha actual; o saneamento do Excel histórico é parte da Sprint 0.",
+    validate: "Margem, estados e colunas espelham a folha actual; o saneamento do Excel histórico faz parte da primeira semana de trabalho.",
     href: "/login?target=bolsa",
   },
   {
@@ -139,7 +139,7 @@ const DEPENDENCIES = [
   {
     title: "Frotcom",
     owner: "acesso técnico de leitura",
-    note: "Combustível entra com base real na demo, mas a profundidade final depende da confirmação da leitura disponível.",
+    note: "Combustível entra com base real na plataforma, mas a profundidade final depende da confirmação da leitura disponível.",
   },
   {
     title: "Oficina",
@@ -154,7 +154,7 @@ const COUNCIL_REASONS = [
     body: "Os seis fluxos correm hoje contra dados reais. Não há promessas em PowerPoint a colmatar funcionalidades em falta.",
   },
   {
-    title: "Sprint 0 com entregáveis fechados",
+    title: "Primeira semana fechada",
     body: "Acessos, saneamento de dados, integração inicial e plano de piloto ficam fechados na primeira semana.",
   },
   {
@@ -179,13 +179,13 @@ export default function ApresentacaoPage() {
       />
       <div className="pointer-events-none fixed inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_top_left,rgba(42,229,160,0.08),transparent_42%),radial-gradient(circle_at_top_right,rgba(202,116,45,0.08),transparent_36%)]" />
 
-      <header className="relative mx-auto flex max-w-[1320px] items-center justify-between px-6 py-8 lg:px-10">
+      <header className="relative mx-auto flex max-w-[1320px] flex-col gap-4 px-6 py-8 sm:flex-row sm:items-center sm:justify-between lg:px-10">
         <Link
           href="/"
-          className="flex min-h-11 items-center gap-4 rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3 shadow-elevated-sm"
+          className="flex min-h-11 w-full items-center gap-4 rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3 shadow-elevated-sm sm:w-auto"
         >
           <Image
-            src="/aitipro-logo.png"
+            src="/aitipro-logo-light.png"
             alt="AiTiPro"
             width={154}
             height={36}
@@ -200,19 +200,19 @@ export default function ApresentacaoPage() {
             <div className="mt-1 text-xs text-[#6b7280]">Lloretrans · plataforma operacional</div>
           </div>
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full items-center gap-3 sm:w-auto">
           <Button
             asChild
             variant="outline"
             size="sm"
-            className="border-[#cbd5e1] bg-white text-[#1e2d3d] hover:border-[#1bc88a] hover:bg-white"
+            className="flex-1 border-[#cbd5e1] bg-white text-[#1e2d3d] hover:border-[#1bc88a] hover:bg-white sm:flex-none"
           >
             <Link href="/login">Abrir plataforma</Link>
           </Button>
           <Button
             asChild
             size="sm"
-            className="border-0 bg-[#0d3b38] text-white shadow-none hover:bg-[#134f4b]"
+            className="flex-1 border-0 bg-[#0d3b38] text-white shadow-none hover:bg-[#134f4b] sm:flex-none"
           >
             <Link href="mailto:bilal.machraa@aitipro.com?subject=Lloretrans%20%C2%B7%20proxima%20conversa">
               Marcar reunião
@@ -261,8 +261,8 @@ export default function ApresentacaoPage() {
                   antes/depois e motivo.
                 </p>
                 <p>
-                  <strong className="text-[#1e2d3d]">Dados na UE</strong> — Frankfurt, sem CDN
-                  americano.
+                  <strong className="text-[#1e2d3d]">Dados na UE</strong> — armazenamento e aplicação
+                  na União Europeia.
                 </p>
               </div>
             </div>
@@ -398,7 +398,7 @@ export default function ApresentacaoPage() {
             </div>
             <p className="max-w-2xl text-base leading-relaxed text-[#4b5563]">
               Para cada módulo: a dor actual identificada na operação Lloretrans, o que já está
-              construído na plataforma, e a evidência demonstrável na demo.
+              construído na plataforma, e a evidência visível na plataforma.
             </p>
           </div>
 
@@ -423,7 +423,7 @@ export default function ApresentacaoPage() {
                         href={module.href}
                         className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-[#0d3b38] hover:underline"
                       >
-                        Ver na demo <ArrowRight className="ml-2 h-4 w-4" />
+                        Ver na plataforma <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </div>
                   </div>
@@ -432,7 +432,7 @@ export default function ApresentacaoPage() {
                   <InfoBlock label="O que já está construído" body={module.currentState} />
 
                   <div className="grid gap-4">
-                    <InfoBlock label="Evidência na demo" body={module.proof} compact />
+                    <InfoBlock label="Evidência na plataforma" body={module.proof} compact />
                     <InfoBlock label="Ponto a confirmar" body={module.validate} compact emphasis />
                   </div>
                 </article>
@@ -454,7 +454,7 @@ export default function ApresentacaoPage() {
               </h2>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-[#4b5563]">
                 Três pontos dependem de validação técnica externa à plataforma. Estão listados
-                abaixo com responsável e estado, para que entrem no plano de Sprint 0 sem surpresas.
+                abaixo com responsável e estado, para que entrem na primeira semana de trabalho sem surpresas.
               </p>
             </div>
 
@@ -492,10 +492,10 @@ export default function ApresentacaoPage() {
           </div>
 
           <ul className="grid gap-4 text-sm leading-relaxed text-white/82">
-            <li>Base de dados Postgres em Frankfurt · servidor aplicacional na União Europeia · sem CDN americano.</li>
+            <li>Base de dados em Frankfurt · servidor aplicacional na União Europeia.</li>
             <li>Registo de auditoria inviolável: utilizador, antes/depois, motivo, em cada mutação.</li>
             <li>Aprovação humana obrigatória em todos os passos irreversíveis.</li>
-            <li>Adaptadores preparados para PHC Advanced, Logue Trans, Frotcom, Cepsa, Repsol e Radius.</li>
+            <li>Ligações previstas para PHC Advanced, Logue Trans, Frotcom, Cepsa, Repsol e Radius.</li>
           </ul>
         </div>
       </section>
@@ -507,7 +507,7 @@ export default function ApresentacaoPage() {
               O que distingue esta plataforma
             </div>
             <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
-              Construída para a operação real, não para uma demonstração.
+              Construída para a operação real, não para slides.
             </h2>
           </div>
           <p className="max-w-2xl text-base leading-relaxed text-[#4b5563]">
@@ -541,7 +541,7 @@ export default function ApresentacaoPage() {
               </h2>
             </div>
             <p className="text-sm leading-relaxed text-white/76">
-              O acesso usa perfis pré-configurados. O perfil de Direcção Operacional dá visão
+              O acesso usa perfis operacionais. O perfil de Direcção Operacional dá visão
               consolidada das 60 viaturas, validação de quilómetros do dia e folhas de oficina
               pendentes.
             </p>
@@ -556,7 +556,7 @@ export default function ApresentacaoPage() {
               <Link href="/login">Abrir a plataforma</Link>
             </Button>
             <div className="ml-auto hidden rounded-xl bg-white px-4 py-3 lg:block">
-              <Image src="/aitipro-logo.png" alt="AiTiPro" width={138} height={32} className="h-6 w-auto" />
+              <Image src="/aitipro-logo-light.png" alt="AiTiPro" width={138} height={32} className="h-6 w-auto" />
             </div>
           </div>
         </div>

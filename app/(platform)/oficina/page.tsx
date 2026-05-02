@@ -65,14 +65,14 @@ export default async function OficinaPage() {
         description={
           isMechanic
             ? `Tens ${rows.length} folhas · cria nova em <3 min`
-            : `${rows.length} folhas submetidas a validar`
+            : `${rows.length} folhas submetidas para validação`
         }
         actions={
           <div className="flex gap-2">
             <Button asChild size="lg" variant={isMechanic ? "default" : "outline"}>
               <Link href="/oficina/new">
                 <Plus className="h-5 w-5" />
-                {isMechanic ? "Nova folha" : "Experimentar como mecânico"}
+                {isMechanic ? "Nova folha" : "Abrir fluxo do mecânico"}
               </Link>
             </Button>
           </div>
@@ -82,7 +82,7 @@ export default async function OficinaPage() {
       {!isMechanic && (
         <div className="rounded-md border border-[hsl(222_72%_30%)]/20 bg-[hsl(222_72%_30%)]/5 px-4 py-3 text-sm">
           <strong>Validação administrativa:</strong> abaixo estão as folhas submetidas. Para ver a experiência
-          mobile do mecânico, clica em <strong>&quot;Experimentar como mecânico&quot;</strong>.
+          móvel do mecânico, usar <strong>&quot;Abrir fluxo do mecânico&quot;</strong>.
         </div>
       )}
 

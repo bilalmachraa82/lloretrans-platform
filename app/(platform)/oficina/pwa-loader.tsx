@@ -12,7 +12,7 @@ export function PwaLoader() {
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js", { scope: "/oficina" }).catch(() => {
-        // PWA install is best-effort for the demo
+        // Service worker registration is best effort for the offline workshop flow.
       });
     }
 
@@ -29,7 +29,7 @@ export function PwaLoader() {
   if (online) {
     return (
       <div className="flex justify-end">
-        <Badge variant="secondary" className="text-[10px]">● online · PWA activa</Badge>
+        <Badge variant="secondary" className="text-[10px]">● online · aplicação activa</Badge>
       </div>
     );
   }

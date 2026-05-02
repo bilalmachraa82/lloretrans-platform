@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft } from "lucide-react";
 
 function canShowInternalAdminProfiles(): boolean {
-  return process.env.VERCEL_ENV !== "production";
+  return process.env.ALLOW_INTERNAL_ADMIN_LOGIN === "true" && process.env.VERCEL_ENV !== "production";
 }
 
 async function loginAs(formData: FormData): Promise<void> {
@@ -84,7 +84,7 @@ const SPOTLIGHT_PERSONAS: SpotlightPersona[] = [
 ];
 
 const OTHER_GROUPS: { label: string; roles: Role[]; hint: string }[] = [
-  { label: "Direcção & admin AiTiPro", roles: ["admin"], hint: "Acesso global · sem restrições" },
+  { label: "Interno AiTiPro", roles: ["admin"], hint: "Acesso técnico" },
   {
     label: "Administrativas Lloretrans",
     roles: ["admin_faturacao", "admin_oficina", "admin_contas"],
@@ -129,17 +129,17 @@ export default async function LoginPage({
   const spotlightIds = new Set(spotlightUsers.map((s) => s.user.id));
 
   return (
-    <main className="min-h-screen bg-[hsl(40_24%_98%)] text-[hsl(220_28%_10%)] relative overflow-hidden">
+    <main className="min-h-screen bg-[#f0f5f4] text-[#1e2d3d] relative overflow-hidden [&_h1]:font-sans [&_h2]:font-sans [&_h3]:font-sans">
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none fixed inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: "radial-gradient(hsl(222 72% 15%) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
+          backgroundImage: "radial-gradient(#2d3a4a 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
         }}
       />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[400px] bg-[radial-gradient(ellipse_50%_60%_at_50%_0%,hsl(32_82%_55%/0.1),transparent_70%)]" />
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-[420px] bg-[radial-gradient(circle_at_top_left,rgba(42,229,160,0.08),transparent_42%),radial-gradient(circle_at_top_right,rgba(202,116,45,0.08),transparent_36%)]" />
 
-      <header className="relative z-10 mx-auto max-w-[1100px] px-6 py-8 flex items-center justify-between">
+      <header className="relative z-10 mx-auto flex max-w-[1100px] flex-col gap-4 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/" className="flex min-h-11 items-center gap-2.5 group">
           <ArrowLeft className="h-4 w-4 text-muted-foreground group-hover:-translate-x-0.5 transition-transform" />
           <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
@@ -148,9 +148,9 @@ export default async function LoginPage({
         </Link>
         <Link
           href="/"
-          className="flex min-h-11 items-center gap-3 rounded-2xl border border-[hsl(220_14%_88%)] bg-white px-4 py-3 shadow-elevated-sm"
+          className="flex min-h-11 w-full items-center gap-3 rounded-2xl border border-[hsl(220_14%_88%)] bg-white px-4 py-3 shadow-elevated-sm sm:w-auto"
         >
-          <Image src="/aitipro-logo.png" alt="AiTiPro" width={154} height={36} className="h-7 w-auto" priority />
+          <Image src="/aitipro-logo-light.png" alt="AiTiPro" width={154} height={36} className="h-7 w-auto" priority />
           <div className="hidden sm:block">
             <div className="text-[10px] text-[hsl(32_82%_35%)] tracking-[0.2em] uppercase font-semibold">
               Acesso por perfil
@@ -160,15 +160,15 @@ export default async function LoginPage({
         </Link>
       </header>
 
-      <section className="relative z-10 mx-auto max-w-[1100px] px-6 pt-8 pb-20 animate-fade-in">
+      <section className="relative z-10 mx-auto max-w-[1100px] px-6 pt-8 pb-20">
         <div className="max-w-2xl mb-10">
-          <Badge variant="outline" className="mb-4 text-[11px] tracking-wider uppercase">
+          <Badge variant="outline" className="mb-4 border-[#ca742d]/20 bg-[#fef3e8] text-[11px] uppercase tracking-[0.18em] text-[#ca742d]">
             Acesso por perfil
           </Badge>
-          <h1 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
+          <h1 className="text-4xl lg:text-5xl font-semibold leading-tight tracking-tight text-[#1e2d3d]">
             Acesso por perfil de utilizador.
           </h1>
-          <p className="mt-5 text-foreground/70 leading-relaxed">
+          <p className="mt-5 leading-relaxed text-[#4b5563]">
             Três perfis principais cobrem a maior parte dos fluxos. Cada perfil vê apenas os
             módulos da sua área. É possível alternar entre perfis a qualquer momento.
             {access === "admin-disabled" && (
@@ -188,10 +188,10 @@ export default async function LoginPage({
         {spotlightUsers.length > 0 && (
           <div className="mb-12">
             <div className="flex items-baseline justify-between mb-3">
-              <h2 className="font-display text-sm font-semibold tracking-[0.05em] uppercase text-[hsl(32_82%_35%)]">
+              <h2 className="text-sm font-semibold tracking-[0.12em] uppercase text-[#ca742d]">
                 Perfis operacionais
               </h2>
-              <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Acesso directo</span>
+              <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Entrar</span>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
               {spotlightUsers.map(({ persona, user }) => {
@@ -206,7 +206,7 @@ export default async function LoginPage({
                     {target && <input type="hidden" name="target" value={target} />}
                     <button
                       type="submit"
-                      className="w-full h-full text-left rounded-xl border border-[hsl(220_14%_88%)] bg-white p-5 hover:border-[hsl(222_72%_30%)]/50 hover:shadow-elevated-lg transition-all group relative overflow-hidden"
+                      className="w-full h-full text-left rounded-xl border border-[#e2e8f0] bg-white p-5 hover:border-[#0d3b38]/45 hover:shadow-elevated-lg transition-all group relative overflow-hidden"
                     >
                       <div
                         className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[hsl(32_82%_55%)] via-[hsl(32_82%_65%)] to-[hsl(222_72%_38%)]"
@@ -216,11 +216,11 @@ export default async function LoginPage({
                           {initials}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-display text-base font-semibold leading-tight">{persona.label}</div>
+                          <div className="text-base font-semibold leading-tight text-[#1e2d3d]">{persona.label}</div>
                           <div className="text-[11px] text-muted-foreground mt-0.5">{persona.summary}</div>
                         </div>
                       </div>
-                      <p className="text-sm text-foreground/75 leading-relaxed">{persona.angle}</p>
+                      <p className="text-sm leading-relaxed text-[#4b5563]">{persona.angle}</p>
                       <div className="mt-4 pt-4 border-t border-[hsl(220_14%_92%)] flex items-center justify-between">
                         <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
                           {ROLE_LABELS[user.role as Role]}
@@ -241,7 +241,7 @@ export default async function LoginPage({
         <details className="group rounded-lg border border-[hsl(220_14%_88%)] bg-white/60">
           <summary className="list-none cursor-pointer flex items-center justify-between px-5 py-4 hover:bg-white transition-colors rounded-lg">
             <div>
-              <div className="font-display text-sm font-semibold">Outros perfis</div>
+              <div className="text-sm font-semibold text-[#1e2d3d]">Outros perfis</div>
               <div className="text-[11px] text-muted-foreground mt-0.5">Perfis operacionais por área funcional</div>
             </div>
             <span className="text-[hsl(222_72%_30%)] text-lg font-semibold transition-transform group-open:rotate-45 leading-none">+</span>
@@ -255,7 +255,7 @@ export default async function LoginPage({
               return (
                 <div key={group.label}>
                   <div className="flex items-baseline justify-between mb-2 border-b border-[hsl(220_14%_88%)] pb-1.5">
-                    <h3 className="font-display text-[13px] font-semibold tracking-normal">{group.label}</h3>
+                    <h3 className="text-[13px] font-semibold tracking-normal text-[#1e2d3d]">{group.label}</h3>
                     <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{group.hint}</span>
                   </div>
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -296,9 +296,7 @@ export default async function LoginPage({
         </details>
 
         <div className="mt-16 pt-8 border-t border-[hsl(220_14%_88%)] text-center text-xs text-muted-foreground space-x-3">
-          <span>Neon Postgres · UE Frankfurt</span>
-          <span>·</span>
-          <span>Servidor aplicacional UE</span>
+          <span>Dados na União Europeia</span>
           <span>·</span>
           <span>Registo de auditoria inviolável</span>
           <span>·</span>

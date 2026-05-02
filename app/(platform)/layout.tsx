@@ -39,7 +39,7 @@ const MVPS: MvpEntry[] = [
   { slug: "docs", letter: "C", title: "Docs Centrais", tagline: "CMR · guias · tickets", icon: FileStack, href: "/docs" },
   { slug: "fuel", letter: "D", title: "Combustível", tagline: "Cepsa · Repsol · Radius · bomba", icon: Fuel, href: "/fuel" },
   { slug: "bolsa", letter: "E", title: "Bolsa de Carga", tagline: "5 estados · comissões", icon: PackageSearch, href: "/bolsa" },
-  { slug: "oficina", letter: "F", title: "Oficina (PWA)", tagline: "Mecânico · mobile-first", icon: Wrench, href: "/oficina" },
+  { slug: "oficina", letter: "F", title: "Oficina", tagline: "Mecânico · aplicação móvel", icon: Wrench, href: "/oficina" },
 ];
 
 async function logout(): Promise<void> {
@@ -59,7 +59,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
   const sidebarContent = (
     <>
       <Link href="/" className="flex min-h-11 items-center gap-3 px-2">
-        <Image src="/aitipro-logo.png" alt="AiTiPro" width={132} height={30} className="h-6 w-auto" priority />
+        <Image src="/aitipro-logo-light.png" alt="AiTiPro" width={132} height={30} className="h-6 w-auto" priority />
         <div>
           <div className="text-sm font-semibold">Lloretrans</div>
           <div className="text-[11px] text-muted-foreground -mt-0.5">Plataforma AiTiPro</div>
@@ -97,7 +97,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
               Atalhos
             </div>
             <SidebarLink href="/oficina/new" icon={Smartphone}>
-              Abrir wizard mecânico
+              Abrir folha de obra
             </SidebarLink>
             <SidebarLink href="/login" icon={Users}>
               Trocar de perfil
@@ -173,7 +173,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
                 href="/oficina/new"
                 className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline"
               >
-                Testar folha mecânico →
+                Testar folha de obra
               </Link>
               <Link href="/login" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline">
                 Trocar perfil
@@ -201,7 +201,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
             <span className="hidden md:inline text-xs text-muted-foreground">Ambiente de avaliação</span>
           </div>
           <div className="hidden sm:block text-xs text-muted-foreground">
-            RGPD · dados UE · audit log imutável
+            RGPD · dados UE · registo de auditoria
           </div>
         </header>
         <div className="px-4 sm:px-8 py-6 max-w-[1600px]">{children}</div>

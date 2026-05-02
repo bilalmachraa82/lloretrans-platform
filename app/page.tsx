@@ -1,532 +1,477 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import type { LucideIcon } from "lucide-react";
 import {
-  TruckIcon,
-  ReceiptText,
+  ArrowRight,
+  ClipboardCheck,
+  Database,
   FileStack,
   Fuel,
   PackageSearch,
-  Wrench,
-  ArrowUpRight,
-  CheckCircle2,
+  ReceiptText,
+  Server,
   ShieldCheck,
-  Zap,
-  Globe,
+  TruckIcon,
+  UserCheck,
+  Wrench,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const metadata = {
-  title: "AiTiPro — Operações de frota sem papel, sem Excel",
+  title: "Lloretrans · Plataforma operacional",
   description:
-    "Plataforma completa para transportadoras portuguesas. 6 módulos integrados. Dados na UE. Humano em cada decisão.",
+    "Plataforma operacional desenhada com a operação Lloretrans: seis fluxos integrados, dados na UE e aprovação humana em cada decisão.",
 };
+
+const PROOF = [
+  { value: "6", label: "fluxos operacionais", note: "Quilómetros, facturas, documentos, combustível, bolsa e oficina." },
+  { value: "306", label: "cargas reais", note: "Excel histórico convertido para navegação operacional." },
+  { value: "2 161", label: "abastecimentos", note: "Cruzados por matrícula e fornecedor no ambiente." },
+  { value: "60", label: "viaturas", note: "Volume operacional alvo da plataforma." },
+];
+
+const PRODUCT_SHOTS = [
+  {
+    src: "/product-shots/dashboard-crop.png",
+    title: "Dashboard operacional",
+    body: "Visão consolidada dos módulos, alertas críticos e trabalho pendente.",
+  },
+  {
+    src: "/product-shots/ocr-crop.png",
+    title: "Facturas fornecedor",
+    body: "Extracção, confiança, validação humana e preparação para PHC Advanced.",
+  },
+  {
+    src: "/product-shots/bolsa-crop.png",
+    title: "Bolsa de carga",
+    body: "Cargas, margem, comissões e atrasos sobre dados importados.",
+  },
+];
 
 const MODULES = [
   {
     code: "A",
     slug: "km",
     title: "Validação de quilómetros",
-    problem: "Administrativa perde 2h/dia a cruzar Logue Trans com GPS Frotcom. Erros viajam para a factura.",
-    solution: "Reconciliação automática. Semáforo verde/amarelo/vermelho. Um clique aprova o dia.",
     icon: TruckIcon,
-    metric: "<15 min",
-    metricLabel: "validar 1 dia",
+    pain: "Cruzamento manual entre Logue Trans e Frotcom, com risco de erro antes da facturação.",
+    answer: "Semáforo por viagem, diferença de 3 km, histórico auditado e aprovação por excepção.",
   },
   {
     code: "B",
     slug: "ocr",
-    title: "OCR facturas fornecedor",
-    problem: "50 fornecedores, 50 layouts. Conhecimento tácito de quem classifica sai com a pessoa.",
-    solution: "Primeira factura de cada fornecedor: a equipa confirma a regra. A partir daí, classificação assistida. Export XML PHC Advanced.",
+    title: "Facturas fornecedor",
     icon: ReceiptText,
-    metric: "PHC",
-    metricLabel: "export XML",
+    pain: "Cada fornecedor tem o seu formato e a classificação depende de conhecimento tácito.",
+    answer: "Upload, extracção, classificação por NIF, memória por fornecedor e export orientado a PHC Advanced.",
   },
   {
     code: "C",
     slug: "docs",
     title: "Digitalização central",
-    problem: "CMR, guias, tickets de frio em papel disperso. WhatsApp caótico. Documentos perdem-se.",
-    solution: "Hub único. 1 operador digitaliza. Associação automática à viagem por matrícula + data.",
     icon: FileStack,
-    metric: "4",
-    metricLabel: "amostras reais",
+    pain: "CMR, guias e tickets ficam dispersos entre papel, WhatsApp e pesquisa manual.",
+    answer: "Hub documental único por viagem, matrícula, data, empresa e estado.",
   },
   {
     code: "D",
     slug: "fuel",
     title: "Combustível",
-    problem: "Cepsa/Repsol/Radius Velocity + bomba interna em ficheiros. Frotcom API de leitura pendente. Cruzamento manual.",
-    solution: "Cruzamento automático dos abastecimentos. L/100 km por viatura quando houver leitura. Anomalias sinalizadas, decisão humana.",
     icon: Fuel,
-    metric: "2161",
-    metricLabel: "linhas reais",
+    pain: "Cepsa, Repsol, Radius e bomba interna vivem em ficheiros separados.",
+    answer: "Cruzamento por matrícula e fornecedor, anomalias sinalizadas e decisão humana.",
   },
   {
     code: "E",
     slug: "bolsa",
     title: "Bolsa de carga",
-    problem: "Excel 1000+ linhas. Factura cliente chega 1 mês depois. Comissões calculadas à mão.",
-    solution: "Fluxo com 5 estados: do pedido à cobrança. Comissões automáticas. Alertas de desvio e atraso.",
     icon: PackageSearch,
-    metric: "306",
-    metricLabel: "cargas reais Excel",
+    pain: "Excel longo, memória tardia e comissões calculadas no fim do mês.",
+    answer: "Fluxo por estados, documentos ligados à carga e regras de comissão reflectidas na plataforma.",
   },
   {
     code: "F",
     slug: "oficina",
-    title: "Folha de obra oficina",
-    problem: "Mecânico preenche papel. Administrativa relança no PHC Advanced. Duplicação total.",
-    solution: "Aplicação móvel que funciona sem rede. Mecânico regista em 3 minutos. Administrativa valida. Export PHC Advanced.",
+    title: "Folha de obra da oficina",
     icon: Wrench,
-    metric: "<3 min",
-    metricLabel: "registo de oficina",
+    pain: "O mecânico regista em papel e a administrativa relança tudo no PHC Advanced.",
+    answer: "Aplicação móvel com checklist, estados, assinatura e validação administrativa.",
+  },
+];
+
+const TRUST = [
+  {
+    title: "Dados na União Europeia",
+    body: "Base de dados em Frankfurt e servidor aplicacional na União Europeia.",
+    icon: Server,
+  },
+  {
+    title: "Registo de auditoria",
+    body: "Cada mutação fica registada com utilizador, antes/depois, motivo e momento da acção.",
+    icon: Database,
+  },
+  {
+    title: "Decisão humana",
+    body: "A IA prepara, classifica e sinaliza. A aprovação irreversível fica do lado Lloretrans.",
+    icon: UserCheck,
+  },
+  {
+    title: "Integrações assumidas",
+    body: "Ligações previstas para PHC Advanced, Logue Trans, Frotcom, Cepsa, Repsol e Radius.",
+    icon: ShieldCheck,
   },
 ];
 
 export default function LandingPage() {
   return (
-    <main className="relative min-h-screen bg-[hsl(40_24%_98%)] text-[hsl(220_28%_10%)] overflow-hidden">
-      {/* Background texture */}
+    <main className="min-h-screen bg-[#f0f5f4] text-[#1e2d3d] [&_h1]:font-sans [&_h2]:font-sans [&_h3]:font-sans">
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none fixed inset-0 opacity-[0.03]"
         style={{
-          backgroundImage:
-            "radial-gradient(hsl(222 72% 15%) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
+          backgroundImage: "radial-gradient(#2d3a4a 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
         }}
       />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[800px] bg-[radial-gradient(ellipse_50%_40%_at_50%_0%,hsl(32_82%_55%/0.12),transparent_60%),radial-gradient(ellipse_40%_30%_at_90%_10%,hsl(222_72%_38%/0.1),transparent_55%)]" />
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_top_left,rgba(42,229,160,0.08),transparent_42%),radial-gradient(circle_at_top_right,rgba(202,116,45,0.08),transparent_36%)]" />
 
-      {/* Top bar */}
-      <header className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 pt-8 flex items-center justify-between">
-        <Link href="/" className="flex min-h-11 items-center gap-3 rounded-2xl border border-[hsl(220_14%_88%)] bg-white px-4 py-3 shadow-elevated-sm">
-          <Image src="/aitipro-logo.png" alt="AiTiPro" width={154} height={36} className="h-7 w-auto" priority />
-          <div>
-            <div className="text-[10px] text-[hsl(32_82%_35%)] mt-0.5 tracking-[0.2em] uppercase font-semibold">Plataforma Lloretrans</div>
-            <div className="text-xs text-muted-foreground mt-1">Demonstração operacional</div>
+      <header className="relative mx-auto flex max-w-[1320px] flex-col gap-4 px-6 py-8 sm:flex-row sm:items-center sm:justify-between lg:px-10">
+        <Link
+          href="/"
+          className="flex min-h-11 w-full items-center gap-4 rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3 shadow-elevated-sm sm:w-auto"
+        >
+          <Image
+            src="/aitipro-logo-light.png"
+            alt="AiTiPro"
+            width={154}
+            height={36}
+            className="h-7 w-auto"
+            priority
+          />
+          <div className="hidden h-7 w-px bg-[#e2e8f0] sm:block" />
+          <div className="hidden sm:block">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+              Plataforma operacional
+            </div>
+            <div className="mt-1 text-xs text-[#6b7280]">Lloretrans · Grupo Patrícia Pilar</div>
           </div>
         </Link>
-        <nav className="flex items-center gap-3">
-          <Link href="#modules" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
-            Os 6 módulos
+
+        <nav className="flex w-full items-center justify-end gap-3 sm:w-auto">
+          <Link href="#modulos" className="hidden min-h-11 items-center text-sm text-[#4b5563] hover:text-[#1e2d3d] md:inline-flex">
+            Módulos
           </Link>
-          <Link href="#trust" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors md:inline-flex">
-            Confiança
+          <Link href="#produto" className="hidden min-h-11 items-center text-sm text-[#4b5563] hover:text-[#1e2d3d] lg:inline-flex">
+            Produto
           </Link>
-          <Link href="#roadmap" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors lg:inline-flex">
-            Como começamos
-          </Link>
-          <Link href="/apresentacao" className="hidden min-h-11 items-center text-sm text-foreground/70 hover:text-foreground transition-colors lg:inline-flex">
+          <Link href="/apresentacao" className="hidden min-h-11 items-center text-sm text-[#4b5563] hover:text-[#1e2d3d] lg:inline-flex">
             Apresentação
           </Link>
-          <Button asChild variant="outline" size="sm">
-            <Link href="/login">Aceder à demonstração</Link>
+          <Button
+            asChild
+            size="sm"
+            className="w-full border-0 bg-[#0d3b38] text-white shadow-none hover:bg-[#134f4b] sm:w-auto"
+          >
+            <Link href="/login">Abrir plataforma</Link>
           </Button>
         </nav>
       </header>
 
-      {/* HERO */}
-      <section className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 pt-20 lg:pt-28 pb-16 lg:pb-24">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
-          <div className="lg:col-span-7 space-y-8 animate-fade-in">
-            <Badge variant="outline" className="text-[11px] tracking-wider uppercase">
-              Desenhado com a operação Lloretrans · Grupo Patrícia Pilar
-            </Badge>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[0.98] tracking-normal">
-              Operações de frota.
-              <br />
-              <span className="italic text-[hsl(222_72%_30%)]">Sem papel.</span>
-              <br />
-              <span className="italic text-[hsl(222_72%_30%)]">Sem Excel.</span>
+      <section className="relative mx-auto max-w-[1320px] px-6 pb-16 pt-10 lg:px-10 lg:pb-22 lg:pt-16">
+        <div className="grid gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
+          <div className="max-w-4xl">
+            <h1 className="text-4xl font-semibold leading-[0.98] tracking-tight sm:text-5xl lg:text-[4.7rem]">
+              A operação Lloretrans
+              <span className="block text-[#0d3b38]">numa plataforma única.</span>
             </h1>
-            <p className="text-lg text-foreground/70 leading-relaxed max-w-2xl">
-              Plataforma operacional para transportadoras portuguesas. Seis módulos
-              integrados que cobrem o ciclo completo — do CMR na portaria ao XML
-              pronto para o PHC Advanced. <span className="font-semibold text-foreground">Dados na UE. Registo de auditoria inviolável em cada acção.
-              Humano aprova antes de qualquer passo irreversível.</span>
+            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-[#374151] lg:text-[1.15rem]">
+              Quilómetros, facturas de fornecedor, documentos, combustível, bolsa de carga
+              e oficina ficam ligados num ambiente comum. A plataforma trabalha com dados reais,
+              preserva aprovação humana e deixa rasto auditável de cada decisão.
             </p>
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Button asChild size="lg" className="shadow-elevated">
-                <Link href="/login">Aceder à demonstração</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="mailto:bilal.machraa@aitipro.com?subject=Agendar%20apresentação%20Lloretrans">
-                  Agendar apresentação
-                </Link>
-              </Button>
-            </div>
-          </div>
-
-          {/* Capacity column (editorial) */}
-          <div className="lg:col-span-5 animate-fade-in" style={{ animationDelay: "120ms" }}>
-            <div className="border-l-2 border-[hsl(222_72%_30%)]/20 pl-6 lg:pl-10 py-2 space-y-5">
-              <HeroStat
-                big="60+"
-                label="viaturas por operador"
-                sub="Reconciliação km diária em < 15 min"
-              />
-              <HeroStat
-                big="< 3 min"
-                label="folha de obra completa"
-                sub="Mecânico regista sem rede · administrativa valida"
-              />
-              <HeroStat
-                big="1×"
-                label="passagem XML para PHC Advanced"
-                sub="Classificação aprende por fornecedor"
-              />
-              <HeroStat
-                big="UE"
-                label="dados em repouso"
-                sub="Postgres · Frankfurt · dados na UE"
-              />
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-5 pl-6 lg:pl-10 leading-relaxed">
-              Demonstração com dados reais da operação Lloretrans: cargas, abastecimentos e
-              facturas históricas. Em produção, a plataforma corre contra os sistemas internos
-              após confirmação técnica das integrações.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* PULL QUOTE / TESTIMONIAL */}
-      <section className="relative z-10 border-y border-[hsl(220_14%_88%)] bg-[hsl(40_30%_96%)]">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-16 lg:py-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-            <div className="lg:col-span-8">
-              <div className="text-[hsl(32_82%_35%)] text-6xl lg:text-7xl font-display leading-none mb-4 select-none">
-                &ldquo;
-              </div>
-              <p className="font-display text-3xl lg:text-4xl leading-snug tracking-normal">
-                Não é só tempo. A nossa preocupação também é o{" "}
-                <span className="italic text-[hsl(222_72%_30%)]">controlo</span>.
-              </p>
-              <p className="mt-6 text-foreground/70 leading-relaxed max-w-2xl">
-                A IA regista. O humano valida. Cada acção, mesmo um clique, escreve entrada inviolável
-                no registo de auditoria. É esse o compromisso da
-                plataforma — acelerar sem tirar decisão a ninguém.
-              </p>
-            </div>
-            <div className="lg:col-span-4 lg:pt-4">
-              <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-[hsl(222_72%_45%)] to-[hsl(222_72%_22%)] text-white grid place-items-center font-display text-lg font-semibold">
-                  CS
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">Operação Lloretrans</div>
-                  <div className="text-xs text-muted-foreground">Lloretrans · Grupo Patrícia Pilar</div>
-                </div>
-              </div>
-              <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-                <Stat n="60" label="viaturas" />
-                <Stat n="4" label="empresas grupo" />
-                <Stat n="306" label="cargas reais" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6 MODULES */}
-      <section id="modules" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
-        <div className="max-w-3xl mb-12 lg:mb-16">
-          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
-            Seis módulos · um só sistema
-          </div>
-          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
-            Cada módulo resolve <span className="italic">uma dor concreta</span>
-            da operação.
-          </h2>
-          <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
-            Cada módulo tem plano de implementação e critérios de aceitação. O módulo de
-            combustível aprofunda a leitura por viatura logo que a Frotcom disponibilizar
-            a API de leitura.
-          </p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {MODULES.map((m, i) => {
-            const Icon = m.icon;
-            return (
-              <Link
-                key={m.slug}
-                href={`/login?target=${m.slug}`}
-                className="group animate-fade-in"
-                style={{ animationDelay: `${i * 60}ms` }}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Button
+                asChild
+                size="lg"
+                className="border-0 bg-[#0d3b38] text-white shadow-none hover:bg-[#134f4b]"
               >
-                <article className="h-full rounded-xl border border-[hsl(220_14%_88%)] bg-white p-6 lg:p-7 transition-all duration-200 group-hover:border-[hsl(222_72%_30%)]/40 group-hover:shadow-elevated-lg group-hover:-translate-y-0.5 relative overflow-hidden">
-                  <div className="flex items-start justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-[hsl(222_72%_30%)]/8 grid place-items-center">
-                        <Icon className="h-5 w-5 text-[hsl(222_72%_30%)]" />
-                      </div>
-                      <div className="font-mono text-[10px] text-muted-foreground tracking-wider">
-                        Módulo · {m.code}
-                      </div>
-                    </div>
-                    <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[hsl(222_72%_30%)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
+                <Link href="/login">Abrir plataforma</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="border-[#cbd5e1] bg-white text-[#1e2d3d] hover:border-[#1bc88a] hover:bg-white"
+              >
+                <Link href="/apresentacao">Abrir apresentação executiva</Link>
+              </Button>
+            </div>
+          </div>
+
+          <aside className="grid gap-4 rounded-[28px] border border-[#e2e8f0] bg-white p-6 shadow-elevated-lg">
+            <div className="flex items-start gap-3 border-b border-[#e2e8f0] pb-5">
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#1e2d3d] text-[#2ae5a0]">
+                <ClipboardCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                  Princípio operacional
+                </div>
+                <p className="mt-2 text-2xl font-semibold leading-tight">
+                  A IA prepara. A pessoa decide. O sistema regista.
+                </p>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {PROOF.map((item) => (
+                <article key={item.label} className="rounded-2xl border border-[#edf2f0] bg-[#f8fffc] p-4">
+                  <div className="font-mono text-3xl font-semibold text-[#0d3b38]">{item.value}</div>
+                  <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6b7280]">
+                    {item.label}
                   </div>
-                  <h3 className="font-display text-xl font-semibold leading-tight mb-3">{m.title}</h3>
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <div className="text-[10px] uppercase tracking-wider text-[hsl(0_72%_45%)] font-semibold mb-1">
-                        Dor
-                      </div>
-                      <p className="text-foreground/70 leading-relaxed">{m.problem}</p>
-                    </div>
-                    <div>
-                      <div className="text-[10px] uppercase tracking-wider text-[hsl(152_55%_32%)] font-semibold mb-1">
-                        Como resolve
-                      </div>
-                      <p className="text-foreground/70 leading-relaxed">{m.solution}</p>
-                    </div>
+                  <p className="mt-2 text-xs leading-relaxed text-[#4b5563]">{item.note}</p>
+                </article>
+              ))}
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="produto" className="relative mx-auto max-w-[1320px] px-6 pb-16 lg:px-10 lg:pb-22">
+        <div className="grid gap-8 rounded-[28px] border border-[#d8e1df] bg-white p-5 shadow-elevated-lg lg:grid-cols-[1.1fr_0.9fr] lg:p-7">
+          <div className="overflow-hidden rounded-[20px] border border-[#e2e8f0] bg-[#f8fffc]">
+            <Image
+              src={PRODUCT_SHOTS[0].src}
+              alt={PRODUCT_SHOTS[0].title}
+              width={1120}
+              height={650}
+              className="h-full min-h-[340px] w-full object-cover object-left-top"
+              priority
+            />
+          </div>
+          <div className="flex flex-col justify-between gap-6 p-2 lg:p-4">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                Produto em ecrã
+              </div>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
+                Dados, estados e decisões visíveis.
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-[#4b5563]">
+                As capturas são do ambiente operacional Lloretrans, com indicadores, facturas,
+                cargas e validações navegáveis por perfil.
+              </p>
+            </div>
+            <div className="grid gap-4">
+              {PRODUCT_SHOTS.slice(1).map((shot) => (
+                <article
+                  key={shot.title}
+                  className="grid gap-4 rounded-2xl border border-[#e2e8f0] bg-[#f8fffc] p-4 sm:grid-cols-[0.92fr_1.08fr]"
+                >
+                  <div className="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white">
+                    <Image
+                      src={shot.src}
+                      alt={shot.title}
+                      width={1120}
+                      height={650}
+                      className="h-32 w-full object-cover object-top"
+                    />
                   </div>
-                  <div className="mt-5 pt-5 border-t border-[hsl(220_14%_92%)] flex items-baseline justify-between">
-                    <div>
-                      <span className="font-mono text-2xl font-semibold text-[hsl(222_72%_30%)]">
-                        {m.metric}
-                      </span>
-                      <span className="ml-2 text-xs text-muted-foreground">{m.metricLabel}</span>
-                    </div>
-                    <span className="text-xs text-[hsl(222_72%_30%)] font-medium group-hover:underline">
-                      Abrir módulo
-                    </span>
+                  <div>
+                    <h3 className="text-lg font-semibold leading-tight">{shot.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{shot.body}</p>
                   </div>
                 </article>
-              </Link>
-            );
-          })}
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* TRUST / UE-FIRST */}
-      <section
-        id="trust"
-        className="relative z-10 border-y border-[hsl(220_14%_88%)] bg-[hsl(222_72%_12%)] text-white"
-      >
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-24">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
-            <div className="lg:col-span-5">
-              <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_65%)] font-semibold mb-4">
-                Confiança por defeito
+      <section className="relative border-y border-[#e2e8f0] bg-[#2d3a4a] text-white">
+        <div className="mx-auto grid max-w-[1320px] gap-10 px-6 py-16 lg:grid-cols-[0.92fr_1.08fr] lg:px-10 lg:py-20">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2ae5a0]">
+              Controlo operacional
+            </div>
+            <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+              &ldquo;Não é só tempo. A nossa preocupação também é o controlo.&rdquo;
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <PrincipleCard
+              title="Sem decisão silenciosa"
+              body="Qualquer passo irreversível precisa de aprovação humana."
+              icon={UserCheck}
+            />
+            <PrincipleCard
+              title="Rasto por acção"
+              body="Utilizador, antes/depois e motivo ficam registados em cada mutação."
+              icon={ClipboardCheck}
+            />
+            <PrincipleCard
+              title="Dados separados por empresa"
+              body="Permissões e documentos preparados para operação multi-empresa."
+              icon={ShieldCheck}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section id="modulos" className="relative bg-white">
+        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-22">
+          <div className="grid gap-6 border-b border-[#e2e8f0] pb-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                Os seis módulos
               </div>
-              <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
-                Infra europeia. <br />
-                Auditoria <span className="italic text-[hsl(32_82%_65%)]">inviolável</span>.
+              <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+                Seis dores. Seis respostas. Operação coberta de ponta a ponta.
               </h2>
-              <p className="mt-6 text-white/70 leading-relaxed text-lg">
-                Dados em repouso em Frankfurt. Zero analytics de terceiros. Cada mutação é registada
-                com utilizador, antes/depois e motivo. Construída para passar o RGPD à primeira.
-              </p>
             </div>
-            <div className="lg:col-span-7 grid sm:grid-cols-2 gap-6">
-              <TrustCard icon={Globe} title="Dados na UE" body="Base de dados Postgres em Frankfurt. Servidor aplicacional na União Europeia. IA externa só com contrato de tratamento de dados aprovado pelo grupo." />
-              <TrustCard icon={ShieldCheck} title="RGPD por defeito" body="Registo de auditoria inviolável. Retenção configurável por tipo de documento. Direito ao esquecimento via anonimização." />
-              <TrustCard icon={CheckCircle2} title="Humano no circuito" body="IA regista, classifica e sinaliza. Humano valida antes de qualquer acção irreversível. Zero decisões silenciosas." />
-              <TrustCard icon={Zap} title="Integração nativa" body="Adaptadores preparados para Logue Trans, Frotcom, PHC Advanced, Cepsa, Repsol e Radius. Acesso técnico depende do departamento de informática e do responsável PHC Advanced interno do grupo." />
-            </div>
+            <p className="max-w-2xl text-base leading-relaxed text-[#4b5563]">
+              Cada módulo parte de uma dor concreta da operação Lloretrans e mostra o
+              que já está navegável no ambiente actual.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {MODULES.map((module) => (
+              <ModuleCard key={module.code} module={module} />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* COMO COMEÇAMOS · roadmap */}
-      <section id="roadmap" className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
-        <div className="max-w-3xl mb-12">
-          <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
-            Como começamos
-          </div>
-          <h2 className="font-display text-4xl lg:text-5xl font-semibold leading-tight tracking-normal">
-            Calendário <span className="italic">realista</span>. 10 semanas, entregas visíveis.
-          </h2>
-          <p className="mt-5 text-foreground/70 text-lg leading-relaxed">
-            Cada módulo entra em produção supervisionada antes de avançarmos. Sem big-bang, sem
-            intervalos em aberto. Começamos com Sprint 0 para confirmar PHC Advanced, Frotcom e Logue Trans.
-          </p>
-        </div>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          <RoadmapCard
-            week="Semana 1"
-            title="Sprint 0"
-            body="Sessão de trabalho com o responsável interno por PHC Advanced. Credenciais Logue Trans e Frotcom. Volume documental real e plano fechado."
-          />
-          <RoadmapCard
-            week="Semanas 2–3"
-            title="Módulo A"
-            body="Validação km vai a ar contra dados reais. Administrativa usa em paralelo ao processo actual durante 1 semana."
-          />
-          <RoadmapCard
-            week="Semanas 3–8"
-            title="Módulos C, B e E"
-            body="Documentos, OCR fornecedor e bolsa/comissões avançam por dependência, com export PHC Advanced / Excel validado pela equipa interna."
-          />
-          <RoadmapCard
-            week="Semanas 8–10"
-            title="Módulo F + fase seguinte D"
-            body="Oficina móvel com piloto de 1 mecânico. Combustível fica preparado para entrar quando a Frotcom confirmar a API."
-          />
-        </div>
-      </section>
-
-      {/* FAQ · pressupostos */}
-      <section id="faq" className="relative z-10 border-y border-[hsl(220_14%_88%)] bg-[hsl(40_30%_96%)]">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-24">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
-            <div className="lg:col-span-4">
-              <div className="text-[11px] tracking-[0.2em] uppercase text-[hsl(32_82%_35%)] font-semibold mb-4">
-                Pressupostos
+      <section id="confianca" className="relative border-y border-[#e2e8f0] bg-[#f0f5f4]">
+        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                Confiança técnica
               </div>
-              <h2 className="font-display text-3xl lg:text-4xl font-semibold leading-tight tracking-normal">
-                Perguntas frequentes.
+              <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight">
+                Infraestrutura clara, dependências assumidas.
               </h2>
-              <p className="mt-5 text-foreground/70 leading-relaxed">
-                Respostas directas às dúvidas técnicas e operacionais mais comuns: dados, integrações,
-                responsabilidade humana e plano de adopção.
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-[#4b5563]">
+                O sistema foi desenhado para operar com dados na União Europeia, auditoria
+                por acção e integração progressiva com os sistemas já usados pela Lloretrans.
               </p>
             </div>
-            <div className="lg:col-span-8 space-y-2">
-              <FaqItem
-                q="Que dados saem da empresa?"
-                a="Dados operacionais em repouso ficam na UE: base de dados Postgres em Frankfurt e servidor aplicacional na União Europeia. Fluxos com IA externa só avançam com contrato de tratamento de dados aprovado pelo grupo; sem isso, ficam desligados ou usam extracção local."
-              />
-              <FaqItem
-                q="Quem assina os lançamentos no PHC Advanced?"
-                a="A vossa administrativa, sempre. A plataforma gera o XML (ou o registo intermédio), mas a entrada no PHC Advanced continua sob responsabilidade da pessoa que hoje a faz. O papel da IA é preparar, não decidir."
-              />
-              <FaqItem
-                q="E se o Frotcom falhar?"
-                a="Existe fallback para Logue Trans via flag de configuração. A reconciliação continua, com aviso no dashboard. Nenhum módulo depende de um único fornecedor externo para correr."
-              />
-              <FaqItem
-                q="Integramos com o vosso responsável PHC Advanced interno?"
-                a="Sim, mas só depois de confirmação técnica com o responsável PHC Advanced interno do grupo. Até lá, a plataforma trabalha com XML ou registo intermédio validado pela administrativa, sem escrita directa prometida."
-              />
-              <FaqItem
-                q="O que acontece se o mecânico não usar a app?"
-                a="Plano de onboarding explícito: treino presencial de 1 dia, acompanhamento durante 2 semanas, fallback em papel com OCR a ligar automaticamente à folha. Adopção é um dos KPIs da Fase 0."
-              />
+            <div className="grid gap-4 md:grid-cols-2">
+              {TRUST.map((item) => (
+                <TrustCard key={item.title} item={item} />
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* FINAL CTA */}
-      <section className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-10 pb-20 lg:pb-32 pt-20 lg:pt-28">
-        <div className="rounded-2xl bg-gradient-to-br from-[hsl(222_72%_30%)] via-[hsl(222_72%_20%)] to-[hsl(222_72%_14%)] text-white p-10 lg:p-16 relative overflow-hidden">
-          <div
-            className="absolute inset-0 opacity-[0.08] pointer-events-none"
-            style={{
-              backgroundImage: "radial-gradient(white 1px, transparent 1px)",
-              backgroundSize: "20px 20px",
-            }}
-          />
-          <div className="relative z-10 grid lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8">
-              <h2 className="font-display text-4xl lg:text-5xl font-semibold tracking-normal leading-tight">
-                Pronto para deixar o papel para trás?
+      <section className="relative mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-22">
+        <div className="rounded-[32px] border border-[#1e2d3d]/10 bg-[linear-gradient(135deg,#1e2d3d,#0d3b38)] px-8 py-9 text-white shadow-elevated-lg lg:px-10">
+          <div className="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-end">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2ae5a0]">
+                Acesso à plataforma
+              </div>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
+                Abrir o ambiente e percorrer os fluxos.
               </h2>
-              <p className="mt-5 text-white/75 text-lg leading-relaxed max-w-2xl">
-                O acesso faz-se por perfil — Direcção Operacional, Comercial ou Mecânico — com
-                dados reais já carregados. Não exige instalação nem registo.
-              </p>
             </div>
-            <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
-              <Button asChild size="lg" className="bg-white text-[hsl(222_72%_22%)] hover:bg-white/90 border-0 shadow-elevated-lg w-full lg:w-auto">
-                <Link href="/login">Abrir demonstração</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10 w-full lg:w-auto">
-                <Link href="/apresentacao">Abrir apresentação</Link>
-              </Button>
+            <p className="text-sm leading-relaxed text-white/76">
+              O acesso usa perfis operacionais. O perfil de Direcção Operacional dá
+              visão consolidada das 60 viaturas, validação de quilómetros do dia e folhas
+              de oficina pendentes.
+            </p>
+          </div>
+          <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-white/12 pt-6">
+            <Button
+              asChild
+              size="lg"
+              className="border-0 bg-white text-[#1e2d3d] shadow-none hover:bg-white/90"
+            >
+              <Link href="/login">Abrir plataforma</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/30 bg-transparent text-white hover:bg-white/10"
+            >
+              <Link href="/apresentacao">Abrir apresentação</Link>
+            </Button>
+            <div className="ml-auto hidden rounded-xl bg-white px-4 py-3 lg:block">
+              <Image src="/aitipro-logo-light.png" alt="AiTiPro" width={138} height={32} className="h-6 w-auto" />
             </div>
           </div>
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer className="relative z-10 border-t border-[hsl(220_14%_88%)]">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Image src="/aitipro-logo.png" alt="AiTiPro" width={112} height={26} className="h-5 w-auto" />
-            <span>AiTiPro · Lisboa · Portugal</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="mailto:bilal.machraa@aitipro.com" className="inline-flex min-h-11 items-center hover:text-foreground transition-colors">
-              bilal.machraa@aitipro.com
-            </Link>
-            <Link href="/login" className="inline-flex min-h-11 items-center px-2 hover:text-foreground transition-colors">
-              Demonstração
-            </Link>
-            <span className="hidden sm:inline">RGPD · dados UE</span>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
 
-function HeroStat({ big, label, sub }: { big: string; label: string; sub: string }) {
+function PrincipleCard({ title, body, icon: Icon }: { title: string; body: string; icon: LucideIcon }) {
   return (
-    <div>
-      <div className="flex items-baseline gap-3">
-        <div className="font-mono text-4xl lg:text-5xl font-semibold tabular text-[hsl(222_72%_22%)]">{big}</div>
-        <div className="text-sm font-medium">{label}</div>
-      </div>
-      <div className="text-xs text-muted-foreground mt-1">{sub}</div>
-    </div>
+    <article className="flex h-full flex-col rounded-2xl border border-white/12 bg-white/8 p-6">
+      <Icon className="h-6 w-6 text-[#2ae5a0]" />
+      <h3 className="mt-5 text-2xl font-semibold leading-snug tracking-tight">{title}</h3>
+      <p className="mt-3 text-sm leading-relaxed text-white/72">{body}</p>
+    </article>
   );
 }
 
-function Stat({ n, label }: { n: string; label: string }) {
-  return (
-    <div>
-      <div className="font-mono text-2xl font-semibold tabular">{n}</div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{label}</div>
-    </div>
-  );
-}
-
-function TrustCard({
-  icon: Icon,
-  title,
-  body,
+function ModuleCard({
+  module,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  body: string;
+  module: {
+    code: string;
+    slug: string;
+    title: string;
+    icon: LucideIcon;
+    pain: string;
+    answer: string;
+  };
 }) {
-  return (
-    <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur p-6">
-      <Icon className="h-5 w-5 text-[hsl(32_82%_65%)] mb-4" />
-      <h3 className="font-display text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-white/70 leading-relaxed">{body}</p>
-    </div>
-  );
-}
+  const Icon = module.icon;
 
-function RoadmapCard({ week, title, body }: { week: string; title: string; body: string }) {
   return (
-    <div className="rounded-xl border border-[hsl(220_14%_88%)] bg-white p-6 relative">
-      <div className="text-[10px] uppercase tracking-[0.15em] text-[hsl(32_82%_35%)] font-semibold mb-2">
-        {week}
+    <article className="flex h-full flex-col rounded-[24px] border border-[#e2e8f0] bg-[#f8fffc] p-6 shadow-elevated-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#1e2d3d] text-[#2ae5a0]">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#6b7280]">
+          Módulo {module.code}
+        </div>
       </div>
-      <h3 className="font-display text-lg font-semibold mb-2 leading-tight">{title}</h3>
-      <p className="text-sm text-foreground/70 leading-relaxed">{body}</p>
-    </div>
+      <h3 className="mt-5 text-2xl font-semibold leading-tight tracking-tight">{module.title}</h3>
+      <div className="mt-5 grid gap-4 text-sm leading-relaxed">
+        <div>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ca742d]">Dor actual</div>
+          <p className="mt-2 text-[#4b5563]">{module.pain}</p>
+        </div>
+        <div>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#0d3b38]">Resposta</div>
+          <p className="mt-2 text-[#4b5563]">{module.answer}</p>
+        </div>
+      </div>
+      <Link
+        href={`/login?target=${module.slug}`}
+        className="mt-auto inline-flex min-h-11 items-center pt-6 text-sm font-medium text-[#0d3b38] hover:underline"
+      >
+        Abrir módulo <ArrowRight className="ml-2 h-4 w-4" />
+      </Link>
+    </article>
   );
 }
 
-function FaqItem({ q, a }: { q: string; a: string }) {
+function TrustCard({ item }: { item: { title: string; body: string; icon: LucideIcon } }) {
+  const Icon = item.icon;
+
   return (
-    <details className="group rounded-lg border border-[hsl(220_14%_88%)] bg-white p-5 open:shadow-elevated-sm transition-shadow">
-      <summary className="list-none cursor-pointer flex items-start justify-between gap-4">
-        <span className="font-display text-base font-semibold leading-snug">{q}</span>
-        <span className="text-[hsl(222_72%_30%)] text-lg font-semibold shrink-0 transition-transform group-open:rotate-45 leading-none mt-0.5">
-          +
-        </span>
-      </summary>
-      <p className="mt-4 text-sm text-foreground/70 leading-relaxed">{a}</p>
-    </details>
+    <article className="rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-elevated-sm">
+      <Icon className="h-6 w-6 text-[#0d3b38]" />
+      <h3 className="mt-5 text-2xl font-semibold leading-tight tracking-tight">{item.title}</h3>
+      <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">{item.body}</p>
+    </article>
   );
 }

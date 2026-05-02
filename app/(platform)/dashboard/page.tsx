@@ -130,9 +130,9 @@ const MVP_CARDS = [
   },
   {
     slug: "oficina",
-    title: "Oficina (PWA)",
+    title: "Oficina",
     eyebrow: "Módulo F",
-    description: "Folha de obra mobile · offline-first · assinatura · export PHC Advanced",
+    description: "Folha de obra móvel · funciona sem rede · assinatura · export PHC Advanced",
     href: "/oficina",
     icon: Wrench,
   },
@@ -295,7 +295,7 @@ export default async function DashboardPage() {
       {recent.length > 0 && (
         <section>
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.14em] mb-4">
-            Actividade recente · audit log
+            Actividade recente · registo de auditoria
           </h2>
           <Card>
             <CardContent className="p-0 divide-y divide-border/60">
