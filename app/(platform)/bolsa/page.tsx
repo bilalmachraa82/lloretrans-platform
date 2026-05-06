@@ -129,7 +129,7 @@ export default async function BolsaPage({
     <div className="space-y-6">
       <PageHeader
         title="Bolsa de Carga"
-        description={`${rows.length} cargas do Excel do Eder · ciclo completo de CMR, facturas, R/NR, pagamentos e comissões`}
+        description={`${rows.length} cargas carregadas · Excel do Eder + cargas criadas na plataforma · ciclo completo de CMR, facturas, R/NR, pagamentos e comissões`}
         actions={
           <div className="flex flex-wrap gap-2">
             {session.role !== "comercial" && (
