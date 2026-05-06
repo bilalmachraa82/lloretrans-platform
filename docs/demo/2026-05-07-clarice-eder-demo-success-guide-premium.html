@@ -478,11 +478,12 @@
         <h1>Validar valor antes de falar de preço.</h1>
         <p class="lead">
           Plano por etapas para apresentar a plataforma Lloretrans a Clarice e Eder,
-          confirmar fit operacional e chegar ao preço com alinhamento explícito.
+          confirmar fit operacional sem repetir perguntas já respondidas e chegar ao preço com alinhamento explícito.
         </p>
         <div class="pill-row">
           <span class="pill">Clarice: controlo e decisão</span>
           <span class="pill">Eder: bolsa, margem e comissão</span>
+          <span class="pill">Sprint 0: validação técnica</span>
           <span class="pill">Regra: demo como conversa, não tour</span>
           <span class="pill">Preço só depois de validação</span>
         </div>
@@ -552,6 +553,20 @@
           </p>
           <p class="small"><a href="https://blog.hubspot.com/sales/how-to-start-a-sales-call">Fonte: HubSpot sales calls</a></p>
         </div>
+        <div class="card tint">
+          <h3>Kickoff com stakeholders certos</h3>
+          <p class="muted">
+            A Sprint 0 deve reunir sponsor, dono de projecto, equipa operacional e stakeholders técnicos afectados, com agenda e donos claros.
+          </p>
+          <p class="small"><a href="https://www.atlassian.com/team-playbook/plays/project-kickoff">Fonte: Atlassian Team Playbook</a></p>
+        </div>
+        <div class="card tint">
+          <h3>Não perguntar sem contexto</h3>
+          <p class="muted">
+            O discovery deve partir do que já foi recebido: confirmar interpretação e lacunas, não fazer o cliente repetir respostas.
+          </p>
+          <p class="small"><a href="https://blog.hubspot.com/sales/discovery-call-questions">Fonte: HubSpot discovery</a></p>
+        </div>
       </div>
     </section>
 
@@ -602,8 +617,8 @@
         </div>
         <div class="timeline-row">
           <div class="time">11:04-11:12</div>
-          <strong>Discovery curta</strong>
-          <span class="muted">Confirmar prioridades de Clarice e Eder antes de mostrar produto.</span>
+          <strong>Alinhamento de precisão</strong>
+          <span class="muted">Confirmar prioridades e interpretação das respostas do Eder, sem repetir perguntas já respondidas.</span>
         </div>
         <div class="timeline-row">
           <div class="time">11:12-11:18</div>
@@ -643,7 +658,11 @@
       <h2>Script dos primeiros 4 minutos</h2>
       <div class="quote">
         "Obrigado por estarem aqui. A minha proposta para esta reunião é simples: antes de vos apresentar preço,
-        quero validar se a plataforma representa bem aquilo que nos pediram e aquilo que os dados do Eder confirmaram."
+        quero validar se a plataforma representa bem aquilo que nos pediram e aquilo que o email do Eder já confirmou."
+      </div>
+      <div class="quote">
+        "Não vou voltar a perguntar o que já responderam. Vou separar o que está confirmado daquilo que ainda depende
+        de validação técnica: PHC Advanced, Frotcom, Logue Trans, combustível e alguns donos operacionais."
       </div>
       <div class="quote">
         "Se algo não corresponder, prefiro que me digam agora. O objectivo não é vender um ecrã bonito; é resolver
@@ -657,8 +676,8 @@
 
     <section class="section">
       <div class="kicker">Discovery</div>
-      <h2>Perguntas que têm de ser feitas antes da demo</h2>
-      <div class="grid-2">
+      <h2>Alinhamento antes da demo: confirmar sem repetir</h2>
+      <div class="grid-3">
         <div class="card">
           <h3>Para Clarice</h3>
           <ol>
@@ -672,11 +691,65 @@
           <ol>
             <li>Na bolsa, o maior problema é informação, estados, margem/comissão ou esquecimentos?</li>
             <li>O Excel actual serve como registo, controlo de pagamento ou ferramenta diária?</li>
-            <li>A regra de comissão está correcta: 20% lucro + 2,50 EUR nacional + 5 EUR internacional com carro Lloretrans?</li>
+            <li>Vou assumir a regra de comissão já confirmada; há excepções que não aparecem no Excel?</li>
+          </ol>
+        </div>
+        <div class="card warn">
+          <h3>Não voltar a perguntar</h3>
+          <ol>
+            <li>Não perguntar de novo a margem de 3 km; está confirmada.</li>
+            <li>Não perguntar de novo a regra base de comissões; está confirmada.</li>
+            <li>Não perguntar se usam PHC Advanced; está confirmado. Falta o contacto técnico e formato.</li>
           </ol>
         </div>
       </div>
       <div class="quote">Pergunta de prioridade: "Se só pudéssemos colocar três módulos em piloto primeiro, quais teriam mais impacto imediato?"</div>
+    </section>
+
+    <section class="section">
+      <div class="kicker">Precisão pós-email</div>
+      <h2>Confirmado vs Sprint 0</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Fluxo</th>
+            <th>Confirmado pelo email do Eder</th>
+            <th>Como falar amanhã</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Digitalização</td>
+            <td>4000 facturas/mês e amostras em anexo.</td>
+            <td>Validar perímetro: facturas, CMR/guias, ponto único e horário. Não tratar os 4000 como todos os documentos.</td>
+          </tr>
+          <tr>
+            <td>Km</td>
+            <td>Tolerância máxima de 3 km; Frotcom e Logue Trans existem no processo.</td>
+            <td>Mostrar a regra como confirmada. Pendência: acesso API Frotcom e validação Logue Trans com informática.</td>
+          </tr>
+          <tr>
+            <td>OCR/PHC Advanced</td>
+            <td>PDFs, códigos de serviço, matrículas e PHC Advanced.</td>
+            <td>Não perguntar se há PHC. Pedir dono técnico/integrador e formato de exportação autorizado.</td>
+          </tr>
+          <tr>
+            <td>Combustível</td>
+            <td>Exportações da bomba interna e cartões frota externos.</td>
+            <td>Assumir valor no consolidado. Pendência: tolerância de alerta e leitura operacional Frotcom.</td>
+          </tr>
+          <tr>
+            <td>Bolsa</td>
+            <td>Excel e regra de comissão: 20% lucro + 2,50 EUR nacional / 5 EUR internacional com viatura Lloretrans.</td>
+            <td>Confirmar excepções, donos e saneamento de margens; não reabrir a regra base.</td>
+          </tr>
+          <tr>
+            <td>Oficina</td>
+            <td>Template em papel, uso em telemóvel e PHC Advanced.</td>
+            <td>Validar adopção real com mecânico piloto e pontos de integração PHC Advanced.</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="section break">
@@ -802,7 +875,7 @@
           </ul>
         </div>
       </div>
-      <div class="quote">Pergunta: "Que desvio deve gerar alerta: 10%, 15%, outro?"</div>
+      <div class="quote">Esclarecimento pendente: "Para o módulo de combustível, que desvio deve gerar alerta: 10%, 15% ou regra por tipo de viatura?"</div>
     </section>
 
     <section class="step">
@@ -830,7 +903,7 @@
           </ul>
         </div>
       </div>
-      <div class="quote">Pergunta: "Quem deve validar antes de PHC Advanced?"</div>
+      <div class="quote">Decisão pendente: "Quem é o validador antes da exportação PHC Advanced e quem é o contacto técnico do integrador?"</div>
     </section>
 
     <section class="step">
@@ -857,7 +930,7 @@
           </ul>
         </div>
       </div>
-      <div class="quote">Pergunta: "Quem deve ser o ponto único de digitalização e com que horário?"</div>
+      <div class="quote">Decisão pendente: "Quem será o ponto único de digitalização, em que horário, e que tipos entram no perímetro inicial?"</div>
       <div class="card critical"><span class="label bad">Não dizer</span><p>Não afirmar que os 4000 documentos/mês são todos CMR/guias. O email refere 4000 facturas/mês e precisa confirmação.</p></div>
     </section>
 
@@ -948,6 +1021,61 @@
       </table>
     </section>
 
+    <section class="section break">
+      <div class="kicker">Sprint 0</div>
+      <h2>Como explicar o módulo zero sem parecer nova venda</h2>
+      <div class="grid-2">
+        <div class="card success">
+          <h3>Mensagem comercial</h3>
+          <p class="muted">
+            "O email do Eder já nos deu a base. A Sprint 0 não é para repetir perguntas; é para transformar respostas
+            em condições técnicas fechadas, responsáveis e plano de implementação."
+          </p>
+        </div>
+        <div class="card warn">
+          <h3>Formato recomendado</h3>
+          <p class="muted">
+            Começar por Zoom técnico de 90 minutos com os stakeholders certos. Ir presencialmente só se for preciso
+            observar digitalização/oficina ou validar o uso real no telemóvel com o mecânico.
+          </p>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Etapa Sprint 0</th>
+            <th>Participantes</th>
+            <th>Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Zoom técnico-comercial</td>
+            <td>Clarice, Eder, AiTiPro, responsável PHC Advanced, informática Logue Trans, contacto Frotcom.</td>
+            <td>Matriz de pendências: dono, data, risco e decisão go/no-go por integração.</td>
+          </tr>
+          <tr>
+            <td>2. Pedidos técnicos assíncronos</td>
+            <td>Frotcom, Logue Trans, PHC Advanced/integrador.</td>
+            <td>Confirmação escrita de APIs, campos disponíveis, limites, autenticação e formato de exportação.</td>
+          </tr>
+          <tr>
+            <td>3. Validação operacional curta</td>
+            <td>Facturação, digitalização, oficina e um mecânico piloto.</td>
+            <td>Tempos reais, pontos de fricção, responsáveis e formação mínima necessária.</td>
+          </tr>
+          <tr>
+            <td>4. Plano fechado</td>
+            <td>Clarice + decisores.</td>
+            <td>Âmbito final, ordem dos módulos, preço fechado por bloco e decisão sobre Módulo D.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="quote">
+        Recomendação: não marcar já nova visita presencial como obrigação. Propor Sprint 0 remota primeiro; visita presencial apenas se desbloquear oficina, digitalização ou adopção.
+      </div>
+    </section>
+
     <section class="section">
       <div class="kicker">Fecho</div>
       <h2>Checklist de saída da reunião</h2>
@@ -959,8 +1087,9 @@
             <li>Dono técnico para PHC Advanced.</li>
             <li>Dono técnico para Frotcom.</li>
             <li>Confirmação Logue Trans com informática.</li>
-            <li>Confirmação da regra de comissões.</li>
+            <li>Excepções à regra de comissões, se existirem.</li>
             <li>Confirmação da tolerância de combustível.</li>
+            <li>Formato da Sprint 0: Zoom técnico, responsáveis e data.</li>
           </ul>
         </div>
         <div class="card">
