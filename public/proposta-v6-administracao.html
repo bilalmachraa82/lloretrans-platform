@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Proposta Comercial · Lloretrans × AiTiPro · v6</title>
+<style>
+  :root {
+    --bg: #f0f5f4;
+    --surface: #ffffff;
+    --surface-soft: #eef6f3;
+    --text: #1e2d3d;
+    --text-muted: #4b5563;
+    --text-soft: #6b7280;
+    --green: #0d3b38;
+    --green-hover: #134f4b;
+    --ink-panel: #2d3a4a;
+    --mint: #2ae5a0;
+    --mint-dark: #1bc88a;
+    --orange: #ca742d;
+    --orange-soft: #fef3e8;
+    --blue: #2563eb;
+    --blue-soft: #eff6ff;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --danger: #c2413b;
+    --danger-soft: #fff0ee;
+    --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05), 0 1px 3px 0 rgb(15 23 42 / 0.05);
+    --shadow-lg: 0 4px 6px -2px rgb(15 23 42 / 0.05), 0 12px 24px -6px rgb(15 23 42 / 0.10);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    color: var(--text);
+    background: var(--bg);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; opacity: 0.03;
+    background-image: radial-gradient(var(--ink-panel) 1px, transparent 1px);
+    background-size: 22px 22px; z-index: 0;
+  }
+
+  .print-btn {
+    position: fixed; z-index: 50; top: 18px; right: 18px;
+    min-height: 40px; border: 0; border-radius: 999px;
+    background: var(--green); color: #fff; padding: 0 18px;
+    font: 800 11px/1 Inter, sans-serif; letter-spacing: .14em;
+    text-transform: uppercase; box-shadow: var(--shadow-lg); cursor: pointer;
+  }
+
+  h1, h2, h3, h4, p { margin: 0; }
+  h1 { font-size: clamp(34px, 5vw, 56px); line-height: 1.02; font-weight: 600; }
+  h2 { font-size: clamp(24px, 3vw, 36px); line-height: 1.08; font-weight: 600; max-width: 800px; }
+  h3 { font-size: 19px; line-height: 1.2; font-weight: 700; }
+  h4 { font-size: 13px; line-height: 1.3; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); }
+
+  .page-doc {
+    max-width: 1180px;
+    margin: 18px auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 32px 44px 28px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    position: relative; z-index: 2;
+  }
+
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; border-bottom: 1px solid var(--border); margin-bottom: 22px; }
+  .brand { font-size: 22px; font-weight: 800; color: var(--green); letter-spacing: -.01em; }
+  .brand span { color: var(--orange); }
+  .meta { text-align: right; color: var(--text-soft); font-size: 11px; font-weight: 600; line-height: 1.45; }
+  .meta strong { color: var(--text); display: block; font-size: 12px; }
+
+  .badge { display: inline-flex; align-items: center; border: 1px solid rgba(202,116,45,.28); border-radius: 999px; background: var(--orange-soft); color: var(--orange); padding: 3px 11px; font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+  .badge.green { border-color: rgba(13,59,56,.18); background: var(--surface-soft); color: var(--green); }
+  .badge.mint { border-color: rgba(27,200,138,.32); background: rgba(42,229,160,.08); color: var(--mint-dark); }
+
+  /* ========= PÁGINA 1 · CAPA EXECUTIVA ========= */
+
+  .cover-hero { display: grid; grid-template-columns: 1.45fr 1fr; gap: 24px; align-items: stretch; margin-top: 8px; }
+
+  .cover-hero h1 { margin: 8px 0 8px; max-width: 580px; }
+  .cover-hero .lede { font-size: 14px; color: var(--text-muted); line-height: 1.5; max-width: 580px; }
+
+  .quote-banner { margin-top: 14px; padding: 16px 22px; background: linear-gradient(135deg, var(--green) 0%, #1a4d49 100%); color: #fff; border-radius: 14px; box-shadow: var(--shadow-sm); }
+  .quote-banner .qmark { font-size: 30px; line-height: .4; color: var(--mint); display: block; }
+  .quote-banner blockquote { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.25; }
+  .quote-banner cite { display: block; margin-top: 6px; font-size: 11px; font-style: normal; color: rgba(255,255,255,.78); letter-spacing: .04em; }
+
+  .ask-card { background: linear-gradient(135deg, #fff 0%, var(--surface-soft) 100%); border: 2px solid var(--green); border-radius: 14px; padding: 18px 20px; position: relative; box-shadow: var(--shadow-sm); }
+  .ask-card::before { content: "Pedido de Decisão"; position: absolute; top: -10px; left: 18px; background: var(--green); color: #fff; padding: 3px 11px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+  .ask-card .ask-text { margin-top: 4px; font-size: 14px; line-height: 1.5; color: var(--text); }
+  .ask-card .ask-text strong { color: var(--green); }
+  .ask-card .ask-protected { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .ask-card .ask-protected strong { color: var(--green); }
+
+  .one-liner { margin: 18px 0 16px; padding: 14px 18px; background: var(--surface-soft); border-radius: 12px; font-size: 13.5px; color: var(--text); line-height: 1.55; border-left: 4px solid var(--mint-dark); }
+  .one-liner strong { color: var(--green); }
+
+  .roadmap-header { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 0 12px; flex-wrap: wrap; gap: 8px; }
+  .roadmap-header h2 { margin: 0; font-size: 20px; font-weight: 700; color: var(--text); }
+  .roadmap-header .roadmap-sub { font-size: 12px; color: var(--text-muted); font-style: italic; }
+
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .opt { background: #fff; border: 1.5px solid var(--border); border-radius: 14px; padding: 18px; position: relative; }
+  .opt.preferred { border-color: var(--green); border-width: 2px; box-shadow: var(--shadow-sm); }
+  .opt::before { position: absolute; top: -10px; left: 16px; padding: 3px 11px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+  .opt.start::before { content: "Passo 1 · Comece"; background: var(--orange); color: #fff; }
+  .opt.grow::before { content: "Passo 2 · Cresça"; background: var(--blue); color: #fff; }
+  .opt.scale::before { content: "Passo 3 · Escale · recomendado"; background: var(--green); color: #fff; }
+  .opt h3 { margin: 8px 0 4px; font-size: 15px; font-weight: 700; color: var(--text); }
+  .opt .scope { font-size: 12px; color: var(--text-muted); line-height: 1.45; min-height: 36px; margin-bottom: 8px; }
+  .opt .price-row { display: flex; align-items: baseline; gap: 6px; padding: 8px 0 4px; border-top: 1px solid var(--border); }
+  .opt .price { font-size: 24px; font-weight: 700; color: var(--green); line-height: 1; }
+  .opt .price-sub { font-size: 11px; color: var(--text-muted); }
+  .opt .monthly { font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px; }
+  .opt .monthly strong { color: var(--text); font-weight: 700; }
+  .opt-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .opt-meta .mm { background: var(--surface-soft); border-radius: 8px; padding: 7px 9px; font-size: 10.5px; color: var(--text-muted); line-height: 1.3; }
+  .opt-meta .mm strong { display: block; font-size: 12px; color: var(--green); font-weight: 700; }
+  .opt-modules { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); font-size: 11px; color: var(--text-soft); line-height: 1.45; }
+  .opt-modules strong { color: var(--text); }
+
+  .second-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; margin-top: 16px; }
+  .sprint0-mini { background: var(--green); color: #fff; border-radius: 12px; padding: 14px 18px; box-shadow: var(--shadow-sm); }
+  .sprint0-mini h4 { margin: 0; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); }
+  .sprint0-mini p { margin: 4px 0 0; font-size: 12.5px; color: rgba(255,255,255,.92); line-height: 1.5; }
+  .sprint0-mini strong { color: var(--mint); font-weight: 700; }
+
+  .group-pot { background: linear-gradient(135deg, #fff 0%, rgba(42,229,160,.06) 100%); border: 1px solid var(--mint-dark); border-left: 4px solid var(--mint-dark); border-radius: 12px; padding: 12px 16px; }
+  .group-pot h4 { margin: 0; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--mint-dark); }
+  .group-pot p { margin: 4px 0 0; font-size: 12px; color: var(--text); line-height: 1.5; }
+
+  .guards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; padding: 12px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .guard { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .guard strong { display: block; font-size: 12px; color: var(--green); margin-bottom: 2px; font-weight: 700; }
+
+  .tagline { margin-top: 14px; padding: 12px 16px; text-align: center; font-size: 14px; font-weight: 600; color: var(--green); line-height: 1.35; background: var(--surface-soft); border-radius: 12px; border-left: 4px solid var(--mint); border-right: 4px solid var(--mint); }
+
+  /* ========= PÁGINAS DE DETALHE ========= */
+
+  .page-break { page-break-before: always; padding-top: 24px; margin-top: 36px; border-top: 1px dashed var(--border); }
+
+  .section { margin: 36px 0; }
+  .section-title { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+  .section-title .num { font-size: 12px; font-weight: 800; color: var(--orange); letter-spacing: .18em; }
+  .section-lede { font-size: 14px; color: var(--text-muted); max-width: 780px; margin-bottom: 22px; line-height: 1.55; }
+
+  /* PER-BLOCK FINANCIAL CARDS (Fernando's structure) */
+  .block-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-sm);
+    border-left: 5px solid var(--green);
+  }
+  .block-card.b1 { border-left-color: var(--green); }
+  .block-card.b2 { border-left-color: var(--mint-dark); }
+  .block-card.b3 { border-left-color: var(--blue); }
+  .block-card.b-future { border-left-color: var(--orange); background: var(--orange-soft); }
+
+  .block-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px; margin-bottom: 6px; }
+  .block-head h3 { font-size: 19px; }
+  .block-head .block-tag { font-size: 10px; font-weight: 800; color: var(--orange); letter-spacing: .14em; text-transform: uppercase; }
+  .block-card.b2 .block-head .block-tag { color: var(--mint-dark); }
+  .block-card.b3 .block-head .block-tag { color: var(--blue); }
+
+  .block-modules { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+  .block-modules strong { color: var(--text); }
+
+  .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .ps-cell { background: var(--surface-soft); border-radius: 10px; padding: 12px 14px; }
+  .ps-cell h4 { font-size: 11px; color: var(--green); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .08em; }
+  .ps-cell p { font-size: 12.5px; color: var(--text); line-height: 1.5; }
+
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+  .metric-box { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .metric-box.now { border-top: 3px solid var(--danger); }
+  .metric-box.future { border-top: 3px solid var(--mint-dark); }
+  .metric-box.profit { border-top: 3px solid var(--green); background: linear-gradient(135deg, #fff 0%, var(--surface-soft) 100%); }
+  .metric-box h4 { font-size: 10px; margin-bottom: 8px; }
+  .metric-box.now h4 { color: var(--danger); }
+  .metric-box.future h4 { color: var(--mint-dark); }
+  .metric-box.profit h4 { color: var(--green); }
+  .metric-line { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; font-size: 11.5px; color: var(--text-muted); }
+  .metric-line strong { color: var(--text); font-weight: 700; }
+  .metric-line.total { padding-top: 6px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .metric-line.total strong { color: var(--green); font-size: 13px; }
+  .metric-line.profit-main { font-size: 14px; font-weight: 700; color: var(--green); padding: 4px 0; }
+  .metric-footnote { font-size: 10.5px; color: var(--text-soft); margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--border); font-style: italic; line-height: 1.4; }
+
+  .block-integrations { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 11px; }
+  .block-integrations div strong { display: block; font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+  .block-integrations div p { color: var(--text-muted); line-height: 1.4; }
+
+  /* SCENARIOS / TABLES */
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+  th { background: var(--surface-soft); color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-weight: 700; color: var(--green); white-space: nowrap; }
+  td.muted { color: var(--text-muted); font-size: 12px; }
+
+  .scenario-table tr.recommended { background: rgba(42,229,160,.06); }
+  .scenario-table tr.recommended td.scenario-name::after { content: " · recomendado"; font-size: 9px; font-weight: 700; color: var(--mint-dark); letter-spacing: .12em; text-transform: uppercase; }
+  .scenario-table td.scenario-name { font-weight: 700; color: var(--text); }
+
+  .alternatives { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .alt-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .alt-card.preferred { border-color: var(--green); border-width: 2px; }
+  .alt-card h4 { color: var(--green); font-size: 13px; margin-bottom: 6px; text-transform: none; letter-spacing: 0; }
+  .alt-card .alt-cost { font-size: 20px; font-weight: 700; color: var(--text); margin: 8px 0; }
+  .alt-card .alt-note { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* Sprint 0 detalhada */
+  .sprint0-card { background: var(--green); color: #fff; border-radius: 16px; padding: 24px 28px; box-shadow: var(--shadow-sm); }
+  .sprint0-card h2 { color: #fff; margin-bottom: 6px; font-size: 24px; }
+  .sprint0-card p { color: rgba(255,255,255,.9); font-size: 13px; line-height: 1.5; max-width: 760px; }
+  .sprint0-card .sprint0-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 18px; }
+  .sprint0-card .sprint0-item { background: rgba(255,255,255,.08); border-radius: 10px; padding: 10px 12px; font-size: 11.5px; color: #fff; border: 1px solid rgba(255,255,255,.12); line-height: 1.4; }
+  .sprint0-card .sprint0-item strong { color: var(--mint); display: block; margin-bottom: 3px; font-size: 12px; }
+
+  /* Timeline */
+  .timeline { display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px; margin-top: 16px; }
+  .timeline-cell { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 8px 4px; text-align: center; font-size: 9.5px; color: var(--text-soft); font-weight: 700; line-height: 1.3; }
+  .tl-s0 { background: var(--orange); color: #fff; border-color: var(--orange); }
+  .tl-b1 { background: var(--green); color: #fff; border-color: var(--green); }
+  .tl-b2 { background: var(--mint-dark); color: #fff; border-color: var(--mint-dark); }
+  .tl-b3 { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .tl-stab { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+  .timeline-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; font-size: 10.5px; }
+  .timeline-legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-weight: 600; }
+  .timeline-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; }
+
+  /* Fee grid */
+  .fee-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .fee-box { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .fee-box.is { border-color: rgba(27,200,138,.3); background: linear-gradient(135deg, #fff 0%, rgba(42,229,160,.04) 100%); }
+  .fee-box.isnot { border-color: rgba(194,65,59,.2); background: linear-gradient(135deg, #fff 0%, rgba(194,65,59,.03) 100%); }
+  .fee-box h4 { color: var(--green); font-size: 13px; margin-bottom: 12px; text-transform: none; letter-spacing: 0; }
+  .fee-box.isnot h4 { color: var(--danger); }
+  .fee-box ul { margin: 0; padding-left: 18px; font-size: 12.5px; line-height: 1.7; color: var(--text-muted); }
+  .fee-box ul strong { color: var(--text); font-weight: 700; }
+
+  /* Garantias */
+  .guarantees-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .guarantee { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .guarantee h4 { color: var(--green); font-size: 12.5px; margin-bottom: 5px; text-transform: none; letter-spacing: 0; }
+  .guarantee p { font-size: 11.5px; color: var(--text-muted); line-height: 1.5; }
+
+  /* Premissas */
+  .premissas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .premissas-grid h4 { font-size: 12px; margin-bottom: 8px; }
+  .premissas-grid ul { margin: 0; padding-left: 18px; font-size: 12.5px; line-height: 1.7; color: var(--text-muted); }
+
+  .sponsors-card { margin-top: 18px; padding: 18px 20px; background: #fff; border: 1px solid var(--border); border-radius: 12px; }
+  .sponsors-card h4 { color: var(--green); margin-bottom: 8px; }
+  .sponsors-card p { font-size: 12.5px; color: var(--text); line-height: 1.55; }
+  .sponsors-card p strong { color: var(--green); }
+  .sponsors-card p + p { margin-top: 4px; }
+
+  /* Signature */
+  .signature-section { background: #fff; border: 2px solid var(--green); border-radius: 18px; padding: 28px; box-shadow: var(--shadow-sm); }
+  .signature-section h2 { color: var(--green); margin-bottom: 8px; }
+  .signature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 28px; }
+  .signature-block { padding-top: 50px; border-top: 1px solid var(--border-strong); }
+  .signature-block .role { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 4px; }
+  .signature-block .name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .signature-block .meta-line { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+  /* Footer */
+  .footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border); margin-top: 22px; font-size: 10.5px; color: var(--text-soft); line-height: 1.45; }
+  .footer strong { color: var(--text); }
+
+  .footnote { font-size: 11px; color: var(--text-soft); margin-top: 10px; font-style: italic; }
+
+  @media print {
+    .print-btn { display: none; }
+    body { background: #fff; }
+    body::before { display: none; }
+    .page-doc { box-shadow: none; border: 0; padding: 18px 22px; margin: 0; max-width: 100%; border-radius: 0; }
+    .quote-banner, .ask-card, .sprint0-card, .signature-section { page-break-inside: avoid; break-inside: avoid; }
+    .section, .block-card { page-break-inside: auto; break-inside: auto; }
+    .tagline, .footer { display: none; }
+    .page-break { page-break-before: auto; break-before: auto; padding-top: 18px; margin-top: 24px; border-top: 1px dashed var(--border); }
+    @page { size: A4; margin: 10mm; }
+  }
+
+  @media (max-width: 900px) {
+    .cover-hero, .second-row, .options, .alternatives, .modules-grid, .premissas-grid, .fee-grid { grid-template-columns: 1fr; }
+    .guards { grid-template-columns: repeat(2, 1fr); }
+    .timeline { grid-template-columns: repeat(7, 1fr); }
+    .sprint0-card .sprint0-grid { grid-template-columns: repeat(2, 1fr); }
+    .signature-grid { grid-template-columns: 1fr; }
+    .ps-grid { grid-template-columns: 1fr; }
+    .metrics-grid { grid-template-columns: 1fr; }
+    .block-integrations { grid-template-columns: 1fr; }
+    .guarantees-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">Imprimir / PDF</button>
+
+<div class="page-doc">
+
+  <!-- ============================================================= -->
+  <!-- PÁGINA 1 · CAPA EXECUTIVA (lê-se em 90 segundos)                -->
+  <!-- ============================================================= -->
+
+  <div class="topbar">
+    <div>
+      <span class="badge">Confidencial · Proposta Comercial</span>
+      <div class="brand" style="margin-top:6px;">AiTiPro <span>×</span> Lloretrans</div>
+    </div>
+    <div class="meta">
+      <strong>LLO-2026-05-001</strong>
+      Maio 2026 · Validade 30 dias · Sem IVA<br>
+      Para a Administração do Grupo Patrícia Pilar
+    </div>
+  </div>
+
+  <div class="cover-hero">
+    <div>
+      <span class="badge green">Plataforma Operacional Lloretrans</span>
+      <h1>Piloto controlado para uma plataforma escalável ao Grupo.</h1>
+      <p class="lede">Seis fluxos da operação Lloretrans (km, documentos, facturas, bolsa, comissões, oficina) numa plataforma única, com decisão humana preservada e rasto auditável. Implementação faseada em três passos, com Sprint 0 sem custo.</p>
+      <div class="quote-banner">
+        <span class="qmark">"</span>
+        <blockquote>Não é só tempo, é o controle.</blockquote>
+        <cite>— Clarice Santos · Direcção Operacional Lloretrans · 16 Abril 2026</cite>
+      </div>
+    </div>
+
+    <div class="ask-card">
+      <p class="ask-text">A AiTiPro propõe um <strong>roadmap de confiança em três passos</strong>. A Administração escolhe o ponto de entrada — começar pequeno, crescer com prova, escalar com confiança. <strong>Cada passo é decisão independente.</strong></p>
+      <p class="ask-protected"><strong>Sprint 0 sem custo</strong> em todas as opções: 1 semana para validar PHC Advanced (com integrador interno do Grupo no dia 1), Frotcom, Logue Trans e custos cronometrados. Se confirmar viabilidade, avança o passo aprovado. Se confirmar bloqueio, a Lloretrans não paga.</p>
+    </div>
+  </div>
+
+  <div class="one-liner">
+    <strong>Custo administrativo invisível estimado em €6.585/mês</strong> em cruzamentos manuais Logue Trans × Frotcom, classificação manual de facturas (12 min cada · 39% com erro segundo APQC), CMR e guias dispersos entre papel e WhatsApp, bolsa de carga em Excel, e relançamento de folhas de obra de papel para PHC. <strong>Solução proposta reduz a €1.559/mês no cenário objectivo</strong>, com payback dentro do segundo ano fiscal mesmo no cenário conservador (50% de redução).
+  </div>
+
+  <div class="roadmap-header">
+    <h2>Roadmap de confiança · três passos · três decisões</h2>
+    <span class="roadmap-sub">Cada passo é independente · pode parar em qualquer ponto</span>
+  </div>
+
+  <div class="options">
+    <div class="opt start">
+      <h3 style="margin-top:8px;">Núcleo de Validação</h3>
+      <p class="scope">Provar a plataforma com o problema mais quantificável: km errados que escapam à facturação cliente.</p>
+      <div class="price-row"><span class="price">€14.000</span><span class="price-sub">preço fechado</span></div>
+      <div class="monthly">+ <strong>€600/mês</strong> · operação · suporte · IA · UE</div>
+      <div class="opt-meta">
+        <div class="mm"><strong>Mês 6</strong>Payback (PRI)</div>
+        <div class="mm"><strong>+€69.700</strong>Diferença 36m</div>
+      </div>
+      <div class="opt-modules"><strong>Módulos:</strong> Validação km (A) + Hub Documental (C)<br><strong>Duração:</strong> Sprint 0 + 5 semanas</div>
+    </div>
+
+    <div class="opt grow">
+      <h3 style="margin-top:8px;">+ Núcleo Administrativo</h3>
+      <p class="scope">Acrescenta OCR de facturas — PHC Advanced deixa de depender de conhecimento individual da equipa.</p>
+      <div class="price-row"><span class="price">€25.500</span><span class="price-sub">cumulativo</span></div>
+      <div class="monthly">+ <strong>€700/mês</strong> · adiciona +€100 sobre P1</div>
+      <div class="opt-meta">
+        <div class="mm"><strong>Mês 8</strong>Payback cumulativo</div>
+        <div class="mm"><strong>+€95.424</strong>Diferença 36m</div>
+      </div>
+      <div class="opt-modules"><strong>+ Módulo:</strong> OCR Facturas Fornecedor (B) · 92,4% confiança<br><strong>Duração:</strong> + 4 semanas</div>
+    </div>
+
+    <div class="opt scale preferred">
+      <h3 style="margin-top:8px;">+ Operação Integrada</h3>
+      <p class="scope">Bolsa de carga, comissões automáticas e folha de obra digital. Cobre a operação completa.</p>
+      <div class="price-row"><span class="price">€45.000</span><span class="price-sub">cumulativo</span></div>
+      <div class="monthly">+ <strong>€900/mês</strong> · solução completa</div>
+      <div class="opt-meta">
+        <div class="mm"><strong>Mês 9</strong>Payback total</div>
+        <div class="mm"><strong>+€135.936</strong>Diferença 36m</div>
+      </div>
+      <div class="opt-modules"><strong>+ Módulos:</strong> Bolsa+Comissões (E) + Oficina (F)<br><strong>Duração total:</strong> 14 semanas até go-live</div>
+    </div>
+  </div>
+
+  <div class="second-row">
+    <div class="sprint0-mini">
+      <h4>Sprint 0 · 1 semana · €0 · cláusula de saída</h4>
+      <p>Dia 1: validação cruzada com integrador PHC Advanced do Grupo. Dia 2-3: API Frotcom + Logue Trans. Dia 4: volumes reais cronometrados. Dia 5: relatório de viabilidade · go/no-go formal. <strong>Em qualquer passo aprovado, se a Sprint 0 não confirmar viabilidade, a Lloretrans não paga.</strong></p>
+    </div>
+    <div class="group-pot">
+      <h4>Potencial de Grupo</h4>
+      <p>Lloretrans é o piloto. Após 90 dias estabilizada, plano de extensão modular ao Grupo Patrícia Pilar. Custo marginal por empresa adicional: €250/mês.</p>
+    </div>
+  </div>
+
+  <div class="guards">
+    <div class="guard"><strong>Saída sem penalização</strong>Aviso 90 dias · dados em CSV/JSON/XML · sem lock-in.</div>
+    <div class="guard"><strong>Decisão humana</strong>IA prepara, classifica, sinaliza. Aprovação irreversível é Lloretrans.</div>
+    <div class="guard"><strong>Dados na UE · RGPD</strong>BD em Frankfurt · NDA + DPA · não usados para treino.</div>
+    <div class="guard"><strong>Auditabilidade total</strong>Cada acção registada com utilizador, antes/depois, motivo.</div>
+  </div>
+
+  <div class="tagline">
+    Não é uma app para a Lloretrans. É um piloto controlado para uma plataforma operacional escalável ao Grupo Patrícia Pilar.
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- PÁGINA 2 · DETALHE DE BLOCOS (Fernando's structure)             -->
+  <!-- ============================================================= -->
+
+  <div class="page-break"></div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">01 · Detalhe</span>
+      <h2>O que cada bloco entrega · ficha financeira por bloco.</h2>
+    </div>
+    <p class="section-lede">Cada bloco do roadmap é independente, com problema concreto, solução proposta, métricas de hoje (custo actual estimado) e métricas futuras (custo com a plataforma operacional). A rentabilidade é calculada por bloco — pode aprovar apenas o Passo 1 e parar.</p>
+
+    <!-- BLOCO 1 -->
+    <div class="block-card b1">
+      <div class="block-head">
+        <h3>Bloco 1 · Núcleo de Validação</h3>
+        <span class="block-tag">Passo 1 · Comece · €14.000 + €600/mês</span>
+      </div>
+      <div class="block-modules"><strong>Módulos:</strong> Validação km (A) + Hub Documental (C) · <strong>Duração:</strong> Sprint 0 + 5 semanas · <strong>Volume mensal:</strong> ~2.000 viagens + ~600 documentos</div>
+
+      <div class="ps-grid">
+        <div class="ps-cell">
+          <h4>Problema</h4>
+          <p>Cruzamento manual de quilómetros entre Logue Trans e Frotcom, viagem a viagem. Erros silenciosos de 2-5% chegam à facturação cliente. CMR, guias e tickets dispersos entre papel e WhatsApp, com pesquisa manual e risco de multas por documentos em falta.</p>
+        </div>
+        <div class="ps-cell">
+          <h4>Solução</h4>
+          <p>Painel diário com semáforo verde/amarelo/vermelho, margem 3 km configurável, aprovação em lote por excepção, exportação CSV para PHC Advanced. Hub documental único com OCR e associação automática a viagem/matrícula/data. Pesquisa unificada com permissões por área e empresa.</p>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box now">
+          <h4>Métricas hoje</h4>
+          <div class="metric-line"><span>Volume mensal</span><strong>2.000 viagens + 600 docs</strong></div>
+          <div class="metric-line"><span>Horas/mês</span><strong>157 h</strong></div>
+          <div class="metric-line"><span>Custo HH (€15/h)</span><strong>€2.350</strong></div>
+          <div class="metric-line"><span>Custos indirectos</span><strong>€900</strong></div>
+          <div class="metric-line total"><span>Total/mês</span><strong>€3.250</strong></div>
+          <div class="metric-footnote">Indirectos: 2-5% erros km + multas CMR.</div>
+        </div>
+        <div class="metric-box future">
+          <h4>Métricas futuras</h4>
+          <div class="metric-line"><span>Horas residuais</span><strong>16 h</strong></div>
+          <div class="metric-line"><span>Custo HH residual</span><strong>€235</strong></div>
+          <div class="metric-line"><span>Indirectos residuais</span><strong>€90</strong></div>
+          <div class="metric-line"><span>Mensalidade</span><strong>€600</strong></div>
+          <div class="metric-line total"><span>Total/mês</span><strong>€925</strong></div>
+          <div class="metric-footnote">Redução de 90% em directos + indirectos.</div>
+        </div>
+        <div class="metric-box profit">
+          <h4>Rentabilidade</h4>
+          <div class="metric-line profit-main"><span>Ganho líquido/mês</span><strong>+€2.325</strong></div>
+          <div class="metric-line"><span>Payback (PRI)</span><strong>Mês 6</strong></div>
+          <div class="metric-line"><span>ROI a 36 meses</span><strong>+498%</strong></div>
+          <div class="metric-line total"><span>Diferença 36m</span><strong>+€69.700</strong></div>
+          <div class="metric-footnote">Bloco mais rentável isoladamente.</div>
+        </div>
+      </div>
+
+      <div class="block-integrations">
+        <div><strong>Para quem</strong><p>Direcção Operacional · Administrativa de facturação</p></div>
+        <div><strong>Integrações</strong><p>Logue Trans (API) · Frotcom · PHC Advanced (CSV) · Scanner/MFP em portaria</p></div>
+        <div><strong>Saídas</strong><p>Ficheiro de facturação validado · documento indexado e pesquisável · alertas de excepção</p></div>
+      </div>
+    </div>
+
+    <!-- BLOCO 2 -->
+    <div class="block-card b2">
+      <div class="block-head">
+        <h3>Bloco 2 · Núcleo Administrativo</h3>
+        <span class="block-tag">Passo 2 · Cresça · +€11.500 + €100/mês incremental</span>
+      </div>
+      <div class="block-modules"><strong>Módulo:</strong> OCR Facturas Fornecedor (B) · <strong>Duração:</strong> +4 semanas · <strong>Volume mensal:</strong> ~120 facturas</div>
+
+      <div class="ps-grid">
+        <div class="ps-cell">
+          <h4>Problema</h4>
+          <p>Cada fornecedor tem formato de factura diferente. Classificação depende de conhecimento individual da equipa. Risco de erros no fecho contabilístico (APQC: 39% facturas com erro), classificações erradas e duplicate payments (2% de taxa típica).</p>
+        </div>
+        <div class="ps-cell">
+          <h4>Solução</h4>
+          <p>Receção PDF (email ou upload). Extracção automática de NIF, valor, data e linhas. Classificação por NIF e memória por fornecedor. Validação humana em fluxo. Exportação XML pronta para PHC. <strong>92,4% de confiança média</strong> calibrada com 9 fornecedores reais.</p>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box now">
+          <h4>Métricas hoje</h4>
+          <div class="metric-line"><span>Volume mensal</span><strong>120 facturas</strong></div>
+          <div class="metric-line"><span>Horas/mês</span><strong>24 h</strong></div>
+          <div class="metric-line"><span>Custo HH (€15/h)</span><strong>€360</strong></div>
+          <div class="metric-line"><span>Custos indirectos</span><strong>€900</strong></div>
+          <div class="metric-line total"><span>Total/mês</span><strong>€1.260</strong></div>
+          <div class="metric-footnote">12 min/factura (APQC) · 39% têm erro.</div>
+        </div>
+        <div class="metric-box future">
+          <h4>Métricas futuras</h4>
+          <div class="metric-line"><span>Horas residuais</span><strong>2 h</strong></div>
+          <div class="metric-line"><span>Custo HH residual</span><strong>€36</strong></div>
+          <div class="metric-line"><span>Indirectos residuais</span><strong>€90</strong></div>
+          <div class="metric-line"><span>Mensalidade incremental</span><strong>+€100</strong></div>
+          <div class="metric-line total"><span>Total/mês</span><strong>€226</strong></div>
+          <div class="metric-footnote">Mensalidade cumulativa: €700/mês.</div>
+        </div>
+        <div class="metric-box profit">
+          <h4>Rentabilidade</h4>
+          <div class="metric-line profit-main"><span>Ganho líquido/mês</span><strong>+€1.034</strong></div>
+          <div class="metric-line"><span>Payback (PRI)</span><strong>Mês 11</strong></div>
+          <div class="metric-line"><span>ROI a 36 meses</span><strong>+224%</strong></div>
+          <div class="metric-line total"><span>Diferença 36m</span><strong>+€25.724</strong></div>
+          <div class="metric-footnote">Risco oculto > tempo poupado.</div>
+        </div>
+      </div>
+
+      <div class="block-integrations">
+        <div><strong>Para quem</strong><p>Administrativa de facturação</p></div>
+        <div><strong>Integrações</strong><p>Mailbox dedicada · PHC Advanced (XML import)</p></div>
+        <div><strong>Saídas</strong><p>Lançamento PHC pronto · histórico de classificações · sinalização de duplicados e divergências</p></div>
+      </div>
+    </div>
+
+    <!-- BLOCO 3 -->
+    <div class="block-card b3">
+      <div class="block-head">
+        <h3>Bloco 3 · Operação Integrada</h3>
+        <span class="block-tag">Passo 3 · Escale · +€19.500 + €200/mês incremental</span>
+      </div>
+      <div class="block-modules"><strong>Módulos:</strong> Bolsa de Carga + Comissões (E) + Folha de Obra Oficina (F) · <strong>Duração:</strong> +5 semanas · <strong>Volume mensal:</strong> ~120 cargas + ~30 folhas oficina</div>
+
+      <div class="ps-grid">
+        <div class="ps-cell">
+          <h4>Problema</h4>
+          <p>Bolsa de carga em Excel longo, com facturação de fornecedor em atraso e comissões calculadas no fim do mês. Margens negativas detectadas tarde demais para correcção comercial (revenue leakage 3-8% em transporte segundo FreightWaves). Mecânico regista em papel e administrativa relança no PHC Advanced, com risco de discrepâncias entre horas registadas e horas reais.</p>
+        </div>
+        <div class="ps-cell">
+          <h4>Solução</h4>
+          <p>Aplicação operacional substitui Excel: fluxo R/NR, associação de CMR e facturas (fornecedor e cliente), comissões automáticas pela regra confirmada (20% lucro + €2,50 nacional / €5 internacional), alertas de margem negativa em tempo real. Aplicação móvel para oficina com checklist 17 itens, estados em curso/concluído/validado, assinatura digital, exportação directa para ordem de serviço PHC.</p>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box now">
+          <h4>Métricas hoje</h4>
+          <div class="metric-line"><span>Volume mensal</span><strong>120 cargas + 30 folhas</strong></div>
+          <div class="metric-line"><span>Horas/mês</span><strong>38 h</strong></div>
+          <div class="metric-line"><span>Custo HH (€15/h)</span><strong>€575</strong></div>
+          <div class="metric-line"><span>Custos indirectos</span><strong>€1.500</strong></div>
+          <div class="metric-line total"><span>Total/mês</span><strong>€2.075</strong></div>
+          <div class="metric-footnote">Revenue leakage 3-8% (FreightWaves) + reactive 3× (Fleetio).</div>
+        </div>
+        <div class="metric-box future">
+          <h4>Métricas futuras</h4>
+          <div class="metric-line"><span>Horas residuais</span><strong>4 h</strong></div>
+          <div class="metric-line"><span>Custo HH residual</span><strong>€58</strong></div>
+          <div class="metric-line"><span>Indirectos residuais</span><strong>€150</strong></div>
+          <div class="metric-line"><span>Mensalidade incremental</span><strong>+€200</strong></div>
+          <div class="metric-line total"><span>Total/mês</span><strong>€408</strong></div>
+          <div class="metric-footnote">Mensalidade cumulativa: €900/mês.</div>
+        </div>
+        <div class="metric-box profit">
+          <h4>Rentabilidade</h4>
+          <div class="metric-line profit-main"><span>Ganho líquido/mês</span><strong>+€1.667</strong></div>
+          <div class="metric-line"><span>Payback (PRI)</span><strong>Mês 12</strong></div>
+          <div class="metric-line"><span>ROI a 36 meses</span><strong>+208%</strong></div>
+          <div class="metric-line total"><span>Diferença 36m</span><strong>+€40.512</strong></div>
+          <div class="metric-footnote">Maior alavanca operacional.</div>
+        </div>
+      </div>
+
+      <div class="block-integrations">
+        <div><strong>Para quem</strong><p>Comercial · Direcção Operacional · Mecânicos · Administrativa de oficina</p></div>
+        <div><strong>Integrações</strong><p>PHC Advanced (facturação + ordem serviço) · email · telemóvel/tablet</p></div>
+        <div><strong>Saídas</strong><p>Aplicação operacional substitui Excel · comissões para folha de salários · margem por carga · folha digital substitui papel · histórico por viatura</p></div>
+      </div>
+    </div>
+
+    <!-- BLOCO FUTURO -->
+    <div class="block-card b-future">
+      <div class="block-head">
+        <h3>Opção Futura · Combustível</h3>
+        <span class="block-tag" style="color:var(--orange);">Sem cobrança hoje · €7.500 se activado</span>
+      </div>
+      <div class="block-modules"><strong>Módulo D:</strong> Médias de Combustível · <strong>Volume:</strong> 2.161 abastecimentos reais validados em piloto</div>
+
+      <div class="ps-grid">
+        <div class="ps-cell">
+          <h4>Problema</h4>
+          <p>Dados de Cepsa, Repsol, Radius, bomba interna e Frotcom sem leitura consolidada por viatura. Anomalias e diferenças de consumo difíceis de detectar.</p>
+        </div>
+        <div class="ps-cell">
+          <h4>Solução proposta no futuro</h4>
+          <p>Cruzamento de abastecimentos reais, litros/100 km por viatura, anomalias sinalizadas para validação humana. <strong>Activação condicionada à confirmação técnica do acesso à API Frotcom</strong> na Sprint 0.</p>
+        </div>
+      </div>
+      <p class="footnote">Não está incluído no investimento recomendado nem é cobrado hoje. Entra apenas após confirmada a leitura Frotcom, com investimento adicional de €7.500.</p>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- PÁGINA 3 · CENÁRIOS + ALTERNATIVAS                              -->
+  <!-- ============================================================= -->
+
+  <div class="page-break"></div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">02 · Sensibilidade</span>
+      <h2>Três cenários de redução · payback robusto.</h2>
+    </div>
+    <p class="section-lede">A redução de custo depende da adopção operacional efectiva. Apresentamos três cenários: conservador (50%), realista (70%) e objectivo (90%). Mesmo no cenário conservador, o payback ocorre dentro do segundo ano fiscal.</p>
+
+    <table class="scenario-table">
+      <thead>
+        <tr>
+          <th>Cenário</th>
+          <th>Redução efectiva</th>
+          <th>Custo futuro/mês</th>
+          <th>Ganho líquido/mês</th>
+          <th>Payback (PRI)</th>
+          <th>Diferença 36m</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="scenario-name">Conservador</td><td>50%</td><td class="num">€4.193</td><td class="num">+€2.393</td><td>≈ 19 meses</td><td class="num">+€41.148</td></tr>
+        <tr><td class="scenario-name">Realista</td><td>70%</td><td class="num">€2.876</td><td class="num">+€3.710</td><td>≈ 12 meses</td><td class="num">+€88.560</td></tr>
+        <tr class="recommended"><td class="scenario-name">Objectivo</td><td>90%</td><td class="num">€1.559</td><td class="num">+€5.026</td><td>Mês 9</td><td class="num">+€135.936</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote">Custo actual estimado de €6.585/mês a confirmar com tempos cronometrados na Sprint 0. Valores apresentados sem IVA. Solução Completa.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">03 · Alternativas</span>
+      <h2>Porquê AiTiPro custom · não TMS de prateleira.</h2>
+    </div>
+    <p class="section-lede">Três caminhos possíveis para resolver os fluxos identificados. A escolha não é apenas de preço — é de adequação aos sistemas em uso (PHC Advanced, Logue Trans, Frotcom) e ao perímetro de extensão futuro ao Grupo.</p>
+
+    <div class="alternatives">
+      <div class="alt-card">
+        <h4>Manter o estado actual</h4>
+        <div class="alt-cost">€6.585/mês</div>
+        <p class="alt-note">Custo administrativo invisível mantém-se. Risco de erros de facturação cliente, dispersão documental, comissões corrigidas tarde, multas CMR. Sem rastreabilidade auditável. Concentração de conhecimento em pessoas-chave.</p>
+      </div>
+      <div class="alt-card">
+        <h4>TMS de prateleira</h4>
+        <div class="alt-cost">€600 a €1.200/mês</div>
+        <p class="alt-note">Sage X3, Cargonet, Setlog. Cobre módulos standard, mas dificuldade conhecida de integração com PHC Advanced e Logue Trans actuais. Customização adicional facturada à hora. Sem fluxos específicos Lloretrans (margem 3 km, regra de comissão 20% + €2,50/€5).</p>
+      </div>
+      <div class="alt-card preferred">
+        <h4>AiTiPro · plataforma custom</h4>
+        <div class="alt-cost">€45.000 + €900/mês</div>
+        <p class="alt-note">Construída sobre fluxos reais Lloretrans validados (160 viagens, 9 facturas reais, 306 cargas, 2.161 abastecimentos). Integração nativa PHC Advanced, Logue Trans, Frotcom. Arquitectura preparada para extensão modular ao Grupo. Decisão humana preservada com rasto auditável.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- PÁGINA 4 · PRESSUPOSTOS COM FONTES                              -->
+  <!-- ============================================================= -->
+
+  <div class="page-break"></div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">04 · Pressupostos</span>
+      <h2>Como chegámos aos números.</h2>
+    </div>
+    <p class="section-lede">A análise financeira assenta em três tipos de pressuposto: volumes operacionais (estimativa AiTiPro a confirmar na Sprint 0), tempos por unidade (validados com benchmarks publicados), custos indirectos (padrões da indústria). Todos os volumes serão substituídos por dados reais cronometrados antes da activação contratual dos blocos.</p>
+
+    <table>
+      <thead>
+        <tr><th>Pressuposto</th><th>Valor utilizado</th><th>Origem · suporte</th></tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="3" style="background:var(--surface-soft); font-weight:700; color:var(--green);">1 · Volumes mensais (a confirmar na Sprint 0)</td></tr>
+        <tr><td>Viagens/mês</td><td class="num">2.000</td><td class="muted">60 viaturas × 1,5 viagens/dia × 22 dias úteis</td></tr>
+        <tr><td>Documentos manipulados/mês</td><td class="num">600</td><td class="muted">2.000 viagens × 3 docs × 30% manipulação activa</td></tr>
+        <tr><td>Facturas fornecedor/mês</td><td class="num">120</td><td class="muted">Padrão da indústria para 60 viaturas + grupo</td></tr>
+        <tr><td>Cargas/mês</td><td class="num">120</td><td class="muted">Hipótese intermédia (306 cargas histórico convertido)</td></tr>
+        <tr><td>Folhas oficina/mês</td><td class="num">30</td><td class="muted">Escalar do piloto (24 folhas validadas · 90 min/ordem)</td></tr>
+        <tr><td colspan="3" style="background:var(--surface-soft); font-weight:700; color:var(--green);">2 · Tempos por unidade (benchmarks externos)</td></tr>
+        <tr><td>Cruzamento km Logue Trans × Frotcom</td><td class="num">2 min</td><td class="muted">Estimativa AiTiPro</td></tr>
+        <tr><td>Lançamento factura fornecedor manual</td><td class="num">12 min</td><td class="muted">APQC · ResolvePay · DocuClipper · 5 facturas/hora manual</td></tr>
+        <tr><td>Manipulação documento de transporte</td><td class="num">9 min</td><td class="muted">Min. Transportes Dinamarquês · estudo eCMR (23 min papel → 9 min eCMR)</td></tr>
+        <tr><td>Gestão administrativa de carga</td><td class="num">15 min</td><td class="muted">Estimativa AiTiPro</td></tr>
+        <tr><td>Relançamento folha oficina papel→PHC</td><td class="num">17 min</td><td class="muted">Fleetio · Samsara · digital work orders</td></tr>
+        <tr><td colspan="3" style="background:var(--surface-soft); font-weight:700; color:var(--green);">3 · Custos indirectos (padrões da indústria)</td></tr>
+        <tr><td>Erros km que escapam à facturação</td><td class="num">€500/mês</td><td class="muted">2-5% viagens com erro × €5-10/erro</td></tr>
+        <tr><td>Erros classificação + duplicate + atraso fecho</td><td class="num">€900/mês</td><td class="muted">APQC: 39% facturas com erro · 2% duplicate payment rate</td></tr>
+        <tr><td>Multas CMR + dispersão documental</td><td class="num">€400/mês</td><td class="muted">1-2 incidentes/mês × €100-300</td></tr>
+        <tr><td>Revenue leakage bolsa de carga</td><td class="num">€1.000/mês</td><td class="muted">FreightWaves · Hatfield: 3-8% revenue leakage transporte</td></tr>
+        <tr><td>Discrepâncias horas oficina + peças</td><td class="num">€500/mês</td><td class="muted">Fleetio: reactive 3× mais caro que planeada</td></tr>
+        <tr><td colspan="3" style="background:var(--surface-soft); font-weight:700; color:var(--green);">4 · Outros</td></tr>
+        <tr><td>Custo HH carregada</td><td class="num">€15/h</td><td class="muted">Mistura PT: 70% admin (€9,5/h) + 30% direcção (€19,8/h)</td></tr>
+        <tr><td>Redução pós-implementação (objectivo)</td><td class="num">90%</td><td class="muted">Aplicada simétrica a directos e indirectos · cenário objectivo · ver análise de sensibilidade</td></tr>
+        <tr><td>Custo total actual estimado</td><td class="num">€6.585/mês</td><td class="muted">HH directas €3.285 + indirectos €3.300</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote">A Sprint 0 substitui esta tabela de estimativas por dados reais cronometrados na operação Lloretrans antes do fecho da análise financeira.</p>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- PÁGINA 5 · MENSALIDADE + SPRINT 0 + GARANTIAS                   -->
+  <!-- ============================================================= -->
+
+  <div class="page-break"></div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">05 · Mensalidade</span>
+      <h2>O que paga e o que NÃO paga.</h2>
+    </div>
+    <p class="section-lede">Os €900/mês cobrem cinco componentes que são custos reais e contínuos da operação. Não é renda nem margem oculta — é o custo de manter a plataforma operacional com IA a correr na União Europeia.</p>
+
+    <div class="fee-grid">
+      <div class="fee-box is">
+        <h4>O que paga</h4>
+        <ul>
+          <li><strong>Infraestrutura UE:</strong> servidores e BD em Frankfurt, backups diários, recuperação ponto-no-tempo até 7 dias, encriptação, monitorização 24/7</li>
+          <li><strong>Capacidade IA:</strong> OCR + classificação + extracção até 5.000 documentos/mês (cada documento consome tokens pagos a fornecedores de IA)</li>
+          <li><strong>Suporte humano:</strong> email/chat 9h-18h dias úteis, resposta inicial até 24h úteis, contacto directo AiTiPro, 8h/mês de trabalho técnico</li>
+          <li><strong>Operação contínua:</strong> monitorização, actualizações, novos fornecedores OCR, regras de classificação, margens de validação</li>
+          <li><strong>Revisão mensal:</strong> 1h/mês de revisão de indicadores e prioridades com a Direcção Lloretrans</li>
+        </ul>
+      </div>
+      <div class="fee-box isnot">
+        <h4>O que NÃO é</h4>
+        <ul>
+          <li><strong>Não é renda nem margem oculta.</strong> Cada componente cobre um custo identificado.</li>
+          <li><strong>Não há lock-in técnico.</strong> Aviso prévio de 90 dias e devolução completa dos dados em CSV/JSON/XML, sem custos adicionais.</li>
+          <li><strong>Não há custo escondido por utilizador.</strong> Até 30 utilizadores incluídos. Acima disso: €8/utilizador/mês.</li>
+          <li><strong>Os dados não são usados para terceiros nem para treino de modelos.</strong> NDA mútuo + DPA RGPD incluídos.</li>
+          <li><strong>O contrato não avança automaticamente.</strong> Após Sprint 0, é entregue relatório de viabilidade; o Bloco 1 arranca apenas após validação formal pela Lloretrans.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footnote">Limites incluídos: 5.000 docs/mês (€0,12 por doc adicional) · 50 GB storage (€0,40/GB adicional/mês) · 30 utilizadores (€8/utilizador adicional) · Lloretrans + 2 empresas adicionais do Grupo (€250/mês por empresa adicional) · 8h/mês suporte técnico (€65/h adicional).</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">06 · Sprint 0</span>
+      <h2>Validação técnica · 1 semana · €0.</h2>
+    </div>
+    <p class="section-lede">Risco AiTiPro. O contrato avança apenas se a Sprint 0 confirmar viabilidade técnica e económica. Validação cruzada com integrador PHC Advanced do Grupo no dia 1.</p>
+
+    <div class="sprint0-card">
+      <h2>1 semana · €0 para a Lloretrans.</h2>
+      <p>A Sprint 0 valida acessos, integrações, volumes reais e custos actuais antes de qualquer compromisso. Em qualquer das três opções aprovadas, se a Sprint 0 confirmar bloqueio crítico, a Lloretrans não paga e qualquer das partes pode encerrar.</p>
+      <div class="sprint0-grid">
+        <div class="sprint0-item"><strong>Dia 1</strong>Validação cruzada com integrador PHC Advanced do Grupo</div>
+        <div class="sprint0-item"><strong>Dia 2-3</strong>API Frotcom · Logue Trans · ficheiros XML</div>
+        <div class="sprint0-item"><strong>Dia 4</strong>Volumes reais cronometrados · custos confirmados</div>
+        <div class="sprint0-item"><strong>Dia 5</strong>Relatório de viabilidade · go/no-go formal</div>
+        <div class="sprint0-item"><strong>Saída</strong>Plano final com volumes confirmados ou rescisão sem custo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">07 · Plano</span>
+      <h2>14 semanas até operação completa.</h2>
+    </div>
+    <p class="section-lede">Sprint 0 (semana 1) + 9 semanas de implementação por blocos + 4 semanas de estabilização. Cada bloco entra em operação com validação intermédia.</p>
+
+    <div class="timeline">
+      <div class="timeline-cell tl-s0">S1<br>Sprint 0</div>
+      <div class="timeline-cell tl-b1">S2<br>Mód A</div>
+      <div class="timeline-cell tl-b1">S3<br>Mód A</div>
+      <div class="timeline-cell tl-b1">S4<br>Mód C</div>
+      <div class="timeline-cell tl-b1">S5<br>Mód C</div>
+      <div class="timeline-cell tl-b2">S6<br>Mód B</div>
+      <div class="timeline-cell tl-b2">S7<br>Mód B</div>
+      <div class="timeline-cell tl-b3">S8<br>Mód E</div>
+      <div class="timeline-cell tl-b3">S9<br>Mód E</div>
+      <div class="timeline-cell tl-b3">S10<br>Mód F</div>
+      <div class="timeline-cell tl-stab">S11<br>Estab.</div>
+      <div class="timeline-cell tl-stab">S12<br>Estab.</div>
+      <div class="timeline-cell tl-stab">S13<br>Estab.</div>
+      <div class="timeline-cell tl-stab">S14<br>Go-live</div>
+    </div>
+    <div class="timeline-legend">
+      <span><i style="background:var(--orange);"></i>Sprint 0 · validação técnica</span>
+      <span><i style="background:var(--green);"></i>Bloco 1 · validação km + hub documental</span>
+      <span><i style="background:var(--mint-dark);"></i>Bloco 2 · OCR facturas</span>
+      <span><i style="background:var(--blue);"></i>Bloco 3 · bolsa, comissões, oficina</span>
+      <span><i style="background:#f59e0b;"></i>Estabilização e ajustes finais</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">08 · Garantias</span>
+      <h2>Controlo operacional protegido por seis garantias.</h2>
+    </div>
+    <p class="section-lede">A Lloretrans nunca fica presa à AiTiPro. Saída sem penalização, dados em formato aberto, decisão humana preservada.</p>
+
+    <div class="guarantees-grid">
+      <div class="guarantee"><h4>Saída sem penalização</h4><p>Aviso prévio de 90 dias. Devolução completa dos dados em CSV/JSON/XML, sem custos adicionais. Sem lock-in técnico.</p></div>
+      <div class="guarantee"><h4>Decisão humana preservada</h4><p>A IA prepara, classifica, sinaliza. Nenhuma acção irreversível é tomada sem confirmação humana. Aprovação final é Lloretrans.</p></div>
+      <div class="guarantee"><h4>Auditabilidade total</h4><p>Cada acção registada com utilizador, antes/depois, motivo e momento. Histórico inviolável e exportável a qualquer momento.</p></div>
+      <div class="guarantee"><h4>Dados na União Europeia</h4><p>Servidores aplicacionais e base de dados em Frankfurt. Conformidade RGPD por defeito. Encriptação em repouso e em trânsito.</p></div>
+      <div class="guarantee"><h4>Confidencialidade · RGPD</h4><p>NDA mútuo + DPA RGPD incluído. Lloretrans Responsável pelo Tratamento; AiTiPro Subcontratante. Dados nunca usados para treino.</p></div>
+      <div class="guarantee"><h4>Revisão anual</h4><p>Revisão anual de âmbito, limites de utilização e mensalidade com base no consumo real do ano anterior.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="num">09 · Premissas</span>
+      <h2>Confirmado, a validar, sponsors.</h2>
+    </div>
+
+    <div class="premissas-grid">
+      <div>
+        <h4 style="color:var(--green);">Confirmado</h4>
+        <ul>
+          <li>Classificação OCR treinada com facturas reais dos principais fornecedores · 92,4% confiança</li>
+          <li>Margem de quilómetros confirmada a 3 km</li>
+          <li>Regra de comissão confirmada: 20% lucro + €2,50 nacional / €5 internacional</li>
+          <li>Existência de responsável PHC Advanced interno do Grupo</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--orange);">A validar na Sprint 0</h4>
+        <ul>
+          <li>Validação cruzada com integrador PHC Advanced do Grupo (dia 1)</li>
+          <li>Acesso à API Frotcom de leitura</li>
+          <li>Formato XML final com responsável PHC Advanced</li>
+          <li>Volumes reais: viagens, documentos, facturas, cargas, oficina</li>
+          <li>Custos actuais cronometrados de RH, retrabalho e indirectos</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sponsors-card">
+      <h4>Sponsors</h4>
+      <p><strong>Sponsor operacional:</strong> Direcção Lloretrans — Clarice Santos e Éder. Responsáveis pela validação de fluxos, volumes e adopção pela equipa.</p>
+      <p><strong>Sponsor financeiro:</strong> Administração do Grupo Patrícia Pilar. Decisor de aprovação de investimento e de extensão futura ao Grupo.</p>
+      <p><strong>Sponsor técnico AiTiPro:</strong> Bilal Machraa — Fundador. Fernando Basto — Desenvolvimento de Negócio.</p>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- PÁGINA 6 · ACEITAÇÃO                                            -->
+  <!-- ============================================================= -->
+
+  <div class="page-break"></div>
+
+  <div class="signature-section">
+    <span class="badge green">Aceitação Formal</span>
+    <h2 style="margin-top:12px;">Aprovação da Administração — escolha do passo.</h2>
+    <p style="font-size:13.5px; color:var(--text-muted); margin-top:12px; max-width:760px; line-height:1.55;">A Administração do Grupo Patrícia Pilar aprova o passo seleccionado abaixo, com Sprint 0 sem custo em qualquer das opções. A aprovação fica condicionada ao resultado positivo da Sprint 0.</p>
+
+    <table style="margin-top:18px;">
+      <thead>
+        <tr><th>Passo</th><th>Investimento</th><th>Mensalidade</th><th>Módulos</th><th>Aprovação</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Passo 1 · Comece</strong><br><span style="font-size:11px;color:var(--text-muted);">Núcleo de Validação</span></td>
+          <td class="num">€14.000</td>
+          <td class="num">€600/mês</td>
+          <td class="muted">A · Validação km<br>C · Hub Documental</td>
+          <td class="muted">☐ Aprovo</td>
+        </tr>
+        <tr>
+          <td><strong>Passo 2 · Cresça</strong><br><span style="font-size:11px;color:var(--text-muted);">+ Núcleo Administrativo</span></td>
+          <td class="num">€25.500</td>
+          <td class="num">€700/mês</td>
+          <td class="muted">+ B · OCR Facturas</td>
+          <td class="muted">☐ Aprovo</td>
+        </tr>
+        <tr style="background: rgba(42,229,160,.06);">
+          <td><strong>Passo 3 · Escale</strong> · recomendado<br><span style="font-size:11px;color:var(--text-muted);">+ Operação Integrada</span></td>
+          <td class="num">€45.000</td>
+          <td class="num">€900/mês</td>
+          <td class="muted">+ E · Bolsa+Comissões<br>+ F · Folha de Obra</td>
+          <td class="muted">☐ Aprovo</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="footnote" style="margin-top:14px;">Pagamento Passo 3: 30% à assinatura · 40% no arranque do Bloco 2 · 30% após go-live do Bloco 3. Passos 1 e 2: pagamento integral à assinatura ou 50/50 entre assinatura e go-live, à escolha da Lloretrans. Mensalidade facturada a partir do go-live do primeiro bloco aprovado. Sprint 0 sem custo agendada nos 5 dias úteis após recepção deste documento assinado.</p>
+
+    <div class="signature-grid">
+      <div class="signature-block">
+        <div class="role">Pela Administração do Grupo Patrícia Pilar</div>
+        <div class="name">Nome / Cargo</div>
+        <div class="meta-line">Data · Assinatura · Carimbo</div>
+      </div>
+      <div class="signature-block">
+        <div class="role">Pela AiTiPro</div>
+        <div class="name">Bilal Machraa · Fundador</div>
+        <div class="meta-line">Data · Assinatura</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tagline" style="margin-top:32px;">
+    Não é uma app para a Lloretrans. É um piloto controlado para uma plataforma operacional escalável ao Grupo Patrícia Pilar.
+  </div>
+
+  <div class="footer">
+    <div>
+      <strong>AiTiPro</strong> · Bilal Machraa, Fundador · Fernando Basto, Desenvolvimento de Negócio<br>
+      bilal.machraa@aitipro.com · aitipro.com
+    </div>
+    <div style="text-align:right;">
+      <strong>Lloretrans, Unipessoal Lda.</strong> · NIPC 509 750 460<br>
+      Rua dos Paulos, n.º 4, 1.º B · 2560-053 A dos Cunhados · Torres Vedras<br>
+      Grupo Patrícia Pilar · Capital social € 157.000<br>
+      Referência LLO-2026-05-001 · Maio 2026 · Confidencial · Sem IVA · Validade 30 dias
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

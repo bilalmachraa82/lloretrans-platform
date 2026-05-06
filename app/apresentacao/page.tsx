@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   CircleAlert,
   ClipboardCheck,
+  ClipboardList,
   FileStack,
   Fuel,
   PackageSearch,
@@ -75,7 +76,7 @@ const MODULES = [
     pain: "A administrativa cruza Logue Trans com Frotcom viagem a viagem e o erro segue para a facturação.",
     currentState: "Semáforo operacional, diferença de 3 km, histórico auditado e aprovação por excepção.",
     proof: "O dashboard destaca logo o dia em atenção e abre apenas as viagens que precisam de validação.",
-    validate: "A diferença de 3 km e o circuito de aprovação ficam ajustados ao processo real na primeira semana de trabalho.",
+    validate: "A margem de 3 km já foi indicada; falta só validar quem aprova excepções e como entram na facturação.",
     href: "/login?target=km",
   },
   {
@@ -85,7 +86,7 @@ const MODULES = [
     pain: "O conhecimento de classificação está na pessoa e não no sistema; cada fornecedor tem o seu formato.",
     currentState: "Recepção do PDF, extracção, classificação por NIF, memória por fornecedor e preparação para PHC Advanced.",
     proof: "As facturas reais carregadas mostram extracção, confiança, estado de validação e serviço PHC Advanced proposto.",
-    validate: "A lógica de classificação por NIF é calibrada com a equipa antes de qualquer escrita automática.",
+    validate: "PDFs, códigos, matrículas e PHC Advanced foram indicados; fica pendente o contacto do integrador e a regra de escrita para PHC.",
     href: "/login?target=ocr",
   },
   {
@@ -95,7 +96,7 @@ const MODULES = [
     pain: "CMR, guias e tickets vivem espalhados entre papel, WhatsApp e pesquisa manual.",
     currentState: "Hub documental único por viagem, matrícula, data, empresa e estado.",
     proof: "Cada documento tem responsável de pesquisa, digitalização e confirmação registado.",
-    validate: "Hub documental único por viagem, pesquisável por matrícula, data e empresa.",
+    validate: "O volume de 4.000 documentos/mês foi indicado; falta só separar documentos de transporte de facturas fornecedor quando fecharmos o dimensionamento.",
     href: "/login?target=docs",
   },
   {
@@ -105,7 +106,7 @@ const MODULES = [
     pain: "Os dados existem, mas estão separados por fornecedor e sem leitura consolidada por viatura.",
     currentState: "A plataforma cruza abastecimentos por matrícula e fornecedor e sinaliza anomalias com decisão humana.",
     proof: "Já estão carregadas 2161 linhas reais.",
-    validate: "A leitura por viatura fica sujeita à confirmação técnica da leitura de bordo; até lá, a sinalização usa abastecimentos e odómetro disponível.",
+    validate: "Exportações de combustível já foram indicadas; falta confirmar se Frotcom expõe leitura CANBus/odómetro por matrícula.",
     href: "/login?target=fuel",
   },
   {
@@ -115,7 +116,7 @@ const MODULES = [
     pain: "O comercial trabalha sobre Excel longo, memória tardia e comissões calculadas no fim do mês.",
     currentState: "Fluxo auditado por estado, documentos ligados a cada carga e regra de comissão reflectida na plataforma.",
     proof: "O Excel real de 306 cargas já foi convertido para navegação operacional.",
-    validate: "Margem, estados e colunas espelham a folha actual; o saneamento do Excel histórico faz parte da primeira semana de trabalho.",
+    validate: "Regra base recebida: 20% do lucro + valor fixo por carga Lloretrans; confirmar apenas excepções e aprovação mensal.",
     href: "/login?target=bolsa",
   },
   {
@@ -125,7 +126,7 @@ const MODULES = [
     pain: "O mecânico regista em papel e a administrativa relança tudo no PHC Advanced.",
     currentState: "Aplicação móvel com checklist, estados, assinatura e validação administrativa.",
     proof: "A folha de obra já pode ser mostrada em telemóvel como experiência real de uso.",
-    validate: "Plano de adopção da oficina inclui treino presencial, piloto com um mecânico e plano de contingência para folhas em papel.",
+    validate: "Dispositivo confirmado: telemóvel. A semana técnica define o piloto com um mecânico e o ponto de integração PHC Advanced.",
     href: "/login?target=oficina",
   },
 ];
@@ -133,19 +134,34 @@ const MODULES = [
 const DEPENDENCIES = [
   {
     title: "PHC Advanced",
-    owner: "responsável interno do grupo",
-    note: "A plataforma prepara e estrutura; a confirmação com o responsável interno decide o grau de integração efectiva.",
+    owner: "contacto do integrador",
+    note: "A versão PHC Advanced está indicada. Falta a call técnica para confirmar conector, formato de escrita e calendário.",
   },
   {
-    title: "Frotcom",
-    owner: "acesso técnico de leitura",
-    note: "Combustível entra com base real na plataforma, mas a profundidade final depende da confirmação da leitura disponível.",
+    title: "Frotcom + Logue Trans",
+    owner: "API de leitura",
+    note: "O Éder indicou que pode pedir API Frotcom e que Logue Trans é possível. Falta documentação/acesso para testar campos reais.",
   },
   {
-    title: "Oficina",
-    owner: "piloto com utilizador real",
-    note: "A qualidade do módulo F depende menos de tecnologia e mais de adopção no terreno.",
+    title: "Combustível",
+    owner: "leitura por viatura",
+    note: "Os ficheiros existem; o orçamento final do módulo depende de confirmar CANBus/odómetro e o formato recorrente da bomba interna.",
   },
+];
+
+const CONFIRMED_DATA = [
+  "Volume operacional indicado: 4.000 documentos/mês no fluxo de digitalização.",
+  "Tolerância de quilómetros indicada: máximo 3 km.",
+  "PHC em uso indicado: PHC Advanced.",
+  "Dispositivo de oficina indicado: telemóvel.",
+  "Regras de comissão recebidas: 20% do lucro + valores fixos por carga Lloretrans.",
+  "Dados recebidos para protótipo: facturas, códigos de serviço, matrículas, combustível, bolsa e folha de obra.",
+];
+
+const CLOSING_QUESTIONS = [
+  "Isto corresponde à expectativa operacional que querem levar à administração no dia 11?",
+  "Que ponto técnico conseguimos fechar antes da administração: integrador PHC, APIs ou combustível?",
+  "Se a plataforma fizer sentido, avançamos para o modelo de investimento por fases?",
 ];
 
 const COUNCIL_REASONS = [
@@ -482,6 +498,59 @@ export default function ApresentacaoPage() {
         </div>
       </section>
 
+      <section className="relative bg-white">
+        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                Fecho antes dos valores
+              </div>
+              <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-tight">
+                Não repetimos perguntas. Fechamos apenas o que falta para produção.
+              </h2>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-[#4b5563]">
+                A reunião deve validar expectativa, não refazer descoberta. O chamado Sprint 0 não
+                é um módulo novo: é a primeira semana técnica sem custo para confirmar integrações,
+                volumes e plano de entrada em produção.
+              </p>
+            </div>
+
+            <div className="grid gap-5">
+              <article className="rounded-[28px] border border-[#e2e8f0] bg-[#f8fffc] p-7 shadow-elevated-sm">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-6 w-6 text-[#1bc88a]" />
+                  <h3 className="text-2xl font-semibold tracking-tight">Já sabemos pelo Éder</h3>
+                </div>
+                <div className="mt-5 grid gap-3 md:grid-cols-2">
+                  {CONFIRMED_DATA.map((item) => (
+                    <div key={item} className="rounded-2xl border border-[#d8e1df] bg-white px-4 py-3 text-sm leading-relaxed text-[#374151]">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </article>
+
+              <article className="rounded-[28px] border border-[#e2e8f0] bg-white p-7 shadow-elevated-sm">
+                <div className="flex items-center gap-3">
+                  <ClipboardList className="h-6 w-6 text-[#ca742d]" />
+                  <h3 className="text-2xl font-semibold tracking-tight">Perguntas de fecho</h3>
+                </div>
+                <div className="mt-5 grid gap-3">
+                  {CLOSING_QUESTIONS.map((question, index) => (
+                    <div key={question} className="flex gap-4 rounded-2xl border border-[#e2e8f0] bg-[#f8fffc] px-4 py-4">
+                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#1e2d3d] font-mono text-xs font-semibold text-[#2ae5a0]">
+                        {index + 1}
+                      </div>
+                      <p className="text-sm leading-relaxed text-[#374151]">{question}</p>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="relative bg-[#0d3b38] text-white">
         <div className="mx-auto grid max-w-[1320px] gap-10 px-6 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-22">
           <div>
@@ -539,13 +608,14 @@ export default function ApresentacaoPage() {
                 Acesso à plataforma
               </div>
               <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
-                Abrir a plataforma e percorrer os fluxos.
+                Abrir a plataforma e, se fizer sentido, passar aos valores.
               </h2>
             </div>
             <p className="text-sm leading-relaxed text-white/76">
               O acesso usa perfis operacionais. O perfil de Direcção Operacional dá visão
               consolidada das 60 viaturas, validação de quilómetros do dia e folhas de oficina
-              pendentes.
+              pendentes. Depois da validação funcional, o modelo de investimento aparece separado
+              em três passos para não misturar produto com preço.
             </p>
           </div>
 
@@ -556,6 +626,14 @@ export default function ApresentacaoPage() {
               className="border-0 bg-white text-[#1e2d3d] shadow-none hover:bg-white/90"
             >
               <Link href="/login">Abrir a plataforma</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/30 bg-transparent text-white shadow-none hover:bg-white/10 hover:text-white"
+            >
+              <Link href="/proposta">Ver modelo de investimento</Link>
             </Button>
             <div className="ml-auto hidden rounded-xl bg-white px-4 py-3 lg:block">
               <Image src="/aitipro-logo-light.png" alt="AiTiPro" width={138} height={32} className="h-6 w-auto" />
