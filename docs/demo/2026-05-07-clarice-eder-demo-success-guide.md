@@ -334,7 +334,7 @@ Antes de abrir proposta/preco, perguntar literalmente:
 
 Se resposta for 8-10:
 
-> "Perfeito. Entao o que vou apresentar agora e o investimento para transformar este prototipo validado em piloto operacional."
+> "Perfeito. Entao o que vou apresentar agora e o investimento para transformar este ambiente validado em piloto operacional."
 
 Se resposta for 6-7:
 
@@ -364,7 +364,7 @@ So apresentar preco depois de obter pelo menos dois sinais:
 
 Introducao ao preco:
 
-> "O preco que vou mostrar nao e por ecran. E pelo caminho para passar de prototipo validado para piloto operacional: integracoes, saneamento de dados, treino, validacao humana e arranque controlado."
+> "O preco que vou mostrar nao e por ecran. E pelo caminho para passar de demonstracao validada para piloto operacional: integracoes, saneamento de dados, treino, validacao humana e arranque controlado."
 
 Nao defender preco com ROI inventado. Usar antes:
 
@@ -375,11 +375,11 @@ Nao defender preco com ROI inventado. Usar antes:
 
 ## Objecoes provaveis e respostas
 
-### "Isto ainda nao esta ligado ao PHC/Frotcom/Logue Trans."
+### "Isto ainda nao esta ligado ao PHC Advanced/Frotcom/Logue Trans."
 
 Resposta:
 
-> "Correcto. E foi intencional nao esconder isso. O prototipo valida processo e valor com dados reais; a fase seguinte liga os sistemas com os acessos tecnicos certos. Assim evitamos vender uma integracao antes de confirmar o processo."
+> "Correcto. E foi intencional nao esconder isso. A demonstracao valida processo e valor com dados reais; a fase seguinte liga os sistemas com os acessos tecnicos certos. Assim evitamos vender uma integracao antes de confirmar o processo."
 
 ### "Temos medo que a equipa nao use."
 
@@ -439,7 +439,7 @@ Template:
 > Ficaram em aberto: [dependencias].  
 > Proximo passo proposto: [data/acao].
 >
-> Envio em anexo a proposta para passarmos do prototipo validado para piloto operacional.
+> Envio em anexo a proposta para passarmos da demonstracao validada para piloto operacional.
 
 ## Regra de ouro
 

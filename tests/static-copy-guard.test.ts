@@ -40,6 +40,8 @@ const customerFacingFiles = [
   "app/(platform)/oficina/[id]/page.tsx",
   "README.md",
   "docs/demo/lloretrans-commercial-demo-script.md",
+  "docs/demo/2026-05-07-clarice-eder-demo-success-guide.md",
+  "docs/demo/2026-05-07-clarice-eder-demo-success-guide-premium.html",
 ];
 
 describe("static copy guard", () => {
@@ -78,6 +80,9 @@ describe("static copy guard", () => {
     const weakPhrases = [
       "MVP ·",
       "neste MVP",
+      "estado de MVP",
+      "protótipo",
+      "prototipo",
       "Folha de Obra Oficina (PWA)",
       "PWA mobile",
       "quick win",

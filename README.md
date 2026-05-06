@@ -63,7 +63,7 @@ O desenho de cada módulo mantém decisão humana em todos os passos irreversív
 ## Evidência Cliente
 
 A resposta operacional do Eder, com dados recebidos e lacunas por fechar nos seis fluxos, está registada em
-`docs/client-evidence/2026-05-06-eder-response.md`. Esta é a referência usada para explicar o estado de MVP:
+`docs/client-evidence/2026-05-06-eder-response.md`. Esta é a referência usada para explicar o estado de piloto:
 dados reais carregados, integrações em validação e decisões humanas antes de PHC Advanced, Frotcom e Logue Trans.
 
 ## Estado Dos Dados
