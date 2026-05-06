@@ -4,7 +4,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSession, clearSession } from "@/lib/auth/session";
-import { ROLE_LABELS, canAccessMvp } from "@/lib/auth/types";
+import { ROLE_LABELS, canAccessMvp, isSuperAdminRole } from "@/lib/auth/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -52,7 +52,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
   const session = await getSession();
   if (!session) redirect("/login");
 
-  const isDemoSupervisor = session.role === "admin" || session.role === "clarice";
+  const isDemoSupervisor = isSuperAdminRole(session.role);
   const available = MVPS.filter((m) => canAccessMvp(session.role, m.slug));
   const adminAccess = canAccessMvp(session.role, "admin");
 
@@ -102,7 +102,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
             <SidebarLink href="/login" icon={Users}>
               Trocar perfil demo
             </SidebarLink>
-            {session.role === "admin" ? (
+            {isSuperAdminRole(session.role) ? (
               <SidebarLink href="/proposta" icon={FileText}>
                 Ver proposta formal
               </SidebarLink>

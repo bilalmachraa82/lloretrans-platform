@@ -14,6 +14,7 @@ import {
 import { WORKSHOP_CHECKLIST, type ChecklistItemKey } from "@/lib/workshop-checklist";
 import { and, desc, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
+import { isSuperAdminRole } from "@/lib/auth/types";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
   ]);
 
   const total = items.reduce((a, i) => a + (i.total ?? (i.quantity * (i.unitPrice ?? 0))), 0);
-  const isAdmin = session.role === "admin" || session.role === "admin_oficina";
+  const isAdmin = isSuperAdminRole(session.role) || session.role === "admin_oficina";
   const isMechanic = session.role === "mecanico" && session.userId === wo.mechanicId;
   const canAct = isAdmin && wo.state === "submitted";
   const canExport = isAdmin && wo.state === "approved";

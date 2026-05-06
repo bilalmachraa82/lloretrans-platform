@@ -145,7 +145,8 @@ export default async function AdminPage() {
         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
           Outros masters
         </h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <AdminLink href="/admin/users" title="Perfis & acessos" description="Clarice acesso global · perfis operacionais por área" />
           <AdminLink href="/admin/vehicles" title="Viaturas" description="Matrículas, tipologia, empresa, Frotcom" />
           <AdminLink href="/admin/suppliers" title="Fornecedores" description="NIF, regras aprendidas, categoria" />
           <AdminLink href="/admin/service-codes" title="Códigos de serviço" description="S1-S9 externos · L1-L8 internos · I0-I9 operações internas" />

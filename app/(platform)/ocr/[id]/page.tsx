@@ -13,6 +13,7 @@ import {
 } from "@/db/schema";
 import { and, eq, desc } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
+import { isSuperAdminRole } from "@/lib/auth/types";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -84,8 +85,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
 
   const isPendingReview = row.state === "pending_review";
   const isApproved = row.state === "approved" || row.state === "exported";
-  const canApproveOrClassify = session.role === "admin" || session.role === "admin_oficina";
-  const canExport = session.role === "admin" || session.role === "admin_oficina" || session.role === "admin_contas";
+  const canApproveOrClassify = isSuperAdminRole(session.role) || session.role === "admin_oficina";
+  const canExport = isSuperAdminRole(session.role) || session.role === "admin_oficina" || session.role === "admin_contas";
 
   return (
     <div className="space-y-6">

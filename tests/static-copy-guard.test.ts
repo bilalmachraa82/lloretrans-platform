@@ -23,6 +23,7 @@ const files = [
   "docs/demo/lloretrans-commercial-demo-script.md",
   "app/(platform)/bolsa/new/page.tsx",
   "app/(platform)/admin/page.tsx",
+  "app/(platform)/admin/users/page.tsx",
 ];
 
 const customerFacingFiles = [
@@ -38,6 +39,7 @@ const customerFacingFiles = [
   "app/(platform)/ocr/[id]/page.tsx",
   "app/(platform)/docs/[id]/page.tsx",
   "app/(platform)/oficina/[id]/page.tsx",
+  "app/(platform)/admin/users/page.tsx",
   "README.md",
   "docs/demo/lloretrans-commercial-demo-script.md",
   "docs/demo/2026-05-07-clarice-eder-demo-success-guide.md",

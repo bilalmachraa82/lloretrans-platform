@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/db/client";
 import { users, companies, sessions } from "@/db/schema";
 import { and, eq, gt } from "drizzle-orm";
-import type { AuthSession, Role } from "./types";
+import { isSuperAdminRole, type AuthSession, type Role } from "./types";
 
 const COOKIE_NAME = "lloretrans.session";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
@@ -80,7 +80,7 @@ export async function requireSession(): Promise<AuthSession> {
 
 export async function requireRole(allowed: Role[]): Promise<AuthSession> {
   const session = await requireSession();
-  if (!allowed.includes(session.role)) {
+  if (!allowed.includes(session.role) && !isSuperAdminRole(session.role)) {
     redirect("/dashboard?access=denied");
   }
   return session;
