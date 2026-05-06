@@ -1510,7 +1510,7 @@ npm run aitipro:build-fixtures
 
 Expected:
 
-- Manifest says `28` evidence files.
+- Manifest says `26` evidence files.
 - Freight extraction says `306`.
 - Fuel validation passes all row-count baselines.
 

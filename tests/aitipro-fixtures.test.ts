@@ -7,6 +7,18 @@ function readFixture<T>(name: string): T {
 }
 
 describe("AITIPRO evidence fixtures", () => {
+  it("keeps the realignment plan aligned with the manifest count", () => {
+    const manifest = readFixture<{ files: unknown[] }>("source-manifest.json");
+    const plan = fs.readFileSync(
+      path.join(process.cwd(), "docs", "superpowers", "plans", "2026-04-21-lloretrans-realignment.md"),
+      "utf-8",
+    );
+    expect(manifest.files).toHaveLength(26);
+    expect(plan).toContain("Wrote 26 evidence files");
+    expect(plan).not.toContain("Wrote 28 evidence files");
+    expect(plan).not.toMatch(/`28`\s+evidence files/);
+  });
+
   it("preserves audited freight baselines", () => {
     const summary = readFixture<Record<string, number>>("freight-summary.json");
     expect(summary.loads).toBe(306);

@@ -134,7 +134,7 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
               <div>
                 <div className="font-semibold text-foreground">Ficheiro original associado</div>
                 <div className="mt-2 leading-relaxed">
-                  Pré-visualização completa indisponível neste MVP. Fonte importada:{" "}
+                  Pré-visualização completa indisponível neste piloto. Fonte importada:{" "}
                   <span className="font-mono text-foreground">{doc.sourcePath}</span>.
                 </div>
               </div>

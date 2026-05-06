@@ -215,7 +215,7 @@ export default async function DashboardPage() {
       label: "Anomalias combustível",
       value: kpis.fuel.openAnomalies,
       slug: "fuel",
-      hint: "Desvio > 15% da referência",
+      hint: "Desvio de consumo > 15% da referência",
       accent: kpis.fuel.openAnomalies > 0 ? "destructive" : "default",
     },
     { label: "Cargas bolsa (mês)", value: kpis.freight.month, slug: "bolsa" },

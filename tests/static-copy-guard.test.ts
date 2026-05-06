@@ -36,6 +36,7 @@ const customerFacingFiles = [
   "app/(platform)/ocr/page.tsx",
   "app/(platform)/ocr/upload/page.tsx",
   "app/(platform)/ocr/[id]/page.tsx",
+  "app/(platform)/docs/[id]/page.tsx",
   "app/(platform)/oficina/[id]/page.tsx",
   "README.md",
   "docs/demo/lloretrans-commercial-demo-script.md",
@@ -76,6 +77,7 @@ describe("static copy guard", () => {
     const text = customerFacingFiles.map((file) => fs.readFileSync(path.join(process.cwd(), file), "utf-8")).join("\n");
     const weakPhrases = [
       "MVP ·",
+      "neste MVP",
       "Folha de Obra Oficina (PWA)",
       "PWA mobile",
       "quick win",
