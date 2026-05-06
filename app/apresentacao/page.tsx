@@ -34,7 +34,7 @@ const PROOF = [
 
 const PRODUCT_SHOTS = [
   {
-    src: "/product-shots/dashboard-crop.png",
+    src: "/product-shots/dashboard-overview.png",
     title: "Painel operacional",
     body: "Visão consolidada dos módulos, indicadores críticos e trabalho pendente.",
   },
@@ -288,50 +288,52 @@ export default function ApresentacaoPage() {
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-[1320px] px-6 pb-16 lg:px-10 lg:pb-22">
-        <div className="grid gap-8 rounded-[28px] border border-[#d8e1df] bg-white p-5 shadow-elevated-lg lg:grid-cols-[1.1fr_0.9fr] lg:p-7">
-          <div className="overflow-hidden rounded-[20px] border border-[#e2e8f0] bg-[#f8fffc]">
-            <Image
-              src={PRODUCT_SHOTS[0].src}
-              alt={PRODUCT_SHOTS[0].title}
-              width={1120}
-              height={650}
-              className="h-full min-h-[340px] w-full object-cover object-left-top"
-              priority
-            />
-          </div>
-          <div className="flex flex-col justify-between gap-6 p-2 lg:p-4">
+      <section className="relative border-y border-[#d8e1df] bg-[#f8fffc]">
+        <div className="mx-auto max-w-[1320px] px-6 py-16 lg:px-10 lg:py-20">
+          <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
                 Plataforma em ecrã
               </div>
               <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
-                O produto já mostra dados, estados e decisões.
+                Três ecrãs para orientar a demo.
               </h2>
-              <p className="mt-4 text-base leading-relaxed text-[#4b5563]">
-                As capturas abaixo são do ambiente operacional Lloretrans: indicadores, facturas,
-                cargas e validações navegáveis por perfil.
-              </p>
             </div>
-            <div className="grid gap-4">
-              {PRODUCT_SHOTS.slice(1).map((shot) => (
-                <article key={shot.title} className="grid gap-4 rounded-2xl border border-[#e2e8f0] bg-[#f8fffc] p-4 sm:grid-cols-[0.92fr_1.08fr]">
-                  <div className="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white">
-                    <Image
-                      src={shot.src}
-                      alt={shot.title}
-                      width={1120}
-                      height={650}
-                      className="h-32 w-full object-cover object-top"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold leading-tight">{shot.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{shot.body}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <p className="max-w-2xl text-base leading-relaxed text-[#4b5563] lg:justify-self-end">
+              Esta secção mostra as capturas que convém usar na conversa: visão operacional,
+              facturas de fornecedor e bolsa de carga. Todas aparecem em proporção legível, sem
+              cortes que escondam a informação principal.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+            {PRODUCT_SHOTS.map((shot, index) => (
+              <article
+                key={shot.title}
+                className="flex h-full flex-col rounded-lg border border-[#d8e1df] bg-white p-4 shadow-elevated-sm"
+              >
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ca742d]">
+                    Ecrã {index + 1}
+                  </span>
+                  <span className="rounded-full border border-[#e2e8f0] bg-[#f8fffc] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#4b5563]">
+                    {index === 0 ? "Direcção" : index === 1 ? "Administração" : "Comercial"}
+                  </span>
+                </div>
+                <div className="overflow-hidden rounded-md border border-[#e2e8f0] bg-white p-2">
+                  <Image
+                    src={shot.src}
+                    alt={shot.title}
+                    width={1120}
+                    height={650}
+                    className="aspect-[16/10] w-full object-contain object-left-top"
+                    priority={index === 0}
+                  />
+                </div>
+                <h3 className="mt-5 text-xl font-semibold leading-tight">{shot.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{shot.body}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

@@ -32,7 +32,7 @@ const PROOF = [
 
 const PRODUCT_SHOTS = [
   {
-    src: "/product-shots/dashboard-crop.png",
+    src: "/product-shots/dashboard-overview.png",
     title: "Painel operacional",
     body: "Visão consolidada dos módulos, alertas críticos e trabalho pendente.",
   },
