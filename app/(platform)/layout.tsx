@@ -97,10 +97,10 @@ export default async function PlatformLayout({ children }: { children: React.Rea
               Atalhos
             </div>
             <SidebarLink href="/oficina/new" icon={Smartphone}>
-              Abrir folha de obra
+              Abrir folha de obra piloto
             </SidebarLink>
             <SidebarLink href="/login" icon={Users}>
-              Mudar vista operacional
+              Trocar perfil demo
             </SidebarLink>
             {session.role === "admin" ? (
               <SidebarLink href="/proposta" icon={FileText}>
@@ -164,19 +164,19 @@ export default async function PlatformLayout({ children }: { children: React.Rea
           <div className="border-b border-[hsl(32_82%_55%)]/30 bg-[hsl(40_40%_96%)]">
             <div className="px-4 sm:px-8 py-2 flex items-center gap-3 text-[11px] flex-wrap">
               <Badge className="bg-[hsl(32_82%_55%)] text-[hsl(222_72%_12%)] border-0 text-[10px]">
-                Supervisão
+                Demo validada
               </Badge>
               <span className="text-foreground/70">
-                Visão consolidada · seis fluxos · dados operacionais.
+                Dados importados do pacote AITIPRO/Eder · 26 ficheiros · produção depende de PHC Advanced, Frotcom e Logue Trans.
               </span>
               <Link
                 href="/oficina/new"
                 className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline"
               >
-                Abrir folha de obra
+                Abrir folha de obra piloto
               </Link>
               <Link href="/login" className="inline-flex min-h-11 items-center text-[hsl(222_72%_30%)] font-medium hover:underline">
-                Mudar vista operacional
+                Trocar perfil demo
               </Link>
             </div>
           </div>
@@ -196,9 +196,11 @@ export default async function PlatformLayout({ children }: { children: React.Rea
               </div>
             </details>
             <Badge variant="outline" className="text-[10px] whitespace-nowrap">
-              {process.env.USE_LIVE_APIS === "true" ? "Integrações activas" : "Integrações em validação"}
+              {process.env.USE_LIVE_APIS === "true" ? "Modo produção" : "Modo validação"}
             </Badge>
-            <span className="hidden md:inline text-xs text-muted-foreground">Ambiente operacional</span>
+            <span className="hidden md:inline text-xs text-muted-foreground">
+              Fontes reais carregadas · integrações por activar
+            </span>
           </div>
           <div className="hidden sm:block text-xs text-muted-foreground">
             RGPD · dados UE · registo de auditoria

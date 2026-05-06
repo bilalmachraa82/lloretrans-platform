@@ -60,6 +60,12 @@ Frase de referência da Clarice:
 
 O desenho de cada módulo mantém decisão humana em todos os passos irreversíveis. A plataforma prepara, classifica e sinaliza; a pessoa aprova; o sistema regista.
 
+## Evidência Cliente
+
+A resposta operacional do Eder, com dados recebidos e lacunas por fechar nos seis fluxos, está registada em
+`docs/client-evidence/2026-05-06-eder-response.md`. Esta é a referência usada para explicar o estado de MVP:
+dados reais carregados, integrações em validação e decisões humanas antes de PHC Advanced, Frotcom e Logue Trans.
+
 ## Estado Dos Dados
 
 | Dado / integração | Estado actual | Caminho de produção |

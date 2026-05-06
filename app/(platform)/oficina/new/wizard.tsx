@@ -106,6 +106,7 @@ const SERVICE_KIND_LABELS: Record<string, string> = {
 const WORKSHOP_SERVICE_KINDS = new Set(["oficina_interna", "oficina_externa", "operacao_interna"]);
 const TRAILER_CODES = new Set(["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "I4", "I5", "I7", "I8", "I9"]);
 const LIGHT_CODES = new Set(["L1", "L2", "L4", "L5", "L6", "L7", "L8", "I0", "I1", "I3", "I4", "I6", "I7", "I8", "I9"]);
+const STEP_LABELS = ["Matrícula", "Intervenções", "Checklist", "Itens", "Fotos", "Assinatura", "Revisão"];
 
 function vehicleKindLabel(kind: string): string {
   const normalised = normalizeWorkshopVehicleKind(kind);
@@ -384,8 +385,8 @@ export function WorkOrderWizard({
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       <PageHeader
-        title={`Nova folha · passo ${step}/7`}
-        description="Rascunho automático · fluxo adaptado à matrícula e à intervenção"
+        title={`Nova folha · ${STEP_LABELS[step - 1]}`}
+        description={`Passo ${step}/7 · rascunho automático · fluxo adaptado à matrícula e à intervenção`}
         actions={
           <div className="flex flex-wrap gap-2">
             <Button type="button" variant="outline" onClick={resetDraft}>
@@ -398,13 +399,22 @@ export function WorkOrderWizard({
         }
       />
 
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5, 6, 7].map((n) => (
-          <div
-            key={n}
-            className={`h-1.5 flex-1 rounded-full ${n <= step ? "bg-primary" : "bg-secondary"}`}
-          />
-        ))}
+      <div className="space-y-2">
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+            <div
+              key={n}
+              className={`h-1.5 flex-1 rounded-full ${n <= step ? "bg-primary" : "bg-secondary"}`}
+            />
+          ))}
+        </div>
+        <div className="grid grid-cols-7 gap-1 text-[10px] leading-tight text-muted-foreground">
+          {STEP_LABELS.map((label, index) => (
+            <div key={label} className={index + 1 === step ? "font-semibold text-primary" : ""}>
+              {label}
+            </div>
+          ))}
+        </div>
       </div>
 
       {step === 1 && (
@@ -677,6 +687,10 @@ export function WorkOrderWizard({
         <Card>
           <CardHeader><CardTitle className="text-base">7. Revisão</CardTitle></CardHeader>
           <CardContent className="space-y-3 text-sm">
+            <div className="rounded-md border border-success/25 bg-success/5 p-3 text-xs leading-relaxed text-muted-foreground">
+              Ao submeter, a folha entra em validação administrativa. A exportação para PHC Advanced só deve acontecer
+              depois de aprovada.
+            </div>
             <Kv label="Matrícula" value={plate} />
             <Kv label="Tipo" value={selectedVehicleKind ? vehicleKindLabel(selectedVehicleKind) : "—"} />
             <Kv label="Intervenções" value={selectedServiceCodes.join(", ")} />

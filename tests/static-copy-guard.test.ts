@@ -97,6 +97,9 @@ describe("static copy guard", () => {
       "export PHC",
       "mobile-first",
       "work order",
+      "5+1",
+      "Versão 1.4",
+      "pacote 5+1",
     ];
 
     for (const phrase of weakPhrases) {
@@ -110,7 +113,10 @@ describe("static copy guard", () => {
   });
 
   it("uses confirmed Eder assumptions", () => {
-    const proposal = fs.readFileSync(path.join(process.cwd(), "app/proposta/page.tsx"), "utf-8");
+    const proposal = fs.readFileSync(
+      path.join(process.cwd(), "audit/pricing/proposta-clarice-fernando.html"),
+      "utf-8",
+    );
     expect(proposal).toMatch(/3 km/);
     expect(proposal).toMatch(/20%/);
     expect(proposal).toMatch(/2,50|€2\.50|€2,50/);

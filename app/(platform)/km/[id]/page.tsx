@@ -132,6 +132,11 @@ export default async function KmDetailPage({ params }: { params: Promise<{ id: s
             <CardTitle className="text-base">Decisão</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="rounded-md border border-border bg-secondary/30 p-3 text-xs leading-relaxed text-muted-foreground">
+              <strong className="text-foreground">Como decidir:</strong> usar GPS quando a leitura Frotcom explica o
+              desvio, aprovar manualmente quando há evidência operacional, ou rejeitar quando não existe confiança
+              suficiente. Qualquer alteração fica no registo de auditoria.
+            </div>
             {row.state === "yellow" && row.kmGps != null && (
               <form action={useGpsValue} className="flex items-center gap-3">
                 <input type="hidden" name="reconciliationId" value={row.id} />

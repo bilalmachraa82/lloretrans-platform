@@ -12,6 +12,22 @@ import { formatEur, formatNumber } from "@/lib/money";
 import { formatDate } from "@/lib/dates";
 import { SimpleLineChart } from "@/components/charts/line-chart";
 import { exportMonthlyReport } from "./actions";
+import fuelSummary from "@/fixtures/aitipro/fuel-summary.json";
+import sourceManifest from "@/fixtures/aitipro/source-manifest.json";
+
+const FUEL_PROVIDER_LABELS: Record<keyof typeof fuelSummary.providers, string> = {
+  cepsa: "Cepsa",
+  repsol: "Repsol",
+  radius_velocity: "Radius",
+  bomba_interna: "Bomba interna",
+  frotcom_fee: "Frotcom",
+};
+
+const fuelSourceRows = Object.entries(fuelSummary.providers).map(([key, provider]) => ({
+  label: FUEL_PROVIDER_LABELS[key as keyof typeof fuelSummary.providers] ?? key,
+  rows: provider.rows,
+  liters: provider.totalLiters,
+}));
 
 export default async function FuelPage() {
   await requireRole(["admin", "clarice"]);
@@ -108,8 +124,10 @@ export default async function FuelPage() {
 
       <Card>
         <CardContent className="p-4 text-sm text-muted-foreground">
-          Dados reais carregados: Cepsa 1261 linhas · Repsol 175 · Radius 96 · Bomba interna 629.
-          O anexo Frotcom recebido é mensalidade/equipamento, não leitura operacional por viatura.
+          <strong className="text-foreground">Fonte carregada:</strong>{" "}
+          {fuelSourceRows.map((provider) => `${provider.label} ${formatNumber(provider.rows)} linhas`).join(" · ")}.
+          Manifesto gerado em {formatDate(new Date(sourceManifest.generatedAt))}. O anexo Frotcom recebido é
+          mensalidade/equipamento, não leitura operacional por viatura.
         </CardContent>
       </Card>
 

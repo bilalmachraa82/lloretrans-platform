@@ -29,7 +29,7 @@ export default async function BolsaPage({
   searchParams: Promise<{ view?: string; mine?: string; regularization?: string; carrier?: string; client?: string; q?: string }>;
 }) {
   const session = await requireRole(["admin", "clarice", "comercial", "admin_faturacao"]);
-  const { view = "table", mine, regularization, carrier, client, q } = await searchParams;
+  const { view = "kanban", mine, regularization, carrier, client, q } = await searchParams;
   const showMineOnly = session.role === "comercial" || mine === "1";
 
   const monthStart = new Date();
@@ -129,7 +129,7 @@ export default async function BolsaPage({
     <div className="space-y-6">
       <PageHeader
         title="Bolsa de Carga"
-        description={`${rows.length} cargas · ${showMineOnly ? "minhas" : "todas"}`}
+        description={`${rows.length} cargas do Excel do Eder · ciclo completo de CMR, facturas, R/NR, pagamentos e comissões`}
         actions={
           <div className="flex flex-wrap gap-2">
             {session.role !== "comercial" && (
@@ -183,7 +183,8 @@ export default async function BolsaPage({
         <CardContent className="p-4 text-sm leading-relaxed text-muted-foreground">
           <strong className="text-foreground">Nota de leitura:</strong> a folha histórica foi importada sem corrigir os
           campos originais. Quando o preço cliente e o valor pago ao transportador vêm iguais, a margem fica a zero; esse
-          saneamento é precisamente um dos pontos a fechar antes de operar a bolsa em produção.
+          saneamento é precisamente um dos pontos a fechar antes de operar a bolsa em produção. Regra confirmada:
+          20% do lucro total mais bónus Lloretrans de 2,50 EUR nacional ou 5 EUR internacional.
         </CardContent>
       </Card>
 
@@ -229,7 +230,11 @@ export default async function BolsaPage({
                 <Badge variant="secondary">{groupedByState[s].length}</Badge>
               </div>
               <div className="space-y-2">
-                {groupedByState[s].slice(0, 15).map((r) => (
+                {groupedByState[s].length === 0 ? (
+                  <div className="rounded-md border border-dashed border-border bg-secondary/20 p-3 text-xs text-muted-foreground">
+                    Sem cargas neste estado.
+                  </div>
+                ) : groupedByState[s].slice(0, 15).map((r) => (
                   <Link key={r.id} href={`/bolsa/${r.id}`}>
                     <Card className="hover:border-primary/60 hover:-translate-y-0.5 transition-all">
                       <CardContent className="p-3 text-xs space-y-1.5">
@@ -268,6 +273,7 @@ export default async function BolsaPage({
               <thead>
                 <tr>
                   <th>Data</th>
+                  <th>Estado / próxima acção</th>
                   <th>Viatura</th>
                   <th>Reboque</th>
                   <th>Transportador</th>
@@ -286,9 +292,21 @@ export default async function BolsaPage({
                 </tr>
               </thead>
               <tbody>
-                {rows.map((r) => (
+                {rows.length === 0 ? (
+                  <tr>
+                    <td colSpan={17} className="py-8 text-center text-sm text-muted-foreground">
+                      Sem cargas para estes filtros. Limpa a pesquisa ou cria uma nova carga para iniciar o ciclo.
+                    </td>
+                  </tr>
+                ) : rows.map((r) => (
                   <tr key={r.id}>
                     <td className="font-mono text-xs">{r.loadedAt ? formatDate(r.loadedAt) : "—"}</td>
+                    <td className="min-w-[180px]">
+                      <Badge variant="secondary" className="mb-1 text-[10px]">
+                        {STATE_LABELS[r.state as FreightState] ?? r.state}
+                      </Badge>
+                      <div className="text-[10px] text-muted-foreground">{nextActionLabel(r.state as FreightState)}</div>
+                    </td>
                     <td className="font-mono text-xs">{r.plate ?? "—"}</td>
                     <td className="font-mono text-xs">{r.trailerPlate ?? "—"}</td>
                     <td className="text-xs">{r.carrierName ?? "—"}</td>
@@ -315,6 +333,15 @@ export default async function BolsaPage({
       )}
     </div>
   );
+}
+
+function nextActionLabel(state: FreightState): string {
+  if (state === "scheduled") return "Confirmar entrega e CMR";
+  if (state === "delivered") return "Registar factura fornecedor";
+  if (state === "supplier_invoiced") return "Emitir factura cliente";
+  if (state === "client_invoiced") return "Confirmar recebimento";
+  if (state === "paid") return "Comissão fechada";
+  return "Abrir detalhe";
 }
 
 function Kpi({ label, value, accent = "muted" }: { label: string; value: string; accent?: "muted" | "destructive" }) {

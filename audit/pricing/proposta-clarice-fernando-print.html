@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Proposta Comercial · Lloretrans × AiTiPro · PDF</title>
+<link rel="icon" href="data:," />
+<style>
+  :root {
+    --green: #0d3b38;
+    --green-2: #124f4a;
+    --mint: #2ae5a0;
+    --orange: #ca742d;
+    --blue: #2563eb;
+    --slate: #1e2d3d;
+    --muted: #5f6b7a;
+    --soft: #eef6f3;
+    --tint: #f8fffc;
+    --line: #dce6e3;
+    --paper: #ffffff;
+  }
+
+  @page { size: A4; margin: 0; }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: #e8f0ee;
+    color: var(--slate);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body { font-size: 9.5pt; line-height: 1.45; }
+
+  .sheet {
+    position: relative;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 14mm 14mm 13mm;
+    background: var(--paper);
+    page-break-after: always;
+    overflow: hidden;
+  }
+
+  .sheet:last-child { page-break-after: auto; }
+
+  @media screen {
+    .sheet {
+      margin: 18px auto;
+      box-shadow: 0 18px 48px rgb(15 23 42 / .16);
+    }
+  }
+
+  .footer {
+    position: absolute;
+    left: 14mm;
+    right: 14mm;
+    bottom: 8mm;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--line);
+    padding-top: 5mm;
+    color: #7b8491;
+    font-size: 7.5pt;
+    letter-spacing: .02em;
+  }
+
+  h1, h2, h3, p { margin: 0; }
+
+  h1 {
+    max-width: 158mm;
+    margin-top: 24mm;
+    font-size: 34pt;
+    line-height: .98;
+    letter-spacing: 0;
+    font-weight: 650;
+  }
+
+  h2 {
+    font-size: 21pt;
+    line-height: 1.08;
+    letter-spacing: 0;
+    font-weight: 650;
+  }
+
+  h3 {
+    font-size: 12.5pt;
+    line-height: 1.18;
+    font-weight: 750;
+  }
+
+  .accent { color: var(--green); }
+
+  .label {
+    color: var(--orange);
+    font-size: 7.2pt;
+    font-weight: 850;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+  }
+
+  .muted { color: var(--muted); }
+  .strong { color: var(--slate); font-weight: 800; }
+  .mono { font-family: "SFMono-Regular", Consolas, monospace; }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12mm;
+    align-items: flex-start;
+  }
+
+  .logo-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 7mm;
+    border: 1px solid var(--line);
+    border-radius: 7mm;
+    padding: 4.5mm 6mm;
+    background: #fff;
+  }
+
+  .logo-box img { width: 48mm; height: auto; display: block; }
+
+  .logo-tag {
+    border-left: 1px solid var(--line);
+    padding-left: 7mm;
+    color: var(--orange);
+    font-size: 7pt;
+    font-weight: 850;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  .meta {
+    max-width: 70mm;
+    color: #6b7280;
+    font-size: 8.5pt;
+    font-weight: 650;
+    text-align: right;
+  }
+
+  .lead {
+    max-width: 166mm;
+    margin-top: 10mm;
+    color: #4b5563;
+    font-size: 13pt;
+    line-height: 1.55;
+  }
+
+  .recipient {
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 8mm;
+    margin-top: 12mm;
+    color: #6b7280;
+    font-size: 8.8pt;
+  }
+
+  .principle {
+    margin-top: 18mm;
+    border: 1px solid var(--line);
+    border-radius: 9mm;
+    padding: 10mm 12mm;
+    background: linear-gradient(135deg, #ffffff, #f7fffb);
+  }
+
+  .principle .big {
+    margin-top: 4mm;
+    font-size: 22pt;
+    line-height: 1.05;
+    font-weight: 760;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5mm;
+  }
+
+  .stack { display: grid; gap: 5mm; }
+  .stack-sm { display: grid; gap: 3.5mm; }
+
+  .section-title {
+    display: grid;
+    gap: 3mm;
+    margin-bottom: 8mm;
+  }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 6mm;
+    background: #fff;
+    padding: 6mm;
+  }
+
+  .card.tint { background: var(--tint); }
+  .card.dark {
+    background: var(--green);
+    color: #fff;
+  }
+
+  .card.dark p, .card.dark li { color: rgba(255,255,255,.78); }
+  .card.dark .label { color: var(--mint); }
+
+  .metric {
+    border-top: 1px solid var(--line);
+    padding-top: 3.5mm;
+  }
+
+  .metric:first-child { border-top: 0; padding-top: 0; }
+
+  .metric .k {
+    color: #6b7280;
+    font-size: 7pt;
+    font-weight: 850;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  .metric .v {
+    margin-top: 1mm;
+    color: var(--slate);
+    font-size: 18pt;
+    line-height: 1;
+    font-weight: 850;
+  }
+
+  .option {
+    min-height: 54mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .option.recommended {
+    border-color: var(--mint);
+    box-shadow: inset 0 0 0 1px var(--mint);
+  }
+
+  .badge {
+    display: inline-flex;
+    width: fit-content;
+    border-radius: 999px;
+    background: var(--soft);
+    color: var(--green);
+    padding: 1.5mm 3mm;
+    font-size: 6.6pt;
+    font-weight: 850;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .badge.orange { background: #fff3e8; color: var(--orange); }
+  .badge.green { background: var(--green); color: #fff; }
+
+  .price {
+    margin-top: 4mm;
+    font-size: 24pt;
+    line-height: 1;
+    font-weight: 850;
+  }
+
+  ul {
+    margin: 3.5mm 0 0;
+    padding-left: 4.5mm;
+  }
+
+  li { margin: 1.6mm 0; color: #4b5563; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 5mm;
+    font-size: 7.9pt;
+  }
+
+  th {
+    background: #eef6f3;
+    color: #334155;
+    padding: 3mm 3mm;
+    font-size: 6.4pt;
+    font-weight: 850;
+    letter-spacing: .15em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  td {
+    border-top: 1px solid var(--line);
+    padding: 3mm;
+    color: #465365;
+    vertical-align: top;
+  }
+
+  td strong { color: var(--slate); }
+  .num { text-align: right; white-space: nowrap; font-weight: 800; color: var(--slate); }
+  .total-row td { background: #f4fffb; color: var(--slate); font-weight: 800; }
+
+  .evidence {
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 7mm;
+    align-items: stretch;
+  }
+
+  .shot {
+    border: 1px solid var(--line);
+    border-radius: 7mm;
+    overflow: hidden;
+    background: #f8fafc;
+  }
+
+  .shot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .proofs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm;
+  }
+
+  .proof {
+    border: 1px solid var(--line);
+    border-radius: 5mm;
+    padding: 5mm;
+    background: #fff;
+  }
+
+  .proof .n {
+    color: var(--green);
+    font-size: 19pt;
+    line-height: 1;
+    font-weight: 850;
+  }
+
+  .proof p { margin-top: 2mm; color: #5f6b7a; font-size: 7.8pt; }
+
+  .chart-card {
+    border: 1px solid var(--mint);
+    border-radius: 7mm;
+    background: #f8fffc;
+    padding: 6mm;
+  }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+    margin: 5mm 0;
+  }
+
+  .kpi {
+    border: 1px solid var(--line);
+    border-radius: 4mm;
+    background: #fff;
+    padding: 4mm;
+  }
+
+  .kpi .k {
+    color: #697386;
+    font-size: 6.5pt;
+    font-weight: 850;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .kpi .v {
+    margin-top: 1mm;
+    font-size: 13.5pt;
+    font-weight: 850;
+  }
+
+  .chart { width: 100%; height: 78mm; display: block; }
+  .legend { display: flex; gap: 6mm; margin-top: 2mm; font-size: 8pt; font-weight: 750; color: #697386; }
+  .legend span { display: inline-flex; align-items: center; gap: 2mm; }
+  .line-key { width: 11mm; height: 1mm; border-radius: 999px; display: inline-block; }
+
+  .module-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5mm;
+  }
+
+  .module {
+    border: 1px solid var(--line);
+    border-radius: 5mm;
+    padding: 5mm;
+    min-height: 46mm;
+  }
+
+  .module .code {
+    color: var(--orange);
+    font-size: 6.3pt;
+    font-weight: 850;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  .module h3 { margin-top: 1.5mm; }
+  .module p { margin-top: 2mm; color: #536174; font-size: 7.8pt; }
+
+  .gantt {
+    border: 1px solid var(--line);
+    border-radius: 6mm;
+    padding: 6mm;
+    background: #fff;
+  }
+
+  .gantt-head,
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 44mm repeat(14, 1fr);
+    gap: 1.4mm;
+    align-items: center;
+  }
+
+  .gantt-head {
+    color: #697386;
+    font-size: 6pt;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .gantt-row {
+    min-height: 12mm;
+    border-top: 1px solid var(--line);
+    padding: 2.4mm 0;
+  }
+
+  .task strong { display: block; color: var(--slate); }
+  .task span { color: #697386; font-size: 7pt; }
+
+  .bar {
+    height: 7mm;
+    border-radius: 999px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6.6pt;
+    font-weight: 850;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .bar.validation { background: var(--green); }
+  .bar.admin { background: var(--blue); }
+  .bar.operation { background: var(--orange); }
+  .bar.stabilization { background: #64748b; }
+  .bar.future { background: #f4faf8; color: var(--green); border: 1.5px dashed var(--green); }
+
+  .accept-options {
+    display: grid;
+    gap: 3mm;
+    margin-top: 5mm;
+  }
+
+  .accept-options label {
+    display: flex;
+    gap: 3mm;
+    align-items: flex-start;
+    border: 1px solid var(--line);
+    border-radius: 4mm;
+    background: var(--tint);
+    padding: 3.5mm;
+    color: #4b5563;
+  }
+
+  .box {
+    width: 4mm;
+    height: 4mm;
+    flex: 0 0 4mm;
+    border: 1.4px solid #7b8491;
+    border-radius: 1mm;
+    margin-top: .4mm;
+  }
+
+  .signature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm;
+    margin-top: 8mm;
+  }
+
+  .sig-line {
+    margin-top: 11mm;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 2mm;
+    font-weight: 800;
+  }
+</style>
+</head>
+<body>
+  <section class="sheet">
+    <div class="top">
+      <div class="logo-box">
+        <img src="../../public/aitipro-logo-light.png" alt="AiTiPro" />
+        <div class="logo-tag">Proposta confidencial</div>
+      </div>
+      <div class="meta">
+        Proposta comercial · Referência LLO-2026-05-001<br />
+        2 de Maio de 2026 · validade 30 dias · valores sem IVA
+      </div>
+    </div>
+    <h1>Proposta de implementação <span class="accent">para a operação Lloretrans.</span></h1>
+    <p class="lead">
+      Investimento recomendado de <strong>€ 45.000</strong> em preço fechado, <strong>Sprint 0 oferecida</strong>
+      e mensalidade faseada de <strong>€ 600 a € 900/mês</strong>. A plataforma centraliza quilómetros,
+      documentos, facturas de fornecedor, bolsa de carga, comissões e oficina em <strong>14 semanas</strong>.
+    </p>
+    <div class="recipient">
+      <p>Para: <strong>Clarice Santos · Direcção Lloretrans · Grupo Patrícia Pilar</strong></p>
+      <p>De: <strong>Bilal Machraa · AiTiPro</strong></p>
+      <p>Âmbito: <strong>Plataforma operacional Lloretrans · 6 módulos</strong></p>
+      <p>Recomendação: <strong>Opção C · Solução Completa</strong></p>
+    </div>
+    <div class="principle">
+      <div class="label">Princípio operacional</div>
+      <div class="big">A IA prepara. A pessoa decide. O sistema regista.</div>
+      <p class="muted" style="margin-top:5mm">
+        A AiTiPro é uma empresa portuguesa especializada em soluções de Inteligência Artificial aplicadas à operação.
+        Todos os passos irreversíveis permanecem sujeitos a validação humana e registo de auditoria.
+      </p>
+    </div>
+    <div class="footer"><span>Lloretrans × AiTiPro · Proposta comercial</span><span>1</span></div>
+  </section>
+
+  <section class="sheet">
+    <div class="section-title">
+      <div class="label">Sumário executivo</div>
+      <h2>Decisão por evidência operacional, retorno e faseamento.</h2>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <p>
+          Esta proposta cobre a implementação de uma plataforma operacional para a Lloretrans, com seis módulos
+          que centralizam validação de quilómetros, documentos, facturas de fornecedor, bolsa de carga, comissões
+          e folha de obra de oficina. O módulo de combustível fica como opção futura.
+        </p>
+        <p style="margin-top:4mm">
+          A entrega completa faz-se em <strong>14 semanas</strong>, incluindo estabilização. A primeira semana é
+          <strong>Sprint 0 sem custo</strong>, usada para validar integrações, volumes, tempos reais e custos.
+        </p>
+      </div>
+      <div class="card tint stack-sm">
+        <div class="metric"><div class="k">Investimento recomendado</div><div class="v">€ 45.000</div></div>
+        <div class="metric"><div class="k">Mensalidade completa</div><div class="v">€ 900/mês</div></div>
+        <div class="metric"><div class="k">Break-even estimado</div><div class="v">Mês 9</div></div>
+        <div class="metric"><div class="k">Diferença 36m</div><div class="v">€ 135.936</div></div>
+      </div>
+    </div>
+    <div class="card dark" style="margin-top:7mm">
+      <div class="label">Sprint 0 · validação técnica e financeira</div>
+      <h2 style="margin-top:4mm; color:#fff">1 semana · € 0 para a Lloretrans · risco AiTiPro.</h2>
+      <p style="margin-top:5mm">
+        A Sprint 0 valida acessos PHC Advanced, Frotcom e Logue Trans, confirma volumes documentais,
+        mede custos actuais por bloco e transforma a análise de retorno em números confirmados.
+        Se identificar bloqueio técnico crítico sem caminho viável, a Lloretrans não paga nada.
+      </p>
+    </div>
+    <div class="evidence" style="margin-top:7mm">
+      <div class="shot"><img src="../../public/product-shots/dashboard-crop.png" alt="Painel operacional Lloretrans" /></div>
+      <div class="proofs">
+        <div class="proof"><div class="n">160</div><p>viagens no cenário de validação de quilómetros, com margem confirmada a 3 km.</p></div>
+        <div class="proof"><div class="n">92,4%</div><p>confiança média na classificação automática de facturas reais.</p></div>
+        <div class="proof"><div class="n">306</div><p>cargas reais convertidas de Excel para fluxo auditado.</p></div>
+        <div class="proof"><div class="n">2.161</div><p>abastecimentos reais agregados para análise de combustível.</p></div>
+      </div>
+    </div>
+    <div class="footer"><span>Sumário executivo</span><span>2</span></div>
+  </section>
+
+  <section class="sheet">
+    <div class="section-title">
+      <div class="label">Opções de aprovação</div>
+      <h2>Três âmbitos de decisão, com Sprint 0 oferecida.</h2>
+    </div>
+    <div class="grid-3">
+      <article class="card option">
+        <div>
+          <span class="badge">Opção A</span>
+          <h3 style="margin-top:4mm">Núcleo de Validação</h3>
+          <p class="muted" style="margin-top:2mm">Sprint 0 + Bloco 1 · Módulos A + C</p>
+          <div class="price">€ 14.000</div>
+          <p class="muted" style="margin-top:2mm">€ 600/mês após entrada em produção do primeiro bloco.</p>
+        </div>
+        <ul>
+          <li>PRI estimado no mês 6.</li>
+          <li>Diferença 36m: € 69.700.</li>
+          <li>Menor exposição financeira inicial.</li>
+        </ul>
+      </article>
+      <article class="card option">
+        <div>
+          <span class="badge orange">Opção B</span>
+          <h3 style="margin-top:4mm">Núcleo Administrativo</h3>
+          <p class="muted" style="margin-top:2mm">Sprint 0 + Blocos 1+2 · A + C + B</p>
+          <div class="price">€ 25.500</div>
+          <p class="muted" style="margin-top:2mm">€ 700/mês após entrada em produção do Bloco 2.</p>
+        </div>
+        <ul>
+          <li>PRI cumulativo estimado no mês 8.</li>
+          <li>Diferença 36m: € 95.424.</li>
+          <li>Inclui OCR de facturas.</li>
+        </ul>
+      </article>
+      <article class="card option recommended">
+        <div>
+          <span class="badge green">Opção C recomendada</span>
+          <h3 style="margin-top:4mm">Solução Completa</h3>
+          <p class="muted" style="margin-top:2mm">Sprint 0 + Blocos 1+2+3 · A + C + B + E + F</p>
+          <div class="price">€ 45.000</div>
+          <p class="muted" style="margin-top:2mm">€ 900/mês após entrada em produção completa.</p>
+        </div>
+        <ul>
+          <li>PRI estimado no mês 9.</li>
+          <li>ROI estimado a 36 meses: +302%.</li>
+          <li>Diferença 36m: € 135.936.</li>
+        </ul>
+      </article>
+    </div>
+    <table style="margin-top:8mm">
+      <thead>
+        <tr><th>Opção</th><th class="num">Investimento</th><th class="num">Mensalidade</th><th class="num">PRI</th><th class="num">Diferença 36m</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Opção A · Núcleo de Validação</strong><br />A + C</td><td class="num">€ 14.000</td><td class="num">€ 600</td><td class="num">Mês 6*</td><td class="num">€ 69.700*</td></tr>
+        <tr><td><strong>Opção B · Núcleo Administrativo</strong><br />A + C + B</td><td class="num">€ 25.500</td><td class="num">€ 700</td><td class="num">Mês 8*</td><td class="num">€ 95.424*</td></tr>
+        <tr class="total-row"><td><strong>Opção C · Solução Completa</strong><br />A + C + B + E + F</td><td class="num">€ 45.000</td><td class="num">€ 900</td><td class="num">Mês 9*</td><td class="num">€ 135.936*</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:4mm; font-size:8pt">*Estimativas com volumes, tempos e custos indirectos a confirmar na Sprint 0. Se houver bloqueio técnico crítico, não há cobrança.</p>
+    <div class="footer"><span>Opções de aprovação</span><span>3</span></div>
+  </section>
+
+  <section class="sheet">
+    <div class="section-title">
+      <div class="label">Rentabilidade</div>
+      <h2>Retorno estimado da Implementação Completa.</h2>
+      <p class="muted">
+        A solução completa reduz o custo futuro total estimado para € 1.559/mês e cruza o investimento perto do mês 9.
+      </p>
+    </div>
+    <div class="chart-card">
+      <div class="grid-2" style="align-items:start">
+        <div>
+          <h3>Implementação Completa · retorno acumulado</h3>
+          <p class="muted" style="margin-top:2mm">€ 45.000 + € 900/mês · custo futuro total € 1.559/mês.</p>
+        </div>
+        <div class="kpis" style="margin:0">
+          <div class="kpi"><div class="k">Custo actual</div><div class="v">€ 6.585/mês</div></div>
+          <div class="kpi"><div class="k">Solução 36m</div><div class="v">€ 101.124</div></div>
+          <div class="kpi"><div class="k">Diferença 36m</div><div class="v">€ 135.936</div></div>
+        </div>
+      </div>
+      <svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Gráfico de break-even">
+        <rect x="0" y="0" width="640" height="300" fill="#f8fffc" />
+        <line x1="74" y1="238" x2="594" y2="238" stroke="#cbd5e1" />
+        <line x1="74" y1="74" x2="594" y2="74" stroke="#dce6e3" />
+        <line x1="74" y1="154" x2="594" y2="154" stroke="#dce6e3" />
+        <line x1="74" y1="238" x2="74" y2="54" stroke="#cbd5e1" />
+        <text x="20" y="79" fill="#6b7280" font-size="13" font-weight="700">€250k</text>
+        <text x="22" y="159" fill="#6b7280" font-size="13" font-weight="700">€165k</text>
+        <text x="30" y="239" fill="#6b7280" font-size="13" font-weight="700">€80k</text>
+        <polyline points="74,238 160,205 247,173 334,140 421,107 508,74 594,42" fill="none" stroke="#ca742d" stroke-width="5" stroke-linecap="round" />
+        <polyline points="74,201 160,193 247,185 334,178 421,170 508,162 594,154" fill="none" stroke="#0d3b38" stroke-width="5" stroke-linecap="round" />
+        <line x1="187" y1="218" x2="187" y2="184" stroke="#2ae5a0" stroke-width="3" stroke-dasharray="8 7" />
+        <circle cx="187" cy="184" r="8" fill="#2ae5a0" stroke="#0d3b38" stroke-width="3" />
+        <text x="202" y="178" fill="#1e2d3d" font-size="15" font-weight="850">Mês 9</text>
+        <text x="74" y="264" fill="#6b7280" font-size="12" font-weight="800">M0</text>
+        <text x="244" y="264" fill="#6b7280" font-size="12" font-weight="800">M12</text>
+        <text x="414" y="264" fill="#6b7280" font-size="12" font-weight="800">M24</text>
+        <text x="582" y="264" fill="#6b7280" font-size="12" font-weight="800">M36</text>
+      </svg>
+      <div class="legend">
+        <span><i class="line-key" style="background:#ca742d"></i>Linha custo actual</span>
+        <span><i class="line-key" style="background:#0d3b38"></i>Linha nova solução</span>
+      </div>
+    </div>
+    <div class="card tint" style="margin-top:7mm">
+      <h3>Leitura financeira</h3>
+      <p class="muted" style="margin-top:2mm">
+        O retorno ocorre quando o custo acumulado da nova solução passa a ser inferior ao custo acumulado
+        do processo actual. A poupança acumulada aos 36 meses corresponde à diferença entre os dois custos
+        acumulados.
+      </p>
+    </div>
+    <div class="footer"><span>Rentabilidade</span><span>4</span></div>
+  </section>
+
+  <section class="sheet">
+    <div class="section-title">
+      <div class="label">Custos mensais por bloco</div>
+      <h2>RH actual, investimento e custo mensal da solução.</h2>
+      <p class="muted">
+        Custo HH de referência: € 15/h. A Sprint 0 substitui esta referência por tempos cronometrados
+        e custos reais da Lloretrans antes de fechar a análise financeira.
+      </p>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Âmbito</th><th>Custo actual mensal</th><th class="num">Investimento</th><th>Custo futuro mensal</th><th class="num">Ganho/mês</th><th class="num">Retorno</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Bloco 1</strong><br />A + C</td><td>157 h · € 2.350 RH<br />€ 900 indirectos<br /><strong>€ 3.250</strong></td><td class="num">€ 14.000</td><td>16 h · € 235 RH<br />€ 90 indirectos<br />€ 600 mensalidade<br /><strong>€ 925</strong></td><td class="num">+€ 2.325</td><td class="num">Mês 6<br />ROI +498%</td></tr>
+        <tr><td><strong>Bloco 2</strong><br />B</td><td>24 h · € 360 RH<br />€ 900 indirectos<br /><strong>€ 1.260</strong></td><td class="num">€ 11.500</td><td>2 h · € 36 RH<br />€ 90 indirectos<br />+€ 100 mensalidade<br /><strong>€ 226</strong></td><td class="num">+€ 1.034</td><td class="num">Mês 11<br />ROI +224%</td></tr>
+        <tr><td><strong>Bloco 3</strong><br />E + F</td><td>38 h · € 575 RH<br />€ 1.500 indirectos<br /><strong>€ 2.075</strong></td><td class="num">€ 19.500</td><td>4 h · € 58 RH<br />€ 150 indirectos<br />+€ 200 mensalidade<br /><strong>€ 408</strong></td><td class="num">+€ 1.667</td><td class="num">Mês 12<br />ROI +208%</td></tr>
+        <tr class="total-row"><td><strong>Total incluído</strong><br />A + C + B + E + F</td><td>219 h · € 3.285 RH<br />€ 3.300 indirectos<br /><strong>€ 6.585</strong></td><td class="num">€ 45.000</td><td>22 h · € 329 RH<br />€ 330 indirectos<br />€ 900 mensalidade<br /><strong>€ 1.559</strong></td><td class="num">+€ 5.026</td><td class="num">Mês 9<br />ROI +302%</td></tr>
+      </tbody>
+    </table>
+    <div class="grid-2" style="margin-top:8mm">
+      <div class="card">
+        <h3>O que a Sprint 0 confirma</h3>
+        <ul>
+          <li>Horas gastas por processo.</li>
+          <li>Volume mensal de viagens, documentos, facturas, cargas e folhas de oficina.</li>
+          <li>Retrabalho, custos indirectos e bloqueios técnicos.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Módulo D</h3>
+        <p class="muted" style="margin-top:2mm">
+          O Módulo D permanece como opção futura e sem cobrança hoje. Se for activado, o investimento
+          adicional é € 7.500.
+        </p>
+      </div>
+    </div>
+    <div class="footer"><span>Custos mensais por bloco</span><span>5</span></div>
+  </section>
+
+  <section class="sheet">
+    <div class="section-title">
+      <div class="label">Âmbito da plataforma</div>
+      <h2>Seis módulos, responsabilidades claras.</h2>
+    </div>
+    <div class="module-grid">
+      <div class="module"><div class="code">Módulo A · validação km</div><h3>Validação de Quilómetros</h3><p><strong>Incluído no Bloco 1.</strong> Reconciliação Logue Trans × Frotcom, semáforo verde/amarelo/vermelho, margem de 3 km, aprovação em lote e exportação CSV para PHC Advanced.</p></div>
+      <div class="module"><div class="code">Módulo B · OCR fornecedor</div><h3>OCR Facturas de Fornecedor</h3><p><strong>Bloco 2 · € 11.500.</strong> Carregamento de PDF, extracção automática, classificação por NIF, validação humana, regra por fornecedor e ficheiro XML para PHC Advanced.</p></div>
+      <div class="module"><div class="code">Módulo C · documentos</div><h3>Digitalização Central de Documentos</h3><p><strong>Incluído no Bloco 1.</strong> Hub documental único, associação por matrícula, data e número CMR, com permissões entre empresas do grupo.</p></div>
+      <div class="module"><div class="code">Módulo D · combustível</div><h3>Médias de Combustível</h3><p><strong>Opção futura · € 7.500 · sem cobrança hoje.</strong> Cepsa, Repsol, Radius, bomba interna e Frotcom ficam sujeitos a validação técnica na Sprint 0.</p></div>
+      <div class="module"><div class="code">Módulo E · bolsa e comissões</div><h3>Bolsa de Carga + Comissões</h3><p><strong>Incluído no Bloco 3.</strong> Aplicação com 306 cargas reais, estados operacionais, facturação fornecedor/cliente e comissões automáticas pela regra confirmada.</p></div>
+      <div class="module"><div class="code">Módulo F · oficina</div><h3>Folha de Obra Oficina</h3><p><strong>Incluído no Bloco 3.</strong> Aplicação móvel com estados, assinatura, validação administrativa e exportação para integração PHC Advanced.</p></div>
+    </div>
+    <div class="card tint" style="margin-top:7mm">
+      <h3>Combustível permanece fora do total recomendado.</h3>
+      <p class="muted" style="margin-top:2mm">
+        O investimento recomendado inclui os módulos A, B, C, E e F. O Módulo D entra apenas após confirmação técnica do acesso à Frotcom e validação da qualidade dos dados de abastecimento.
+      </p>
+    </div>
+    <div class="footer"><span>Âmbito funcional</span><span>6</span></div>
+  </section>
+
+  <section class="sheet">
+    <div class="grid-2">
+      <div>
+        <div class="section-title">
+          <div class="label">Investimento recomendado</div>
+          <h2>€ 45.000 de implementação, preço fechado.</h2>
+        </div>
+        <table>
+          <thead><tr><th>Item</th><th>Detalhe</th><th class="num">Valor</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sprint 0</strong></td><td>Validação técnica, PHC Advanced, Frotcom, Logue Trans, volumes mensais e plano final.</td><td class="num">€ 0</td></tr>
+            <tr><td><strong>Bloco 1</strong></td><td>Módulos A + C · validação km + hub documental.</td><td class="num">€ 14.000</td></tr>
+            <tr><td><strong>Bloco 2</strong></td><td>Módulo B · OCR facturas fornecedor e exportação PHC Advanced.</td><td class="num">€ 11.500</td></tr>
+            <tr><td><strong>Bloco 3</strong></td><td>Módulos E + F · bolsa de carga, comissões e folha de obra oficina.</td><td class="num">€ 19.500</td></tr>
+            <tr><td><strong>Módulo D</strong></td><td>Opção futura, sem cobrança hoje.</td><td class="num">€ 0 hoje</td></tr>
+            <tr class="total-row"><td><strong>Total recomendado</strong></td><td>Sprint 0 + Blocos 1, 2 e 3.</td><td class="num">€ 45.000</td></tr>
+          </tbody>
+        </table>
+        <p class="muted" style="margin-top:3mm; font-size:8pt">Investimento total se o Módulo D for activado no futuro: € 52.500.</p>
+      </div>
+      <div>
+        <div class="section-title">
+          <div class="label">Mensalidade e serviços incluídos</div>
+          <h2>€ 600 a € 900/mês conforme o âmbito aprovado.</h2>
+        </div>
+        <table>
+          <thead><tr><th>Recurso</th><th>Incluído</th><th>Acima do limite</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Hosting e infra</strong></td><td>Servidores e base de dados na UE, backups e monitorização.</td><td>Incluído</td></tr>
+            <tr><td><strong>Documentos OCR/IA</strong></td><td>Até 5.000 documentos/mês.</td><td>€ 0,12/doc.</td></tr>
+            <tr><td><strong>Storage</strong></td><td>Até 50 GB acumulados.</td><td>€ 0,40/GB/mês.</td></tr>
+            <tr><td><strong>Utilizadores</strong></td><td>Até 30 utilizadores activos.</td><td>€ 8/utilizador/mês.</td></tr>
+            <tr><td><strong>Empresas do grupo</strong></td><td>Lloretrans + 2 empresas adicionais.</td><td>€ 250/mês por empresa.</td></tr>
+            <tr><td><strong>Suporte técnico</strong></td><td>Até 8h/mês.</td><td>€ 65/hora.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="margin-top:8mm">
+      <h3>Condições comerciais</h3>
+      <div class="grid-3" style="margin-top:4mm">
+        <p><strong>Solução Completa</strong><br />30% à assinatura, 40% no arranque do Bloco 2 e 30% após entrada em produção do Bloco 3.</p>
+        <p><strong>Opções A e B</strong><br />Pagamento integral à assinatura ou 50/50 entre assinatura e entrada em produção.</p>
+        <p><strong>Mensalidade</strong><br />Facturada a partir da entrada em produção do primeiro bloco aprovado.</p>
+      </div>
+    </div>
+    <div class="footer"><span>Investimento e mensalidade</span><span>7</span></div>
+  </section>
+
+  <section class="sheet">
+    <div class="section-title">
+      <div class="label">Plano de implementação</div>
+      <h2>14 semanas até operação completa.</h2>
+    </div>
+    <div class="gantt">
+      <div class="gantt-head">
+        <span></span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+      </div>
+      <div class="gantt-row">
+        <div class="task"><strong>Sprint 0</strong><span>Semana 1 · validações e plano fechado.</span></div>
+        <div class="bar validation" style="grid-column:2 / 3">Validação</div>
+      </div>
+      <div class="gantt-row">
+        <div class="task"><strong>Módulo A · km</strong><span>Semanas 2-3.</span></div>
+        <div class="bar admin" style="grid-column:3 / 5">A</div>
+      </div>
+      <div class="gantt-row">
+        <div class="task"><strong>Módulo C · documentos</strong><span>Semanas 4-5.</span></div>
+        <div class="bar admin" style="grid-column:5 / 7">C</div>
+      </div>
+      <div class="gantt-row">
+        <div class="task"><strong>Módulo B · facturas</strong><span>Semanas 5-7.</span></div>
+        <div class="bar admin" style="grid-column:6 / 9">B</div>
+      </div>
+      <div class="gantt-row">
+        <div class="task"><strong>Módulo E · bolsa</strong><span>Semanas 7-9.</span></div>
+        <div class="bar operation" style="grid-column:8 / 11">E</div>
+      </div>
+      <div class="gantt-row">
+        <div class="task"><strong>Módulo F · oficina</strong><span>Semanas 9-10.</span></div>
+        <div class="bar operation" style="grid-column:10 / 12">F</div>
+      </div>
+      <div class="gantt-row">
+        <div class="task"><strong>Estabilização</strong><span>Semanas 11-14.</span></div>
+        <div class="bar stabilization" style="grid-column:12 / 16">Estabilização</div>
+      </div>
+      <div class="gantt-row">
+        <div class="task"><strong>Módulo D · combustível</strong><span>Opção futura.</span></div>
+        <div class="bar future" style="grid-column:15 / 16">D</div>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:8mm">
+      <div class="card">
+        <h3>O que está confirmado</h3>
+        <ul>
+          <li>Classificação treinada com facturas reais.</li>
+          <li>Margem de quilómetros confirmada a 3 km.</li>
+          <li>Regra de comissão confirmada: 20% lucro + €2,50 nacional / €5 internacional.</li>
+          <li>Existência de responsável PHC Advanced interno no grupo.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>O que precisa de validação</h3>
+        <ul>
+          <li>Acesso à API Frotcom de leitura.</li>
+          <li>Formato XML final com responsável PHC Advanced.</li>
+          <li>Volumes reais por mês.</li>
+          <li>Custos actuais de RH, retrabalho e custos indirectos por bloco.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer"><span>Plano de implementação</span><span>8</span></div>
+  </section>
+
+  <section class="sheet">
+    <div class="section-title">
+      <div class="label">Aceitação</div>
+      <h2>Aprovação formal da proposta.</h2>
+      <p class="muted">A proposta é válida por 30 dias. Valores sem IVA.</p>
+    </div>
+    <div class="card">
+      <h3>A Lloretrans aprova:</h3>
+      <div class="accept-options">
+        <label><span class="box"></span><span><strong>Opção A · Núcleo de Validação · € 14.000 + € 600/mês</strong><br />Sprint 0 + Bloco 1 · Módulos A + C</span></label>
+        <label><span class="box"></span><span><strong>Opção B · Núcleo Administrativo · € 25.500 + € 700/mês</strong><br />Sprint 0 + Blocos 1+2 · Módulos A + C + B</span></label>
+        <label><span class="box"></span><span><strong>Opção C · Solução Completa · € 45.000 + € 900/mês</strong><br />Sprint 0 + Blocos 1+2+3 · Módulos A + C + B + E + F</span></label>
+      </div>
+      <p class="muted" style="margin-top:5mm">
+        Pagamento da Solução Completa: 30% à assinatura, 40% no arranque do Bloco 2 e 30% após entrada em produção do Bloco 3.
+        Opções A e B: pagamento integral à assinatura ou 50/50 entre assinatura e entrada em produção, à escolha da Lloretrans.
+      </p>
+      <div class="signature-grid">
+        <div>
+          <div class="label">Pela Lloretrans</div>
+          <div class="sig-line">Nome / Cargo</div>
+          <div class="sig-line">Data / Assinatura</div>
+          <p class="muted" style="margin-top:2mm">Carimbo da empresa</p>
+        </div>
+        <div>
+          <div class="label">Pela AiTiPro</div>
+          <div class="sig-line">Bilal Machraa · Fundador</div>
+          <div class="sig-line">Data / Assinatura</div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:6mm">
+        A aceitação formaliza-se por devolução deste documento assinado e carimbado para
+        bilal.machraa@aitipro.com. A Sprint 0 sem custo é agendada nos 5 dias úteis seguintes à recepção.
+      </p>
+    </div>
+    <div class="card dark" style="margin-top:8mm">
+      <div class="label">AiTiPro</div>
+      <h3 style="margin-top:3mm; color:#fff">Bilal Machraa</h3>
+      <p>Fundador · AiTiPro</p>
+      <p>bilal.machraa@aitipro.com · aitipro.com</p>
+      <p style="margin-top:5mm">Destinatária: Lloretrans, Unipessoal Lda. · NIPC 509750460 · Grupo Patrícia Pilar.</p>
+    </div>
+    <div class="footer"><span>Aceitação formal</span><span>9</span></div>
+  </section>
+</body>
+</html>

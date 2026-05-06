@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db/client";
 import { kmReconciliations, trips, vehicles, drivers } from "@/db/schema";
-import { and, desc, eq, gte, lte, count } from "drizzle-orm";
+import { and, desc, eq, gte, lte, count, max } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -54,7 +54,11 @@ export default async function KmPage({
   await requireRole(["admin", "clarice", "admin_faturacao"]);
   const { state, date } = await searchParams;
 
-  const targetDate = date ? new Date(date) : (() => {
+  const latestTrip = date
+    ? null
+    : await db.select({ startedAt: max(trips.startedAt) }).from(trips).limit(1);
+
+  const targetDate = date ? new Date(date) : latestTrip?.[0]?.startedAt ? new Date(latestTrip[0].startedAt) : (() => {
     const d = new Date();
     d.setDate(d.getDate() - 1);
     return d;
@@ -117,7 +121,7 @@ export default async function KmPage({
     <div className="space-y-6">
       <PageHeader
         title={`Validação km · ${formatDate(targetDate)}`}
-        description={`${rows.length} reconciliações ${state ? `(filtro: ${state})` : ""} · fonte GPS: Frotcom · declarado: Logue Trans`}
+        description={`${rows.length} reconciliações ${state ? `(filtro: ${state})` : ""} · declarado Logue Trans · leitura GPS Frotcom`}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <form className="flex items-center gap-2">
@@ -136,6 +140,14 @@ export default async function KmPage({
           </div>
         }
       />
+
+      <Card>
+        <CardContent className="p-4 text-sm leading-relaxed text-muted-foreground">
+          <strong className="text-foreground">Regra confirmada pelo Eder:</strong> tolerância máxima de 3 km entre
+          Logue Trans e GPS. No piloto, as diferenças verdes podem ser aprovadas em lote; amarelas e vermelhas pedem
+          decisão humana com motivo auditável antes de seguirem para facturação.
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-3 gap-4">
         {(["green", "yellow", "red"] as const).map((s) => (
@@ -191,7 +203,13 @@ export default async function KmPage({
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
+              {rows.length === 0 ? (
+                <tr>
+                  <td colSpan={10} className="py-8 text-center text-sm text-muted-foreground">
+                    Sem reconciliações para este filtro. Escolhe outro dia ou limpa o estado para voltar à fila completa.
+                  </td>
+                </tr>
+              ) : rows.map((r) => (
                 <tr key={r.id}>
                   <td className="text-xs whitespace-nowrap">{formatDateTime(r.startedAt)}</td>
                   <td className="font-mono text-xs">{r.plate}</td>

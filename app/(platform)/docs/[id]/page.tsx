@@ -133,7 +133,10 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
             <div className="aspect-[3/4] rounded-md border border-dashed border-border bg-secondary/50 grid place-items-center text-sm text-muted-foreground p-6 text-center">
               <div>
                 <div className="font-semibold text-foreground">Ficheiro original associado</div>
-                <div className="mt-2">Documento ligado ao registo e pronto para consulta operacional.</div>
+                <div className="mt-2 leading-relaxed">
+                  Pré-visualização completa indisponível neste MVP. Fonte importada:{" "}
+                  <span className="font-mono text-foreground">{doc.sourcePath}</span>.
+                </div>
               </div>
             </div>
           </CardContent>
@@ -171,7 +174,10 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
               <CardHeader><CardTitle className="text-base">Associação — candidatos</CardTitle></CardHeader>
               <CardContent>
                 {candidates.length === 0 ? (
-                  <div className="text-sm text-muted-foreground">Sem viagens candidatas (±24h matrícula).</div>
+                  <div className="rounded-md border border-border bg-secondary/30 p-3 text-sm text-muted-foreground">
+                    Sem viagens candidatas no intervalo de ±24h para esta matrícula. Ajusta a data/matrícula extraída ou
+                    deixa em fila para validação manual da digitalização.
+                  </div>
                 ) : (
                   <ul className="space-y-2 text-sm">
                     {candidates.map((c) => (

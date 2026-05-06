@@ -110,7 +110,13 @@ export default async function OcrListPage({
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
+              {rows.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="py-8 text-center text-sm text-muted-foreground">
+                    Sem facturas neste estado. Limpa o filtro ou recebe uma nova factura para alimentar a fila.
+                  </td>
+                </tr>
+              ) : rows.map((r) => (
                 <tr key={r.id}>
                   <td className="font-mono text-xs">{r.number}</td>
                   <td>

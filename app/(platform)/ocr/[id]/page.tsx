@@ -135,8 +135,10 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             <div className="aspect-[3/4] rounded-md border border-dashed border-border bg-secondary/50 grid place-items-center text-sm text-muted-foreground p-6 text-center">
               <div>
                 <div className="font-semibold text-foreground">Factura disponível para validação</div>
-                <div className="mt-2 max-w-xs">
-                  Os campos extraídos aparecem ao lado do documento, com classificação proposta por fornecedor e aprovação humana antes de qualquer exportação.
+                <div className="mt-2 max-w-xs leading-relaxed">
+                  Pré-visualização completa indisponível neste MVP. Fonte importada:{" "}
+                  <span className="font-mono text-foreground">{row.sourcePath ?? "ficheiro anexado"}</span>.
+                  Os campos ao lado só exportam para PHC Advanced depois de aprovação humana.
                 </div>
               </div>
             </div>

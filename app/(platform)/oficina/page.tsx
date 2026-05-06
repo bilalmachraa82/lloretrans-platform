@@ -152,7 +152,13 @@ export default async function OficinaPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map((r) => (
+                  {rows.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-sm text-muted-foreground">
+                        Sem folhas submetidas para validação. Abre a folha de obra piloto para demonstrar o fluxo do mecânico.
+                      </td>
+                    </tr>
+                  ) : rows.map((r) => (
                     <tr key={r.id}>
                       <td className="font-mono text-xs">{r.reference}</td>
                       <td className="font-mono">{r.plate}</td>

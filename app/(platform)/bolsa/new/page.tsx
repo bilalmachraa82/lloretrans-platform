@@ -72,6 +72,10 @@ export default async function NewLoadPage() {
                 <Input name="priceSell" type="number" step="0.01" min="0.01" required placeholder="ex: 1400.00" />
               </Field>
             </div>
+            <div className="rounded-md border border-border bg-secondary/30 p-3 text-xs leading-relaxed text-muted-foreground">
+              A margem nasce destes dois valores e a comissão só fica fechada quando a carga chegar a paga.
+              Regra Eder: 20% do lucro total + bónus Lloretrans quando a viatura interna é usada.
+            </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Nº CMR">
                 <Input name="cmrNumber" placeholder="ex: CMR 267598" />

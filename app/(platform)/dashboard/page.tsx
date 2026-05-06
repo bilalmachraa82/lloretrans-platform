@@ -20,7 +20,6 @@ import { resolvePermissionScope } from "../docs/helpers";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkline } from "@/components/ui/sparkline";
 import { formatRelative } from "@/lib/dates";
 import {
   TruckIcon,
@@ -75,18 +74,6 @@ async function loadKpis(session: AuthSession) {
   };
 }
 
-// Deterministic pseudo-random sparkline seeds (per-tile stable across refreshes)
-function sparkSeed(key: string, length = 14): number[] {
-  const out: number[] = [];
-  let h = 0;
-  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
-  for (let i = 0; i < length; i++) {
-    h = (h * 1103515245 + 12345) & 0x7fffffff;
-    out.push(10 + (h % 40));
-  }
-  return out;
-}
-
 const MODULE_CARDS = [
   {
     slug: "km",
@@ -137,6 +124,15 @@ const MODULE_CARDS = [
     icon: Wrench,
   },
 ] as const;
+
+const TILE_ACTION_LABELS: Record<string, string> = {
+  km: "Validar exceções",
+  ocr: "Validar facturas",
+  docs: "Associar órfãos",
+  fuel: "Ver ranking",
+  bolsa: "Abrir ciclo",
+  oficina: "Validar folhas",
+};
 
 function humanAuditLabel(action: string, entityType: string): string {
   const labels: Record<string, string> = {
@@ -248,9 +244,7 @@ export default async function DashboardPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {tiles
             .filter((t) => canAccessMvp(session.role, t.slug))
-            .map((t) => {
-              const data = sparkSeed(t.slug);
-              return (
+            .map((t) => (
                 <Link key={t.label} href={`/${t.slug}`} className="group">
                   <Card className="h-full group-hover:border-primary/40 group-hover:shadow-elevated transition-all">
                     <CardContent className="p-5">
@@ -270,25 +264,14 @@ export default async function DashboardPage() {
                             <div className="mt-1 text-xs text-muted-foreground">{t.hint}</div>
                           )}
                         </div>
-                        <div className="shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
-                          <Sparkline
-                            data={data}
-                            width={64}
-                            height={24}
-                            strokeClassName={
-                              t.accent === "destructive" ? "stroke-destructive" : "stroke-primary"
-                            }
-                            fillClassName={
-                              t.accent === "destructive" ? "fill-destructive/10" : "fill-primary/10"
-                            }
-                          />
+                        <div className="shrink-0 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-primary">
+                          {TILE_ACTION_LABELS[t.slug] ?? "Abrir"}
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 </Link>
-              );
-            })}
+              ))}
         </div>
       </section>
 

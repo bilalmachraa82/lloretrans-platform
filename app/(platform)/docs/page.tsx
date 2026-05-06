@@ -115,8 +115,8 @@ export default async function DocsPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Digitalização Central"
-        description={`Hub por empresa · ${rows.length} documentos mostrados${scope ? ` · âmbito ${session.companyName ?? "empresa atribuída"}` : ""}`}
+        title="Documentos centrais"
+        description={`CMR, guias e tickets recebidos num ponto único · ${rows.length} documentos mostrados${scope ? ` · âmbito ${session.companyName ?? "empresa atribuída"}` : ""}`}
         actions={canIngest ? (
           <Button asChild>
             <Link href="/docs/upload">
@@ -128,9 +128,30 @@ export default async function DocsPage({
       />
 
       <div className="grid grid-cols-3 gap-4">
-        <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Total</div><div className="text-2xl font-semibold font-mono">{total}</div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Associados</div><div className="text-2xl font-semibold font-mono">{assocs}</div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Órfãos</div><div className="text-2xl font-semibold font-mono text-destructive">{orphans}</div></CardContent></Card>
+        <Link href="/docs?tab=all">
+          <Card className={`transition-colors hover:border-primary/60 ${tab === "all" ? "border-primary" : ""}`}>
+            <CardContent className="p-4">
+              <div className="text-xs text-muted-foreground">Total no hub</div>
+              <div className="text-2xl font-semibold font-mono">{total}</div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/docs?tab=associated">
+          <Card className={`transition-colors hover:border-primary/60 ${tab === "associated" ? "border-primary" : ""}`}>
+            <CardContent className="p-4">
+              <div className="text-xs text-muted-foreground">Associados a viagem</div>
+              <div className="text-2xl font-semibold font-mono">{assocs}</div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/docs?tab=orphan">
+          <Card className={`transition-colors hover:border-primary/60 ${tab === "orphan" ? "border-primary" : ""}`}>
+            <CardContent className="p-4">
+              <div className="text-xs text-muted-foreground">A associar</div>
+              <div className="text-2xl font-semibold font-mono text-destructive">{orphans}</div>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <div className="flex flex-wrap gap-2 border-b border-border">
@@ -204,7 +225,11 @@ export default async function DocsPage({
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={7} className="text-center py-6 text-muted-foreground">Sem resultados.</td></tr>
+                <tr>
+                  <td colSpan={7} className="text-center py-8 text-sm text-muted-foreground">
+                    Sem documentos para estes filtros. Limpa a pesquisa ou recebe novos CMR/guias no ponto de digitalização.
+                  </td>
+                </tr>
               ) : rows.map((r) => (
                 <tr key={r.id}>
                   <td><Badge variant="secondary">{kindLabels[r.kind] ?? r.kind}</Badge></td>
