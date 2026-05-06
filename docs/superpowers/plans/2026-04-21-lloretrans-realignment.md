@@ -199,7 +199,7 @@ Run:
 npm run aitipro:manifest
 ```
 
-Expected: output says `Wrote 28 evidence files`.
+Expected: output says `Wrote 26 evidence files`.
 
 - [ ] **Step 6: Commit evidence freeze**
 

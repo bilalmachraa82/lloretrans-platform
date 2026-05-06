@@ -182,9 +182,10 @@ export default async function BolsaPage({
       <Card>
         <CardContent className="p-4 text-sm leading-relaxed text-muted-foreground">
           <strong className="text-foreground">Nota de leitura:</strong> a folha histórica foi importada sem corrigir os
-          campos originais. Quando o preço cliente e o valor pago ao transportador vêm iguais, a margem fica a zero; esse
-          saneamento é precisamente um dos pontos a fechar antes de operar a bolsa em produção. Regra confirmada:
-          20% do lucro total mais bónus Lloretrans de 2,50 EUR nacional ou 5 EUR internacional.
+          campos originais. Por isso, a margem agregada acima pode aparecer negativa ou a zero quando PREÇO CLIENTE e
+          PAGO TRANSPORTADOR vêm trocados ou iguais; esse saneamento é precisamente um dos pontos a fechar antes de
+          operar a bolsa em produção. Regra confirmada: 20% do lucro total mais bónus Lloretrans de 2,50 EUR nacional ou
+          5 EUR internacional.
         </CardContent>
       </Card>
 

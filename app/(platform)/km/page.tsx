@@ -121,7 +121,7 @@ export default async function KmPage({
     <div className="space-y-6">
       <PageHeader
         title={`Validação km · ${formatDate(targetDate)}`}
-        description={`${rows.length} reconciliações ${state ? `(filtro: ${state})` : ""} · declarado Logue Trans · leitura GPS Frotcom`}
+        description={`${rows.length} reconciliações ${state ? `(filtro: ${state})` : ""} · declarado Logue Trans · GPS Frotcom (API de leitura por confirmar)`}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <form className="flex items-center gap-2">
@@ -144,8 +144,9 @@ export default async function KmPage({
       <Card>
         <CardContent className="p-4 text-sm leading-relaxed text-muted-foreground">
           <strong className="text-foreground">Regra confirmada pelo Eder:</strong> tolerância máxima de 3 km entre
-          Logue Trans e GPS. No piloto, as diferenças verdes podem ser aprovadas em lote; amarelas e vermelhas pedem
-          decisão humana com motivo auditável antes de seguirem para facturação.
+          Logue Trans e GPS Frotcom. No piloto, as leituras estão carregadas como cenário operacional; a alimentação em
+          tempo real depende da API Frotcom de leitura. As diferenças verdes podem ser aprovadas em lote; amarelas e
+          vermelhas pedem decisão humana com motivo auditável antes de seguirem para facturação.
         </CardContent>
       </Card>
 
