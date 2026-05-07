@@ -25,6 +25,10 @@ import { formatDate, formatDateTime } from "@/lib/dates";
 import { formatServiceLabel } from "@/lib/service-labels";
 import { approveInvoice, reopenInvoice, exportInvoiceAction, updateClassification } from "./actions";
 
+function canPreviewPdf(sourcePath: string | null): boolean {
+  return Boolean(sourcePath?.startsWith("/fixtures/real-invoices/") && sourcePath.toLowerCase().endsWith(".pdf"));
+}
+
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireRole(["admin", "clarice", "admin_oficina", "admin_contas"]);
   const { id } = await params;
@@ -87,6 +91,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
   const isApproved = row.state === "approved" || row.state === "exported";
   const canApproveOrClassify = isSuperAdminRole(session.role) || session.role === "admin_oficina";
   const canExport = isSuperAdminRole(session.role) || session.role === "admin_oficina" || session.role === "admin_contas";
+  const documentPreviewUrl = canPreviewPdf(row.sourcePath) ? `/ocr/${row.id}/source#toolbar=0&navpanes=0&view=FitH` : null;
 
   return (
     <div className="space-y-6">
@@ -133,16 +138,38 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             </div>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[3/4] rounded-md border border-dashed border-border bg-secondary/50 grid place-items-center text-sm text-muted-foreground p-6 text-center">
-              <div>
-                <div className="font-semibold text-foreground">Factura disponível para validação</div>
-                <div className="mt-2 max-w-xs leading-relaxed">
-                  Pré-visualização completa indisponível neste piloto. Fonte importada:{" "}
-                  <span className="font-mono text-foreground">{row.sourcePath ?? "ficheiro anexado"}</span>.
-                  Os campos ao lado só exportam para PHC Advanced depois de aprovação humana.
+            {documentPreviewUrl ? (
+              <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-[#f8fafc] px-3 py-2">
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                      PDF original
+                    </div>
+                    <div className="truncate font-mono text-xs text-[#1e2d3d]">{row.sourcePath}</div>
+                  </div>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={`/ocr/${row.id}/source`} target="_blank" rel="noreferrer">
+                      Abrir PDF
+                    </a>
+                  </Button>
+                </div>
+                <iframe
+                  title={`Pré-visualização da factura ${row.number ?? row.id}`}
+                  src={documentPreviewUrl}
+                  className="h-[78vh] min-h-[720px] w-full bg-white"
+                />
+              </div>
+            ) : (
+              <div className="aspect-[3/4] rounded-md border border-dashed border-border bg-secondary/50 grid place-items-center text-sm text-muted-foreground p-6 text-center">
+                <div>
+                  <div className="font-semibold text-foreground">Factura disponível para validação</div>
+                  <div className="mt-2 max-w-xs leading-relaxed">
+                    Pré-visualização indisponível porque este registo não aponta para um PDF local do piloto.
+                    Fonte importada: <span className="font-mono text-foreground">{row.sourcePath ?? "ficheiro anexado"}</span>.
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 

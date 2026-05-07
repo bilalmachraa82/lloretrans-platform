@@ -7,6 +7,9 @@ const config: NextConfig = {
     },
   },
   serverExternalPackages: ["better-sqlite3", "pdf-parse"],
+  outputFileTracingIncludes: {
+    "/ocr/[id]/source": ["./fixtures/real-invoices/**/*.pdf"],
+  },
   images: {
     remotePatterns: [],
   },
