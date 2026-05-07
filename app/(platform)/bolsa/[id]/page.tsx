@@ -14,7 +14,6 @@ import {
 } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/session";
-import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +28,7 @@ import {
   registerClientInvoice,
   markPaid,
 } from "../actions";
+import { ArrowLeft, ArrowRight, BadgeEuro, CircleAlert, Route } from "lucide-react";
 
 export default async function LoadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireRole(["admin", "clarice", "comercial", "admin_faturacao", "admin_contas"]);
@@ -107,14 +107,85 @@ export default async function LoadDetailPage({ params }: { params: Promise<{ id:
 
   const hasDeviation = supInv.some((s) => s.state === "deviation_detected");
   const hasOverdue = cliInv.some((s) => !s.paidAt && s.dueAt < new Date());
+  const nextState = nextStates(currentState)[0];
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title={`Carga ${row.reference}`}
-        description={`${row.origin} → ${row.destination} · ${row.clientName} (${row.clientCountry})`}
-        actions={<Button variant="outline" asChild><Link href="/bolsa">Voltar</Link></Button>}
-      />
+      <section className="overflow-hidden rounded-lg border border-[#d8e1df] bg-white shadow-elevated-sm">
+        <div className="grid lg:grid-cols-[1fr_380px]">
+          <div className="bg-[linear-gradient(135deg,#ffffff_0%,#f8fffc_48%,#eef7ff_100%)] p-6 lg:p-7">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className="border-primary/10 bg-primary/10 text-primary">
+                {STATE_LABELS[currentState]}
+              </Badge>
+              {(hasDeviation || hasOverdue) && (
+                <Badge variant="destructive">
+                  <CircleAlert className="mr-1 h-3.5 w-3.5" />
+                  Atenção
+                </Badge>
+              )}
+              <span className="text-xs font-medium text-muted-foreground">{row.clientCountry ?? "PT"}</span>
+            </div>
+            <div className="mt-5 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+              <div>
+                <h1 className="font-display text-4xl font-semibold leading-tight tracking-normal text-[#1e2d3d]">
+                  Carga {row.reference}
+                </h1>
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-sm font-medium text-[#4b5563]">
+                  <Route className="h-4 w-4 text-muted-foreground" />
+                  <span>{row.origin}</span>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  <span>{row.destination}</span>
+                </div>
+              </div>
+              <Link
+                href="/bolsa"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border bg-white px-4 text-sm font-medium shadow-sm hover:bg-secondary"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Voltar
+              </Link>
+            </div>
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              <HeroFact label="Cliente" value={row.clientName ?? "—"} />
+              <HeroFact label="Transportador" value={row.carrierName ?? row.supplierName ?? "—"} />
+              <HeroFact label="Comercial" value={row.salesName ?? "—"} />
+            </div>
+          </div>
+
+          <div className="bg-[#1e2d3d] p-6 text-white lg:p-7">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2ae5a0]">
+                  Margem da carga
+                </div>
+                <div className={`mt-2 font-mono text-4xl font-semibold ${row.margin < 0 ? "text-[#fecaca]" : "text-white"}`}>
+                  {formatEur(row.margin)}
+                </div>
+                <div className="mt-1 text-sm text-white/68">{formatPercent(row.marginPct)}</div>
+              </div>
+              <div className="grid h-12 w-12 place-items-center rounded-md border border-white/12 bg-white/8 text-[#2ae5a0]">
+                <BadgeEuro className="h-6 w-6" />
+              </div>
+            </div>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <DarkFact label="Preço cliente" value={formatEur(row.priceSell)} />
+              <DarkFact label="Pago transp." value={formatEur(row.priceBuy)} />
+            </div>
+            <div className="mt-4 rounded-lg border border-white/12 bg-white/8 p-4">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/55">
+                Comissão prevista
+              </div>
+              <div className="mt-2 font-mono text-lg font-semibold">
+                {commPreview != null ? (commPreview.eligible ? formatEur(commPreview.amountEur) : commPreview.reason) : "—"}
+              </div>
+              <div className="mt-2 text-xs text-white/62">
+                {nextState ? `Próxima acção: ${STATE_LABELS[nextState]}` : "Ciclo comercial fechado"}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {(hasDeviation || hasOverdue) && (
         <div className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm space-y-1">
@@ -281,6 +352,24 @@ function Kv({ label, value, strong = false }: { label: string; value: string; st
     <div>
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className={`font-mono ${strong ? "text-base font-semibold" : "text-sm"}`}>{value}</div>
+    </div>
+  );
+}
+
+function HeroFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-border/80 bg-white px-4 py-3 shadow-sm">
+      <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
+      <div className="mt-1 truncate text-sm font-semibold text-[#1e2d3d]">{value}</div>
+    </div>
+  );
+}
+
+function DarkFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-white/12 bg-white/8 px-3 py-3">
+      <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/50">{label}</div>
+      <div className="mt-1 font-mono text-sm font-semibold text-white">{value}</div>
     </div>
   );
 }
