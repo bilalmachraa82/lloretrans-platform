@@ -24,6 +24,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { exportLoadsCsv } from "./actions";
+import { AutoSubmitSelect } from "./filter-controls";
 
 const STATE_META: Record<FreightState, { label: string; tone: string; dot: string; rail: string }> = {
   scheduled: {
@@ -71,13 +72,11 @@ export default async function BolsaPage({
   monthStart.setDate(1);
   monthStart.setHours(0, 0, 0, 0);
 
-  const conditions: SQL[] = [];
-  if (showMineOnly) conditions.push(eq(freightLoads.salespersonId, session.userId));
-  if (regularization === "R" || regularization === "NR") conditions.push(eq(freightLoads.paymentRegularization, regularization));
-  if (regularization === "blank") conditions.push(isNull(freightLoads.paymentRegularization));
-  if (carrier === "internal") conditions.push(eq(freightLoads.carrierKind, "internal_lloretrans"));
-  if (carrier === "external") conditions.push(eq(freightLoads.carrierKind, "external_transporter"));
-  if (client) conditions.push(eq(clients.name, client));
+  const baseConditions: SQL[] = [];
+  if (showMineOnly) baseConditions.push(eq(freightLoads.salespersonId, session.userId));
+  if (carrier === "internal") baseConditions.push(eq(freightLoads.carrierKind, "internal_lloretrans"));
+  if (carrier === "external") baseConditions.push(eq(freightLoads.carrierKind, "external_transporter"));
+  if (client) baseConditions.push(eq(clients.name, client));
   if (q) {
     const needle = `%${q}%`;
     const searchCondition = or(
@@ -89,11 +88,15 @@ export default async function BolsaPage({
       ilike(freightLoads.supplierInvoiceNumber, needle),
       ilike(clients.name, needle),
     );
-    if (searchCondition) conditions.push(searchCondition);
+    if (searchCondition) baseConditions.push(searchCondition);
   }
+  const conditions: SQL[] = [...baseConditions];
+  if (regularization === "R" || regularization === "NR") conditions.push(eq(freightLoads.paymentRegularization, regularization));
+  if (regularization === "blank") conditions.push(isNull(freightLoads.paymentRegularization));
+  const baseWhereClause = baseConditions.length ? and(...baseConditions) : undefined;
   const whereClause = conditions.length ? and(...conditions) : undefined;
 
-  const [rows, deviations, unpaid, clientOptions] = await Promise.all([
+  const [rows, deviations, unpaid, clientOptions, regularizationCounts] = await Promise.all([
     db
       .select({
         id: freightLoads.id,
@@ -135,6 +138,15 @@ export default async function BolsaPage({
       .from(clientInvoicesFreight)
       .where(and(isNull(clientInvoicesFreight.paidAt), lt(clientInvoicesFreight.dueAt, new Date()))),
     db.select({ name: clients.name }).from(clients).orderBy(clients.name),
+    db
+      .select({
+        value: freightLoads.paymentRegularization,
+        n: count(),
+      })
+      .from(freightLoads)
+      .leftJoin(clients, eq(clients.id, freightLoads.clientId))
+      .where(baseWhereClause)
+      .groupBy(freightLoads.paymentRegularization),
   ]);
 
   const totalMonth = rows.filter((r) => r.createdAt >= monthStart).length;
@@ -167,9 +179,25 @@ export default async function BolsaPage({
 
   const activeLoads = rows.length - groupedByState.paid.length;
   const readyToCollect = groupedByState.client_invoiced.length;
+  const regularizationCountMap = new Map(regularizationCounts.map((entry) => [entry.value ?? "blank", entry.n]));
+  const regularizationOptions = [
+    { value: "", label: `Regularização: todas (${regularizationCounts.reduce((acc, entry) => acc + entry.n, 0)})` },
+    { value: "R", label: `R - regularizadas (${regularizationCountMap.get("R") ?? 0})` },
+    { value: "NR", label: `NR - não regularizadas (${regularizationCountMap.get("NR") ?? 0})` },
+    { value: "blank", label: `Sem classificação (${regularizationCountMap.get("blank") ?? 0})` },
+  ];
+  const carrierOptions = [
+    { value: "", label: "Transportador: todos" },
+    { value: "internal", label: "Lloretrans" },
+    { value: "external", label: "Externos" },
+  ];
+  const clientSelectOptions = [
+    { value: "", label: "Cliente: todos" },
+    ...clientOptions.map((option) => ({ value: option.name, label: option.name })),
+  ];
   const filteredBy = [
     q ? `Pesquisa: ${q}` : null,
-    regularization ? `R/NR: ${regularization === "blank" ? "sem valor" : regularization}` : null,
+    regularization ? `Regularização: ${regularization === "blank" ? "sem classificação" : regularization}` : null,
     carrier ? `Transportador: ${carrier === "internal" ? "Lloretrans" : "externo"}` : null,
     client ? `Cliente: ${client}` : null,
     showMineOnly ? "Só carteira própria" : null,
@@ -319,28 +347,39 @@ export default async function BolsaPage({
                 className="h-11 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm"
               />
             </div>
-            <select name="regularization" defaultValue={regularization ?? ""} className="h-11 rounded-md border border-border bg-background px-3 text-sm">
-              <option value="">R/NR: todas</option>
-              <option value="R">R</option>
-              <option value="NR">NR</option>
-              <option value="blank">Sem valor</option>
-            </select>
-            <select name="carrier" defaultValue={carrier ?? ""} className="h-11 rounded-md border border-border bg-background px-3 text-sm">
-              <option value="">Transportador: todos</option>
-              <option value="internal">Lloretrans</option>
-              <option value="external">Externos</option>
-            </select>
-            <select name="client" defaultValue={client ?? ""} className="h-11 rounded-md border border-border bg-background px-3 text-sm">
-              <option value="">Cliente: todos</option>
-              {clientOptions.map((option) => (
-                <option key={option.name} value={option.name}>{option.name}</option>
-              ))}
-            </select>
+            <AutoSubmitSelect
+              name="regularization"
+              value={regularization ?? ""}
+              aria-label="Regularização de pagamento"
+              options={regularizationOptions}
+              className="h-11 rounded-md border border-border bg-background px-3 text-sm"
+            />
+            <AutoSubmitSelect
+              name="carrier"
+              value={carrier ?? ""}
+              aria-label="Transportador"
+              options={carrierOptions}
+              className="h-11 rounded-md border border-border bg-background px-3 text-sm"
+            />
+            <AutoSubmitSelect
+              name="client"
+              value={client ?? ""}
+              aria-label="Cliente"
+              options={clientSelectOptions}
+              className="h-11 rounded-md border border-border bg-background px-3 text-sm"
+            />
             <Button type="submit" variant="outline">
               <SlidersHorizontal className="h-4 w-4" />
-              Filtrar
+              Aplicar
             </Button>
           </form>
+
+          <div className="mt-3 rounded-md border border-border/70 bg-[#f8fafc] px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+            <span className="font-semibold text-[#1e2d3d]">Regularização:</span>{" "}
+            <span className="font-mono">R</span> = carga regularizada,{" "}
+            <span className="font-mono">NR</span> = não regularizada, sem classificação = valor em falta no Excel.
+            Os selects aplicam automaticamente.
+          </div>
 
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <Link
