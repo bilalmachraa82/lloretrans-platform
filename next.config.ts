@@ -8,6 +8,7 @@ const config: NextConfig = {
   },
   serverExternalPackages: ["better-sqlite3", "pdf-parse"],
   outputFileTracingIncludes: {
+    "/*": ["./fixtures/real-invoices/**/*.pdf"],
     "/ocr/[id]/source": ["./fixtures/real-invoices/**/*.pdf"],
   },
   images: {

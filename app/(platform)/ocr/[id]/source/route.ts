@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 import { db } from "@/db/client";
@@ -26,10 +27,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const source = resolveLocalInvoiceSource(invoice.sourcePath);
   if (!source) notFound();
 
-  const data = await fs.readFile(source.absolutePath).catch(() => null);
+  const data = await readFirstAvailable(source.candidatePaths);
   if (!data) notFound();
 
-  return new NextResponse(data, {
+  return new NextResponse(new Uint8Array(data), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="${source.filename}"`,
@@ -40,15 +41,26 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   });
 }
 
-function resolveLocalInvoiceSource(sourcePath: string): { absolutePath: string; filename: string } | null {
+async function readFirstAvailable(candidatePaths: string[]): Promise<Buffer | null> {
+  for (const candidate of candidatePaths) {
+    const data = await fs.readFile(candidate).catch(() => null);
+    if (data) return data;
+  }
+  return null;
+}
+
+function resolveLocalInvoiceSource(sourcePath: string): { candidatePaths: string[]; filename: string } | null {
   if (!sourcePath.startsWith("/fixtures/real-invoices/")) return null;
 
   const filename = path.basename(sourcePath);
   if (!filename.toLowerCase().endsWith(".pdf")) return null;
 
   const fixtureRoot = path.join(process.cwd(), "fixtures", "real-invoices");
-  const absolutePath = path.resolve(fixtureRoot, filename);
-  if (!absolutePath.startsWith(`${fixtureRoot}${path.sep}`)) return null;
+  const projectPath = path.resolve(fixtureRoot, filename);
+  if (!projectPath.startsWith(`${fixtureRoot}${path.sep}`)) return null;
 
-  return { absolutePath, filename };
+  const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+  const bundledPath = path.resolve(moduleDir, "../../../../../../../fixtures/real-invoices", filename);
+
+  return { candidatePaths: [projectPath, bundledPath], filename };
 }
