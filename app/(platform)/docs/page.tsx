@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusPill } from "@/components/ui/status-pill";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/dates";
-import { Upload, Search } from "lucide-react";
+import { CheckCircle2, FileSearch, Link2, Search, Upload } from "lucide-react";
 import { resolvePermissionScope } from "./helpers";
 
 export default async function DocsPage({
@@ -154,11 +154,46 @@ export default async function DocsPage({
         </Link>
       </div>
 
+      <Card>
+        <CardContent className="grid gap-4 p-4 text-sm lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-center">
+          <div className="flex gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
+              <FileSearch className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="font-semibold text-foreground">Receber e ler</div>
+              <div className="mt-1 text-xs leading-relaxed text-muted-foreground">CMR, guias e tickets entram no hub com matrícula, data e texto OCR.</div>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-warning/15 text-[hsl(32_82%_30%)]">
+              <Link2 className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="font-semibold text-foreground">Associar à viagem</div>
+              <div className="mt-1 text-xs leading-relaxed text-muted-foreground">A fila “A associar” mostra documentos que precisam de confirmação humana.</div>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-success/15 text-[hsl(152_55%_28%)]">
+              <CheckCircle2 className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="font-semibold text-foreground">Fechar evidência</div>
+              <div className="mt-1 text-xs leading-relaxed text-muted-foreground">Depois de associado, o documento fica pesquisável por viagem, matrícula e empresa.</div>
+            </div>
+          </div>
+          <Button asChild variant={orphans > 0 ? "default" : "outline"}>
+            <Link href="/docs?tab=orphan">{orphans > 0 ? "Tratar fila" : "Ver fila"}</Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       <div className="flex flex-wrap gap-2 border-b border-border">
         {[
           { key: "all", label: "Todos" },
           { key: "associated", label: "Associados" },
-          { key: "orphan", label: "Órfãos" },
+          { key: "orphan", label: "A associar" },
         ].map((t) => (
           <Link
             key={t.key}
@@ -243,7 +278,7 @@ export default async function DocsPage({
                   <td className="text-xs">{formatDate(r.loadedAt)}</td>
                   <td>
                     <StatusPill status={r.state === "associated" ? "green" : r.state === "orphan" ? "red" : "neutral"}>
-                      {r.state === "associated" ? "Associado" : r.state === "orphan" ? "Órfão" : r.state}
+                      {r.state === "associated" ? "Associado" : r.state === "orphan" ? "A associar" : r.state}
                     </StatusPill>
                   </td>
                   <td><Button size="sm" variant="outline" asChild><Link href={`/docs/${r.id}`}>Abrir</Link></Button></td>

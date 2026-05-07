@@ -16,6 +16,7 @@ import { requireRole } from "@/lib/auth/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { StatusPill } from "@/components/ui/status-pill";
 import { formatDate, formatDateTime } from "@/lib/dates";
 import { associateDocument, dissociateDocument } from "../actions";
 import { resolvePermissionScope } from "../helpers";
@@ -70,6 +71,7 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
     clientName: string | null;
   }
   let candidates: Candidate[] = [];
+  let candidateWindowLabel = "±24h";
   if (doc.state === "orphan" && doc.plate && doc.loadedAt) {
     const windowStart = new Date(doc.loadedAt.getTime() - 24 * 60 * 60 * 1000);
     const windowEnd = new Date(doc.loadedAt.getTime() + 24 * 60 * 60 * 1000);
@@ -88,6 +90,27 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
       .leftJoin(clients, eq(clients.id, trips.clientId))
       .where(and(eq(vehicles.plate, doc.plate), gte(trips.startedAt, windowStart), lte(trips.startedAt, windowEnd)))
       .limit(8);
+    if (candidates.length === 0) {
+      candidateWindowLabel = "±7 dias";
+      const widerStart = new Date(doc.loadedAt.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const widerEnd = new Date(doc.loadedAt.getTime() + 7 * 24 * 60 * 60 * 1000);
+      candidates = await db
+        .select({
+          tripId: trips.id,
+          tripExternal: trips.externalId,
+          origin: trips.origin,
+          destination: trips.destination,
+          startedAt: trips.startedAt,
+          plate: vehicles.plate,
+          clientName: clients.name,
+        })
+        .from(trips)
+        .innerJoin(vehicles, eq(vehicles.id, trips.vehicleId))
+        .leftJoin(clients, eq(clients.id, trips.clientId))
+        .where(and(eq(vehicles.plate, doc.plate), gte(trips.startedAt, widerStart), lte(trips.startedAt, widerEnd)))
+        .orderBy(desc(trips.startedAt))
+        .limit(8);
+    }
   }
 
   const audits = await db
@@ -105,6 +128,23 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
     .limit(10);
 
   const assoc = existing[0];
+  const nextAction = assoc
+    ? {
+        status: "green" as const,
+        title: "Evidência fechada",
+        body: `Documento associado à viagem ${assoc.tripExternal}. Pode ficar como prova pesquisável ou ser desassociado se a ligação estiver errada.`,
+      }
+    : candidates.length > 0
+      ? {
+          status: "yellow" as const,
+          title: "Confirmar associação",
+          body: `Foram encontradas ${candidates.length} viagens candidatas pela matrícula ${doc.plate} na janela ${candidateWindowLabel}. Escolhe a viagem correcta abaixo.`,
+        }
+      : {
+          status: "red" as const,
+          title: "Validação manual necessária",
+          body: "Não há correspondência automática suficiente. Rever matrícula/data extraída ou manter na fila de digitalização.",
+        };
 
   return (
     <div className="space-y-6">
@@ -113,7 +153,7 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
         description={`${doc.plate ?? "sem matrícula"} · ${doc.loadedAt ? formatDate(doc.loadedAt) : "sem data"}`}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" asChild><Link href="/docs">Voltar</Link></Button>
+            <Button variant="outline" asChild><Link href="/docs?tab=orphan">Voltar à fila</Link></Button>
             {assoc && (
               <form action={dissociateDocument}>
                 <input type="hidden" name="documentId" value={doc.id} />
@@ -123,6 +163,21 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
           </div>
         }
       />
+
+      <Card className="border-[#d8e1df] bg-white shadow-elevated-sm">
+        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <StatusPill status={nextAction.status}>{docStateLabel(doc.state)}</StatusPill>
+            <div className="mt-3 font-semibold text-[#1e2d3d]">{nextAction.title}</div>
+            <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">{nextAction.body}</p>
+          </div>
+          {!assoc && candidates.length > 0 && (
+            <Button asChild>
+              <a href="#associacao">Ver candidatos</a>
+            </Button>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -136,6 +191,9 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
                 <div className="mt-2 leading-relaxed">
                   Pré-visualização completa indisponível neste piloto. Fonte importada:{" "}
                   <span className="font-mono text-foreground">{doc.sourcePath}</span>.
+                </div>
+                <div className="mt-4 rounded-md border border-border bg-white px-3 py-2 text-left text-xs leading-relaxed text-muted-foreground">
+                  OCR disponível: {doc.ocrText ?? "sem texto extraído"}. O objectivo da página é validar metadados e ligar este comprovativo à viagem correcta.
                 </div>
               </div>
             </div>
@@ -170,29 +228,32 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
               </CardContent>
             </Card>
           ) : (
-            <Card>
-              <CardHeader><CardTitle className="text-base">Associação — candidatos</CardTitle></CardHeader>
+            <Card id="associacao">
+              <CardHeader><CardTitle className="text-base">Associação — candidatos ({candidateWindowLabel})</CardTitle></CardHeader>
               <CardContent>
                 {candidates.length === 0 ? (
-                  <div className="rounded-md border border-border bg-secondary/30 p-3 text-sm text-muted-foreground">
-                    Sem viagens candidatas no intervalo de ±24h para esta matrícula. Ajusta a data/matrícula extraída ou
-                    deixa em fila para validação manual da digitalização.
+                  <div className="space-y-3 rounded-md border border-border bg-secondary/30 p-3 text-sm text-muted-foreground">
+                    <div>
+                      Sem viagens candidatas para esta matrícula e data. O documento fica na fila “A associar” até a digitalização corrigir os dados extraídos ou confirmar a viagem manualmente.
+                    </div>
+                    <Button size="sm" variant="outline" asChild><Link href="/docs?tab=orphan">Ver fila A associar</Link></Button>
                   </div>
                 ) : (
                   <ul className="space-y-2 text-sm">
                     {candidates.map((c) => (
-                      <li key={c.tripId} className="flex items-center justify-between border-b border-border pb-2 last:border-0">
-                        <div>
+                      <li key={c.tripId} className="flex flex-col gap-3 rounded-md border border-border bg-white p-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0">
                           <div className="font-mono text-xs">{c.tripExternal}</div>
                           <div className="text-xs text-muted-foreground">
                             {c.origin} → {c.destination} · {formatDateTime(c.startedAt)}
                           </div>
+                          <div className="mt-1 text-xs text-muted-foreground">{c.clientName ?? "Cliente por confirmar"} · {c.plate}</div>
                         </div>
                         <form action={associateDocument}>
                           <input type="hidden" name="documentId" value={doc.id} />
                           <input type="hidden" name="tripId" value={c.tripId} />
-                          <input type="hidden" name="method" value="manual" />
-                          <Button type="submit" size="sm" variant="outline">Associar</Button>
+                          <input type="hidden" name="method" value={candidateWindowLabel === "±24h" ? "plate_date_match" : "manual"} />
+                          <Button type="submit" size="sm">Associar viagem</Button>
                         </form>
                       </li>
                     ))}

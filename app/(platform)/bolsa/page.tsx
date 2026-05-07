@@ -9,7 +9,6 @@ import { formatEur, formatPercent } from "@/lib/money";
 import { formatDate } from "@/lib/dates";
 import { FREIGHT_STATES, STATE_LABELS, type FreightState } from "@/lib/freight-state";
 import {
-  ArrowRight,
   BadgeEuro,
   CircleAlert,
   Download,
@@ -25,6 +24,7 @@ import {
 } from "lucide-react";
 import { exportLoadsCsv } from "./actions";
 import { AutoSubmitSelect } from "./filter-controls";
+import { FreightKanbanBoard, type FreightKanbanRow } from "./kanban-board";
 
 const STATE_META: Record<FreightState, { label: string; tone: string; dot: string; rail: string }> = {
   scheduled: {
@@ -202,6 +202,19 @@ export default async function BolsaPage({
     client ? `Cliente: ${client}` : null,
     showMineOnly ? "Só carteira própria" : null,
   ].filter(Boolean);
+  const kanbanRows: FreightKanbanRow[] = rows.map((r) => ({
+    id: r.id,
+    reference: r.reference,
+    state: r.state as FreightState,
+    origin: r.origin,
+    destination: r.destination,
+    margin: r.margin,
+    marginPct: r.marginPct,
+    carrierKind: r.carrierKind,
+    paymentRegularization: r.paymentRegularization,
+    clientName: r.clientName,
+    clientCountry: r.clientCountry,
+  }));
 
   const buildHref = (overrides: Record<string, string | null | undefined>) => {
     const params = new URLSearchParams();
@@ -433,83 +446,7 @@ export default async function BolsaPage({
       </section>
 
       {view === "kanban" ? (
-        <section className="grid gap-4 xl:grid-cols-5">
-          {FREIGHT_STATES.map((s) => (
-            <div key={s} className="min-w-0 rounded-lg border border-border/80 bg-[#f8fafc] p-3 shadow-elevated-sm">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <div className="flex min-w-0 items-center gap-2">
-                  <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${STATE_META[s].dot}`} />
-                  <div className="min-w-0">
-                    <div className="truncate text-xs font-semibold uppercase tracking-[0.12em] text-[#1e2d3d]">
-                      {STATE_META[s].label}
-                    </div>
-                    <div className="text-[10px] text-muted-foreground">{STATE_LABELS[s]}</div>
-                  </div>
-                </div>
-                <Badge variant="secondary">{groupedByState[s].length}</Badge>
-              </div>
-              <div className="space-y-2.5">
-                {groupedByState[s].length === 0 ? (
-                  <div className="rounded-md border border-dashed border-border bg-white p-4 text-xs leading-relaxed text-muted-foreground">
-                    Sem cargas neste estado.
-                  </div>
-                ) : groupedByState[s].slice(0, 15).map((r) => (
-                  <Link
-                    key={r.id}
-                    href={`/bolsa/${r.id}`}
-                    className="group block rounded-lg border border-border/80 bg-white p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/55 hover:shadow-elevated"
-                  >
-                    <div className="space-y-3 text-xs">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="font-mono text-[11px] font-semibold text-primary">{r.reference}</div>
-                          <div className="mt-1 truncate text-sm font-semibold text-[#1e2d3d]">{r.clientName ?? "—"}</div>
-                        </div>
-                        <span className="rounded-full border border-border bg-secondary px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                          {r.clientCountry ?? "PT"}
-                        </span>
-                      </div>
-                      <div className="rounded-md bg-[#f8fafc] px-3 py-2">
-                        <div className="flex items-center gap-2 text-[11px] font-medium text-[#4b5563]">
-                          <Route className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="truncate">{r.origin}</span>
-                          <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground" />
-                          <span className="truncate">{r.destination}</span>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <MiniMetric label="Margem" value={formatCompactEur(r.margin)} />
-                        <MiniMetric label="Comissão" value={commissionPreviewLabel(r.margin, r.carrierKind)} />
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        <Badge variant={r.marginPct >= 0.15 ? "success" : r.marginPct >= 0.08 ? "default" : "warning"}>
-                          {formatPercent(r.marginPct)}
-                        </Badge>
-                        <Badge variant={r.carrierKind === "internal_lloretrans" ? "success" : "secondary"}>
-                          {r.carrierKind === "internal_lloretrans" ? "Lloretrans" : "Externo"}
-                        </Badge>
-                        <Badge variant={r.paymentRegularization === "R" ? "success" : r.paymentRegularization === "NR" ? "warning" : "secondary"}>
-                          {r.paymentRegularization ?? "R/NR aberto"}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center justify-between border-t border-border/70 pt-2">
-                        <span className="text-[10px] text-muted-foreground">{nextActionLabel(r.state as FreightState)}</span>
-                        <span className="text-[10px] font-semibold text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                          Abrir
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-                {groupedByState[s].length > 15 && (
-                  <div className="text-[10px] text-center text-muted-foreground">
-                    + {groupedByState[s].length - 15} mais
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </section>
+        <FreightKanbanBoard rows={kanbanRows} stateMeta={STATE_META} />
       ) : (
         <section className="overflow-hidden rounded-lg border border-border/80 bg-white shadow-elevated-sm">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-[#f8fafc] px-4 py-3">
@@ -595,23 +532,6 @@ function nextActionLabel(state: FreightState): string {
   return "Abrir detalhe";
 }
 
-function commissionPreviewLabel(margin: number, carrierKind: string): string {
-  const bonus = carrierKind === "internal_lloretrans" ? 2.5 : 0;
-  return formatCompactEur(Math.max(0, margin * 0.2 + bonus));
-}
-
-function formatCompactEur(value: number): string {
-  const abs = Math.abs(value);
-  if (abs >= 1000) {
-    const sign = value < 0 ? "-" : "";
-    const amount = new Intl.NumberFormat("pt-PT", {
-      maximumFractionDigits: abs >= 10000 ? 0 : 1,
-    }).format(abs / 1000);
-    return `${sign}${amount}k €`;
-  }
-  return formatEur(value);
-}
-
 function CommercialKpi({
   icon,
   label,
@@ -643,16 +563,5 @@ function CommercialKpi({
       </div>
       <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{note}</p>
     </article>
-  );
-}
-
-function MiniMetric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-md border border-border/70 bg-white px-2.5 py-2">
-      <div className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{label}</div>
-      <div className="mt-1 font-mono text-[10.5px] font-semibold leading-tight text-[#1e2d3d] [overflow-wrap:anywhere]">
-        {value}
-      </div>
-    </div>
   );
 }

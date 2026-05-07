@@ -27,7 +27,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const source = resolveLocalInvoiceSource(invoice.sourcePath);
   if (!source) notFound();
 
-  const data = await readFirstAvailable(source.candidatePaths);
+  const data = await readInvoicePdf(source);
   if (!data) notFound();
 
   return new NextResponse(new Uint8Array(data), {
@@ -41,11 +41,20 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   });
 }
 
-async function readFirstAvailable(candidatePaths: string[]): Promise<Buffer | null> {
-  for (const candidate of candidatePaths) {
+async function readInvoicePdf(source: { candidatePaths: string[]; filename: string }): Promise<Buffer | null> {
+  for (const candidate of source.candidatePaths) {
     const data = await fs.readFile(candidate).catch(() => null);
     if (data) return data;
   }
+
+  const remote = await fetch(
+    `https://raw.githubusercontent.com/bilalmachraa82/lloretrans-platform/main/fixtures/real-invoices/${source.filename}`,
+    { cache: "force-cache" },
+  ).catch(() => null);
+  if (remote?.ok) {
+    return Buffer.from(await remote.arrayBuffer());
+  }
+
   return null;
 }
 
