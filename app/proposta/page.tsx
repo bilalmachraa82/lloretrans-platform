@@ -5,8 +5,15 @@ import {
   CalendarDays,
   CircleAlert,
   Download,
+  FileStack,
+  Fuel,
+  Gauge,
+  Layers3,
+  PackageCheck,
+  ReceiptText,
   ShieldCheck,
   TimerReset,
+  Wrench,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,10 +70,112 @@ const TECHNICAL_WEEK = [
 ];
 
 const PENDING = [
-  "Contacto do integrador PHC e formato de escrita autorizado.",
+  "Contacto do integrador PHC Advanced e formato de escrita autorizado.",
   "Documentação ou acesso de leitura Frotcom e Logue Trans.",
   "Confirmação CANBus/odómetro para fechar o módulo combustível.",
   "Separação final dos 4.000 documentos/mês entre transporte e OCR fornecedor.",
+];
+
+const MODULE_PRICING = [
+  {
+    code: "Módulo A",
+    name: "Validação de quilómetros",
+    unit: "Bloco 1 · A + C",
+    investment: "Incluído nos €14.000",
+    monthly: "€600/mês no Passo 1",
+    detail:
+      "Logue Trans × Frotcom, margem de 3 km, semáforo, aprovação em lote e auditoria.",
+    Icon: Gauge,
+    tone: "bg-[#fff7ed] text-[#9a4f16] border-[#f4d4b7]",
+  },
+  {
+    code: "Módulo B",
+    name: "OCR facturas fornecedor",
+    unit: "Bloco 2",
+    investment: "€11.500",
+    monthly: "+€100/mês · acumulado €700",
+    detail:
+      "Leitura PDF, classificação por NIF, regra por fornecedor, validação humana e exportação PHC Advanced.",
+    Icon: ReceiptText,
+    tone: "bg-[#eff6ff] text-[#1d4ed8] border-[#bfdbfe]",
+  },
+  {
+    code: "Módulo C",
+    name: "Documentos centrais",
+    unit: "Bloco 1 · A + C",
+    investment: "Incluído nos €14.000",
+    monthly: "€600/mês no Passo 1",
+    detail:
+      "CMR, guias e documentos associados a matrícula, viagem, data e estado operacional.",
+    Icon: FileStack,
+    tone: "bg-[#fff7ed] text-[#9a4f16] border-[#f4d4b7]",
+  },
+  {
+    code: "Módulo D",
+    name: "Combustível",
+    unit: "Opção futura",
+    investment: "€7.500 se activado",
+    monthly: "Sem cobrança hoje",
+    detail:
+      "Fica fora do total recomendado até confirmar CANBus/Frotcom, bomba interna e ficheiros dos cartões frota.",
+    Icon: Fuel,
+    tone: "bg-[#f1f5f9] text-[#475569] border-[#cbd5e1]",
+  },
+  {
+    code: "Módulo E",
+    name: "Bolsa de carga + comissões",
+    unit: "Bloco 3 · E + F",
+    investment: "Incluído nos €19.500",
+    monthly: "+€200/mês · acumulado €900",
+    detail:
+      "Pipeline comercial, estados, margens, comissões e controlo por comercial com dados importados.",
+    Icon: PackageCheck,
+    tone: "bg-[#eef6f3] text-[#0d3b38] border-[#bfe4d8]",
+  },
+  {
+    code: "Módulo F",
+    name: "Oficina",
+    unit: "Bloco 3 · E + F",
+    investment: "Incluído nos €19.500",
+    monthly: "+€200/mês · acumulado €900",
+    detail:
+      "Folha de obra móvel, mecânico, assinatura, validação administrativa e preparação para PHC Advanced.",
+    Icon: Wrench,
+    tone: "bg-[#eef6f3] text-[#0d3b38] border-[#bfe4d8]",
+  },
+];
+
+const BLOCK_PRICING = [
+  {
+    block: "Semana técnica",
+    modules: "Validação PHC Advanced, Frotcom, Logue Trans e volumes reais",
+    investment: "€0",
+    monthly: "Sem mensalidade",
+  },
+  {
+    block: "Bloco 1",
+    modules: "Módulos A + C",
+    investment: "€14.000",
+    monthly: "€600/mês",
+  },
+  {
+    block: "Bloco 2",
+    modules: "Módulo B",
+    investment: "€11.500",
+    monthly: "+€100/mês",
+  },
+  {
+    block: "Bloco 3",
+    modules: "Módulos E + F",
+    investment: "€19.500",
+    monthly: "+€200/mês",
+  },
+  {
+    block: "Módulo D",
+    modules: "Combustível · opção futura",
+    investment: "€7.500",
+    monthly: "A fechar após validação",
+  },
 ];
 
 export default function PropostaPage() {
@@ -108,6 +217,9 @@ export default function PropostaPage() {
           <Button asChild variant="outline" size="sm" className="flex-1 border-[#cbd5e1] bg-white text-[#1e2d3d] hover:border-[#1bc88a] hover:bg-white sm:flex-none">
             <Link href="/apresentacao">Voltar à apresentação</Link>
           </Button>
+          <Button asChild variant="outline" size="sm" className="hidden border-[#cbd5e1] bg-white text-[#1e2d3d] hover:border-[#ca742d] hover:bg-white lg:inline-flex">
+            <Link href="/proposta#modulos-precos">Detalhe por módulo</Link>
+          </Button>
           <Button asChild size="sm" className="flex-1 border-0 bg-[#0d3b38] text-white shadow-none hover:bg-[#134f4b] sm:flex-none">
             <Link href="/proposta-v6-administracao.pdf">
               PDF curto <Download className="ml-2 h-4 w-4" />
@@ -140,7 +252,7 @@ export default function PropostaPage() {
             </div>
             <p className="mt-4 text-sm leading-relaxed text-[#4b5563]">
               A primeira semana técnica é sem custo. Se confirmar bloqueio técnico estrutural em
-              PHC, Frotcom ou Logue Trans, a Lloretrans não paga implementação.
+              PHC Advanced, Frotcom ou Logue Trans, a Lloretrans não paga implementação.
             </p>
             <div className="mt-5 rounded-2xl bg-[#eef6f3] px-4 py-4 text-sm font-medium leading-relaxed text-[#0d3b38]">
               Na reunião, esta página só deve aparecer depois da frase: “a plataforma corresponde
@@ -178,6 +290,80 @@ export default function PropostaPage() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section id="modulos-precos" className="relative mx-auto max-w-[1320px] scroll-mt-8 px-6 py-10 lg:px-10">
+        <div className="rounded-[32px] border border-[#1e2d3d]/10 bg-white p-7 shadow-elevated-lg lg:p-9">
+          <div className="grid gap-7 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+            <div>
+              <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ca742d]">
+                <Layers3 className="h-4 w-4" />
+                Detalhe por módulo
+              </div>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight">
+                Se perguntarem por compra avulsa, responder por blocos.
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#4b5563]">
+                A v6 aprovada pelo Fernando não vende cada ecrã como uma linha isolada. A resposta
+                comercial fica simples: A + C no Bloco 1, B no Bloco 2, E + F no Bloco 3, e D como
+                opção futura sem cobrança hoje.
+              </p>
+
+              <div className="mt-6 overflow-hidden rounded-2xl border border-[#d8e1df]">
+                <div className="grid grid-cols-[1fr_0.72fr_0.82fr] bg-[#f0f5f4] px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#64748b]">
+                  <div>Bloco</div>
+                  <div>Valor</div>
+                  <div>Mensalidade</div>
+                </div>
+                {BLOCK_PRICING.map((item) => (
+                  <div key={item.block} className="grid grid-cols-[1fr_0.72fr_0.82fr] border-t border-[#e2e8f0] px-4 py-4 text-sm">
+                    <div>
+                      <div className="font-semibold text-[#1e2d3d]">{item.block}</div>
+                      <div className="mt-1 text-xs leading-relaxed text-[#64748b]">{item.modules}</div>
+                    </div>
+                    <div className="font-semibold text-[#0d3b38]">{item.investment}</div>
+                    <div className="text-[#374151]">{item.monthly}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {MODULE_PRICING.map((module) => {
+                const Icon = module.Icon;
+
+                return (
+                  <article key={module.code} className="rounded-[24px] border border-[#d8e1df] bg-[#fbfdfc] p-5 shadow-elevated-sm">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className={`flex h-11 w-11 items-center justify-center rounded-2xl border ${module.tone}`}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="rounded-full bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#64748b] ring-1 ring-[#e2e8f0]">
+                        {module.code}
+                      </div>
+                    </div>
+                    <h3 className="mt-5 text-xl font-semibold leading-tight tracking-tight">{module.name}</h3>
+                    <div className="mt-4 grid gap-2 text-sm">
+                      <div className="flex items-center justify-between gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-[#e2e8f0]">
+                        <span className="text-[#64748b]">Compra</span>
+                        <span className="text-right font-semibold text-[#1e2d3d]">{module.unit}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-[#e2e8f0]">
+                        <span className="text-[#64748b]">Implementação</span>
+                        <span className="text-right font-semibold text-[#0d3b38]">{module.investment}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-[#e2e8f0]">
+                        <span className="text-[#64748b]">Serviço</span>
+                        <span className="text-right font-semibold text-[#1e2d3d]">{module.monthly}</span>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-sm leading-relaxed text-[#4b5563]">{module.detail}</p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 

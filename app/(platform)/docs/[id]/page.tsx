@@ -128,6 +128,7 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
     .limit(10);
 
   const assoc = existing[0];
+  const documentPreviewUrl = `/docs/${doc.id}/source#toolbar=0&navpanes=0&view=FitH`;
   const nextAction = assoc
     ? {
         status: "green" as const,
@@ -182,19 +183,33 @@ export default async function DocDetailPage({ params }: { params: Promise<{ id: 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Documento original</CardTitle>
+            <div className="flex items-center justify-between gap-3">
+              <CardTitle className="text-base">Documento original</CardTitle>
+              <StatusPill status="green">Preview disponível</StatusPill>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[3/4] rounded-md border border-dashed border-border bg-secondary/50 grid place-items-center text-sm text-muted-foreground p-6 text-center">
-              <div>
-                <div className="font-semibold text-foreground">Ficheiro original associado</div>
-                <div className="mt-2 leading-relaxed">
-                  Pré-visualização completa indisponível neste piloto. Fonte importada:{" "}
-                  <span className="font-mono text-foreground">{doc.sourcePath}</span>.
+            <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-[#f8fafc] px-3 py-2">
+                <div className="min-w-0">
+                  <div className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                    PDF do comprovativo
+                  </div>
+                  <div className="truncate font-mono text-xs text-[#1e2d3d]">{doc.sourcePath}</div>
                 </div>
-                <div className="mt-4 rounded-md border border-border bg-white px-3 py-2 text-left text-xs leading-relaxed text-muted-foreground">
-                  OCR disponível: {doc.ocrText ?? "sem texto extraído"}. O objectivo da página é validar metadados e ligar este comprovativo à viagem correcta.
-                </div>
+                <Button variant="outline" size="sm" asChild>
+                  <a href={`/docs/${doc.id}/source`} target="_blank" rel="noreferrer">
+                    Abrir PDF
+                  </a>
+                </Button>
+              </div>
+              <iframe
+                title={`Pré-visualização do documento ${doc.cmrNumber ?? doc.id}`}
+                src={documentPreviewUrl}
+                className="h-[78vh] min-h-[720px] w-full bg-white"
+              />
+              <div className="border-t border-border bg-[#f8fafc] px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+                OCR disponível: {doc.ocrText ?? "sem texto extraído"}. O objectivo da página é validar metadados e ligar este comprovativo à viagem correcta.
               </div>
             </div>
           </CardContent>

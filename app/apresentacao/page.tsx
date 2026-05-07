@@ -86,7 +86,7 @@ const MODULES = [
     pain: "O conhecimento de classificação está na pessoa e não no sistema; cada fornecedor tem o seu formato.",
     currentState: "Recepção do PDF, extracção, classificação por NIF, memória por fornecedor e preparação para PHC Advanced.",
     proof: "As facturas reais carregadas mostram extracção, confiança, estado de validação e serviço PHC Advanced proposto.",
-    validate: "PDFs, códigos, matrículas e PHC Advanced foram indicados; fica pendente o contacto do integrador e a regra de escrita para PHC.",
+    validate: "PDFs, códigos, matrículas e PHC Advanced foram indicados; fica pendente o contacto do integrador e a regra de escrita para PHC Advanced.",
     href: "/login?target=ocr",
   },
   {
@@ -152,15 +152,15 @@ const DEPENDENCIES = [
 const CONFIRMED_DATA = [
   "Volume operacional indicado: 4.000 documentos/mês no fluxo de digitalização.",
   "Tolerância de quilómetros indicada: máximo 3 km.",
-  "PHC em uso indicado: PHC Advanced.",
+  "Sistema em uso indicado: PHC Advanced.",
   "Dispositivo de oficina indicado: telemóvel.",
   "Regras de comissão recebidas: 20% do lucro + valores fixos por carga Lloretrans.",
-  "Dados recebidos para protótipo: facturas, códigos de serviço, matrículas, combustível, bolsa e folha de obra.",
+  "Dados recebidos para demonstração: facturas, códigos de serviço, matrículas, combustível, bolsa e folha de obra.",
 ];
 
 const CLOSING_QUESTIONS = [
   "Isto corresponde à expectativa operacional que querem levar à administração no dia 11?",
-  "Que ponto técnico conseguimos fechar antes da administração: integrador PHC, APIs ou combustível?",
+  "Que ponto técnico conseguimos fechar antes da administração: integrador PHC Advanced, APIs ou combustível?",
   "Se a plataforma fizer sentido, avançamos para o modelo de investimento por fases?",
 ];
 
